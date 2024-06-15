@@ -1,7 +1,8 @@
-import { Report } from '../models/report.model'
-import { getPreviousDayRange } from '../utils/dateUtils'
+import { Report } from '../models/report.model.js'
+import { getPreviousDayRange } from '../utils/dateUtils.js'
+import { startDay } from '../config/Days.config.js'
 export class ReportService {
-  async createReport(ownerUuid, report, questions) {
+  async create(ownerUuid, report, questions) {
     try {
       if (!ownerUuid) {
         return new Error('Owner UUID is required')
@@ -32,17 +33,22 @@ export class ReportService {
       console.log('update user field error', error)
     }
   }
-  async getReportsByDay(date) {
+  async getReportsByDay(dayIndex) {
     try {
-      if (!date) {
-        return new Error('Date is required')
+      if (dayIndex === undefined || dayIndex === null) {
+        return new Error('Day index is required')
       }
-      const startOfDay = new Date(date)
+      const zeroDay = startDay // Предположим, что "нулевой день" установлен на 1 июня 2024 года
+      zeroDay.setHours(0, 0, 0, 0) // Устанавливаем время на начало дня
+
+      const targetDate = new Date(zeroDay)
+      targetDate.setDate(zeroDay.getDate() + dayIndex) // Добавляем дни к "нулевому дню"
+
+      const startOfDay = new Date(targetDate)
       startOfDay.setHours(0, 0, 0, 0)
 
-      const endOfDay = new Date(date)
+      const endOfDay = new Date(targetDate)
       endOfDay.setHours(23, 59, 59, 999)
-
       const reports = await Report.find({
         date: {
           $gte: startOfDay,
@@ -80,9 +86,9 @@ export class ReportService {
       throw error
     }
   }
-  async getReports(userUuid) {
+  async getReports() {
     try {
-      const report = await Report.findById({ id: id })
+      const reports = await Report.find()
       if (!user) {
         return new Error('User not found')
       }

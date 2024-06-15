@@ -14,7 +14,7 @@ export class UserService {
     try {
       const user = await User.findById(chatId)
       if (!user) {
-        return new Error('User not found')
+        return false
       }
       return user
     } catch (error) {

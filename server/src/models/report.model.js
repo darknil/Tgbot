@@ -1,11 +1,15 @@
-import mongoose from '../db/db'
-import { questionSchema } from './question.model'
+import mongoose from '../db/db.js'
+import { questionSchema } from './question.model.js'
 const reportSchema = new mongoose.Schema({
   id: {
     type: Number,
     required: true
   },
-  ownerId: {
+  ownerChatId: {
+    type: Number,
+    required: true
+  },
+  ownerUuid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true

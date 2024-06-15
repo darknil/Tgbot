@@ -1,4 +1,4 @@
-export class Validator {
+export class DtoValidator {
   async validateReportDto(ReportDTO) {
     try {
       if (

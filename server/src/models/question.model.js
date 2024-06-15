@@ -1,13 +1,11 @@
-import mongoose from '../db/db'
+import mongoose from '../db/db.js'
 const questionSchema = new mongoose.Schema({
   id: {
     type: Number,
     required: true
   },
-  ownerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  ownerChatId: {
+    type: Number
   },
   body: {
     type: String,

@@ -4,8 +4,8 @@ import { ExpressServer } from './server/server.js'
 class App {
   constructor() {
     this.port = process.env.PORT || 4000
-    this.initExpressServer()
     this.initTelegramBot()
+    this.initExpressServer()
   }
   initTelegramBot() {
     const token = process.env.TG_TOKEN

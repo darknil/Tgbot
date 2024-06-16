@@ -1,14 +1,14 @@
 export const keyboards = {
   startKeyboard: {
     reply_markup: {
-      keyboard: [
+      inline_keyboard: [
         [
-          { text: 'Yes, add this to my profile' },
-          { text: 'No, I want to use other data' }
+          {
+            text: 'мини приложение',
+            web_app: { url: process.env.DOMAIN }
+          }
         ]
-      ],
-      resize_keyboard: true,
-      one_time_keyboard: true
+      ]
     }
   }
 }

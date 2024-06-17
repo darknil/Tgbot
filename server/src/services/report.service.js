@@ -2,15 +2,6 @@ import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
 export class ReportService {
-  async getLastReport() {
-    try {
-      const lastReport = await Report.findOne().sort({ id: -1 }).exec()
-      return lastReport
-    } catch (error) {
-      console.log('get last report error', error)
-      return null
-    }
-  }
   async create(user, questions) {
     try {
       if (!user) {
@@ -48,13 +39,18 @@ export class ReportService {
       if (dayIndex === undefined || dayIndex === null) {
         return new Error('Day index is required')
       }
-      const zeroDay = startDay // Предположим, что "нулевой день" установлен на 1 июня 2024 года
-      zeroDay.setHours(0, 0, 0, 0) // Устанавливаем время на начало дня
+      dayIndex = parseInt(dayIndex)
+      console.log('dayIndex', dayIndex)
+      console.log('typeof dayIndex', typeof dayIndex)
+      console.log('startDay', startDay)
 
-      const targetDate = new Date(zeroDay)
-      targetDate.setDate(zeroDay.getDate() + dayIndex) // Добавляем дни к "нулевому дню"
-
+      const startDateObject = new Date(startDay)
+      const targetDate = new Date(startDateObject)
+      targetDate.setDate(startDateObject.getDate() + dayIndex)
+      console.log('zeroDay', startDay)
+      console.log('targetDate', targetDate)
       const startOfDay = new Date(targetDate)
+
       startOfDay.setHours(0, 0, 0, 0)
 
       const endOfDay = new Date(targetDate)
@@ -134,6 +130,21 @@ export class ReportService {
       return userReports
     } catch (error) {
       console.log('get user reports error', error)
+    }
+  }
+  async getReportsByLastDay() {
+    try {
+      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const reports = await Report.find({
+        date: { $gte: startOfPreviousDay, $lt: endOfPreviousDay }
+      })
+      if (!reports) {
+        return false
+      }
+      return reports
+    } catch (error) {
+      console.log('get last day reports error', error)
+      return false
     }
   }
 }

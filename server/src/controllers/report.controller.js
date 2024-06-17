@@ -11,14 +11,47 @@ export class ReportController {
     this.JwtService = new JwtService()
     this.UserService = new UserService()
   }
-  async getAll(req, res) {
+  getAll = async (req, res) => {
     try {
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
+      }
+      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const reports = await this.ReportService.getAll()
+      if (!reports) {
+        return this.ResponseService.notFound(res, 'Reports not found')
+      }
+      return this.ResponseService.success(res, reports)
     } catch (error) {
       console.log('get all reports error', error)
+      return this.ResponseService.error(res, 'Error getting reports')
     }
   }
-  async getReportsbyDay(req, res) {
+  getReportsbyDay = async (req, res) => {
     try {
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
+      }
+      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const day = req.params.day
+      if (!day) {
+        return this.ResponseService.badRequest(res, 'Missing day number')
+      }
+      const reports = await this.ReportService.getReportsByDay(day)
+      if (!reports) {
+        return this.ResponseService.notFound(res, 'Reports not found')
+      }
+      return this.ResponseService.success(res, reports)
     } catch (error) {
       console.log('get reports by day error', error)
     }

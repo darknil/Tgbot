@@ -1,21 +1,30 @@
 import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
-import { startDay } from '../config/Days.config.js'
+import { startDay, endDay } from '../config/Days.config.js'
 export class ReportService {
-  async create(ownerUuid, report, questions) {
+  async getLastReport() {
     try {
-      if (!ownerUuid) {
-        return new Error('Owner UUID is required')
-      }
-      if (!report) {
-        return new Error('Report is required')
+      const lastReport = await Report.findOne().sort({ id: -1 }).exec()
+      return lastReport
+    } catch (error) {
+      console.log('get last report error', error)
+      return null
+    }
+  }
+  async create(user, questions) {
+    try {
+      if (!user) {
+        return new Error('user is required')
       }
       if (!questions) {
         return new Error('Questions are required')
       }
+      const lastReport = await this.getLastReport()
+      const newId = lastReport ? lastReport.id + 1 : 0
       const newReport = new Report({
-        id: report.id,
-        ownerId: ownerUuid,
+        id: newId,
+        ownerChatId: user.chatId,
+        ownerUuid: user._id.toHexString(),
         questions: questions,
         date: new Date(),
         isClosed: false
@@ -24,7 +33,8 @@ export class ReportService {
       console.log('Report saved successfully:', savedReport)
       return savedReport
     } catch (error) {
-      console.log('create user error', error)
+      console.log('create user report error', error)
+      return false
     }
   }
   async updateReportField(id, field, value) {
@@ -89,18 +99,41 @@ export class ReportService {
   async getReports() {
     try {
       const reports = await Report.find()
-      if (!user) {
-        return new Error('User not found')
-      }
-      return report
+      return reports
     } catch (error) {
       console.log('get user error', error)
     }
   }
-  async getUserReportByday(userUuid) {
+  async getUserReport(chatId) {
     try {
+      const { startOfDay, endOfDay } = getPreviousDayRange()
+      console.log('startOfDay', startOfDay)
+      console.log('endOfDay', endOfDay)
+      const userReport = await Report.findOne({
+        ownerChatId: chatId,
+        date: { $gte: startOfDay, $lt: endOfDay }
+      })
+      console.log('userReport', userReport)
+      if (!userReport) {
+        return false
+      }
+      return userReport
     } catch (error) {
-      console.log('get user reports  error', error)
+      console.log('get user report  error', error)
+    }
+  }
+  async getUserReports(chatId) {
+    try {
+      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const userReports = await Report.find({
+        ownerChatId: chatId
+      })
+      if (!userReports) {
+        return false
+      }
+      return userReports
+    } catch (error) {
+      console.log('get user reports error', error)
     }
   }
 }

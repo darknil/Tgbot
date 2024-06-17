@@ -1,8 +1,7 @@
-import mongoose from '../db/db'
+import mongoose from '../db/db.js'
 const UserSchema = new mongoose.Schema({
   id: {
-    type: Number,
-    required: true
+    type: Number
   },
   chatId: {
     type: Number,

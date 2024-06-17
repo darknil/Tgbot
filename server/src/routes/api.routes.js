@@ -15,10 +15,16 @@ export class ApiRouter {
       res.send('Hello from API')
     })
     this.router.get('/reports', this.ReportController.getAll)
+
     this.router.get('/days', this.DaysController.getDaysQuantity)
     this.router.get('/days/current', this.DaysController.getCurrentDay)
+
     this.router.post('/auth', this.AuthController.verifyUser)
     this.router.post('/auth/token', this.AuthController.verifyToken)
+
+    this.router.get('/user/report', this.ReportController.getUserReportByDay)
+    this.router.post('/user/report', this.ReportController.postUserReport)
+    this.router.get('/user/reports', this.ReportController.getUserReports)
   }
   getRouter() {
     return this.router

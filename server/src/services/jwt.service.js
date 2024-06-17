@@ -13,9 +13,12 @@ export class JwtService {
 
   verifyToken(token) {
     try {
+      if (!token) {
+        throw new Error('Token is not provided')
+      }
       return jwt.verify(token, this.secret) // Верификация токена с использованием секретного ключа
     } catch (err) {
-      throw new Error('Token verification failed')
+      return false
     }
   }
 }

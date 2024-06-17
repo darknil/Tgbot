@@ -1,10 +1,9 @@
-import { User } from '../models/user.model'
+import { User } from '../models/user.model.js'
 export class UserService {
   async createUser(chatId, username, firstName, lastName) {
     try {
       const newUser = new User({ chatId, username, firstName, lastName })
       const savedUser = await newUser.save()
-      console.log('User saved successfully:', savedUser)
       return savedUser
     } catch (error) {
       console.log('create user error', error)
@@ -12,7 +11,7 @@ export class UserService {
   }
   async getUser(chatId) {
     try {
-      const user = await User.findById(chatId)
+      const user = await User.findOne({ chatId })
       if (!user) {
         return false
       }

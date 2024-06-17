@@ -1,12 +1,14 @@
 import validateUserData from '../utils/userValidator.js'
 import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { ResponseService } from '../services/response.service.js'
+import { UserService } from '../services/user.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { TgBot } from '../../../bot/bot.js'
 export class AuthController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
     this.ChannelService = new ChannelService(botInstance)
+    this.UserService = new UserService()
     this.ResponseService = new ResponseService()
     this.JwtService = new JwtService()
   }
@@ -24,8 +26,17 @@ export class AuthController {
       if (!isMember) {
         return ResponseService.unauthorized(res, 'User is not a member')
       }
+      let existingUser = await this.UserService.getUser(userData.user.id)
+      if (!existingUser) {
+        existingUser = await this.UserService.createUser(
+          userData.user.id,
+          userData.user.username,
+          userData.user.first_name,
+          userData.user.last_name
+        )
+      }
       const token = this.JwtService.generateToken({
-        user: userData.user
+        user: existingUser
       })
       return this.ResponseService.success(res, token)
     } catch (error) {

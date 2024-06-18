@@ -4,6 +4,7 @@ import { ResponseService } from '../services/response.service.js'
 import { UserService } from '../services/user.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { TgBot } from '../../../bot/bot.js'
+import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
 export class AuthController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -11,6 +12,9 @@ export class AuthController {
     this.UserService = new UserService()
     this.ResponseService = new ResponseService()
     this.JwtService = new JwtService()
+    this.TelegramUserIdResolver = new TelegramUserIdResolver(
+      '../config/users.csv'
+    )
   }
   verifyUser = async (req, res) => {
     try {
@@ -28,12 +32,27 @@ export class AuthController {
       }
       let existingUser = await this.UserService.getUser(userData.user.id)
       if (!existingUser) {
-        existingUser = await this.UserService.createUser(
-          userData.user.id,
-          userData.user.username,
-          userData.user.first_name,
-          userData.user.last_name
-        )
+        const csvUserInfo =
+          await this.TelegramUserIdResolver.getUserInfoByTelegramUsername(
+            userData.user.username
+          )
+        if (csvUserInfo) {
+          existingUser = await this.UserService.createUser(
+            csvUserInfo.UID,
+            userData.user.username,
+            userData.user.first_name,
+            userData.user.last_name,
+            csvUserInfo.Email,
+            csvUserInfo.mobile
+          )
+        } else {
+          existingUser = await this.UserService.createUser(
+            userData.user.id,
+            userData.user.username,
+            userData.user.first_name,
+            userData.user.last_name
+          )
+        }
       }
       const token = this.JwtService.generateToken({
         user: existingUser
@@ -52,7 +71,7 @@ export class AuthController {
       }
 
       const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
-      console.log('Decoded token payload:', decoded)
+      // console.log('Decoded token payload:', decoded)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }

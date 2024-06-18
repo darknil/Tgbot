@@ -3,7 +3,7 @@ import { commands } from './src/config/commands.config.js'
 import { CommandHandler } from './src/handlers/command.handler.js'
 import { MessageHandler } from './src/handlers/message.handler.js'
 import { QueryHandler } from './src/handlers/query.handler.js'
-import { ChannelService } from './src/services/channel.service.js'
+import { ChannelHandler } from './src/handlers/channelHandlers/channelHandler.js'
 export class TgBot {
   static botInstance
   constructor(token) {
@@ -13,6 +13,7 @@ export class TgBot {
       this.CommandHandler = new CommandHandler(this.bot)
       this.MessageHandler = new MessageHandler(this.bot)
       this.QueryHandler = new QueryHandler(this.bot)
+      this.ChannelHandler = new ChannelHandler(this.bot)
       TgBot.botInstance = this.bot // Сохраняем экземпляр в статическое свойство
     }
   }

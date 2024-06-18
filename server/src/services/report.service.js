@@ -85,7 +85,7 @@ export class ReportService {
           $set: { isClosed: true }
         }
       )
-
+      return true
       console.log(`Reports closed for the previous day: ${result.nModified}`)
     } catch (error) {
       console.error('Error closing reports for the previous day:', error)

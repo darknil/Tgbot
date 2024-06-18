@@ -18,6 +18,16 @@ const UserSchema = new mongoose.Schema({
   lastName: {
     type: String,
     required: true
+  },
+  email: {
+    type: String
+  },
+  mobile: {
+    type: String
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
   }
 })
 const User = mongoose.model('User', UserSchema)

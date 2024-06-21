@@ -13,16 +13,16 @@ export class ReportController {
   }
   getAll = async (req, res) => {
     try {
-      const token = req.headers.authorization
-      if (!token) {
-        return this.ResponseService.unauthorized(res, 'No token provided')
-      }
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      // const token = req.headers.authorization
+      // if (!token) {
+      //   return this.ResponseService.unauthorized(res, 'No token provided')
+      // }
+      // const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
 
-      if (!decoded) {
-        return this.ResponseService.unauthorized(res, 'Invalid token')
-      }
-      const reports = await this.ReportService.getAll()
+      // if (!decoded) {
+      //   return this.ResponseService.unauthorized(res, 'Invalid token')
+      // }
+      const reports = await this.ReportService.getReports()
       if (!reports) {
         return this.ResponseService.notFound(res, 'Reports not found')
       }
@@ -34,15 +34,15 @@ export class ReportController {
   }
   getReportsbyDay = async (req, res) => {
     try {
-      const token = req.headers.authorization
-      if (!token) {
-        return this.ResponseService.unauthorized(res, 'No token provided')
-      }
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      // const token = req.headers.authorization
+      // if (!token) {
+      //   return this.ResponseService.unauthorized(res, 'No token provided')
+      // }
+      // const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
 
-      if (!decoded) {
-        return this.ResponseService.unauthorized(res, 'Invalid token')
-      }
+      // if (!decoded) {
+      //   return this.ResponseService.unauthorized(res, 'Invalid token')
+      // }
       const day = req.params.day
       if (!day) {
         return this.ResponseService.badRequest(res, 'Missing day number')
@@ -63,29 +63,33 @@ export class ReportController {
       if (!token) {
         return this.ResponseService.unauthorized(res, 'No token provided')
       }
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      const decoded = this.JwtService.verifyToken(token)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const { ownerChatId, questions } = req.body
-      if (!ownerChatId || !questions) {
-        return this.ResponseService.badRequest(res, 'Missing required fields')
+      const { questions } = req.body
+      if (!questions) {
+        return this.ResponseService.badRequest(res, 'Missing questions fields')
       }
-      const user = await this.UserService.getUser(ownerChatId)
+      console.log(decoded)
+      const user = await this.UserService.getUser(decoded.user.chatId)
       if (!user) {
         return this.ResponseService.unauthorized(
           res,
           'User not found in database'
         )
       }
+      const existedReport = await this.ReportService.getUserReport(
+        decoded.user.chatId
+      )
+      if (existedReport) {
+        return this.ResponseService.badRequest(res, 'report already exists ')
+      }
       const report = await this.ReportService.create(user, questions)
       if (!report) {
         return this.ResponseService.badRequest(res, 'Error creating report')
       }
-      console.log('user :', user)
-      console.log('report :', report)
       return this.ResponseService.success(res, report)
-      return this.ResponseService.success(res, user)
     } catch (error) {
       console.log('post user report error', error)
       return this.ResponseService.error(res, 'Error creating report')
@@ -97,7 +101,7 @@ export class ReportController {
       if (!token) {
         return this.ResponseService.unauthorized(res, 'No token provided')
       }
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      const decoded = this.JwtService.verifyToken(token)
 
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')

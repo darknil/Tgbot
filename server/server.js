@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import { fileURLToPath } from 'url'
 import { ApiRouter } from './src/routes/api.routes.js'
-
+import { scheduleCloseReports } from './src/cron/cronJob.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -15,6 +15,7 @@ export class ExpressServer {
     this.setupMiddleware()
     this.setupRoutes()
     this.startServer(port)
+    scheduleCloseReports()
   }
   startServer(port) {
     const PORT = port || 4000

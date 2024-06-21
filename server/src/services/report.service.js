@@ -2,7 +2,7 @@ import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
 export class ReportService {
-  async create(user, questions) {
+  create = async (user, questions) => {
     try {
       if (!user) {
         return new Error('user is required')
@@ -10,7 +10,7 @@ export class ReportService {
       if (!questions) {
         return new Error('Questions are required')
       }
-      const lastReport = await this.getLastReport()
+      const lastReport = await this.getUserReport(user.chatId)
       const newId = lastReport ? lastReport.id + 1 : 0
       const newReport = new Report({
         id: newId,
@@ -40,15 +40,10 @@ export class ReportService {
         return new Error('Day index is required')
       }
       dayIndex = parseInt(dayIndex)
-      console.log('dayIndex', dayIndex)
-      console.log('typeof dayIndex', typeof dayIndex)
-      console.log('startDay', startDay)
 
       const startDateObject = new Date(startDay)
       const targetDate = new Date(startDateObject)
       targetDate.setDate(startDateObject.getDate() + dayIndex)
-      console.log('zeroDay', startDay)
-      console.log('targetDate', targetDate)
       const startOfDay = new Date(targetDate)
 
       startOfDay.setHours(0, 0, 0, 0)
@@ -85,8 +80,8 @@ export class ReportService {
           $set: { isClosed: true }
         }
       )
-      return true
       console.log(`Reports closed for the previous day: ${result.nModified}`)
+      return true
     } catch (error) {
       console.error('Error closing reports for the previous day:', error)
       throw error
@@ -103,13 +98,10 @@ export class ReportService {
   async getUserReport(chatId) {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange()
-      console.log('startOfDay', startOfDay)
-      console.log('endOfDay', endOfDay)
       const userReport = await Report.findOne({
         ownerChatId: chatId,
         date: { $gte: startOfDay, $lt: endOfDay }
       })
-      console.log('userReport', userReport)
       if (!userReport) {
         return false
       }

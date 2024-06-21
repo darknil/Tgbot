@@ -45,7 +45,7 @@ export class TelegramUserIdResolver {
 
   async getUserInfoByTelegramUsername(telegramUsername) {
     if (!this.usersMap.has(telegramUsername)) {
-      throw new Error('Пользователь с таким Telegram username не найден.')
+      return false
     }
 
     return this.usersMap.get(telegramUsername)

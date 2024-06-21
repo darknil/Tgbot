@@ -16,28 +16,18 @@ export class AuthController {
       '../config/users.csv'
     )
   }
-  verifyUser = async (req, res) => {
-    try {
-      const userData = req.body
-      if (!userData) {
-        return ResponseService.badRequest(res, 'No data provided')
-      }
-      const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
-      if (!isValidUser) {
-        return ResponseService.unauthorized(res, 'Invalid user data')
-      }
-      const isMember = await this.ChannelService.isMember(userData.user.id)
-      if (!isMember) {
-        return ResponseService.unauthorized(res, 'User is not a member')
-      }
-      let existingUser = await this.UserService.getUser(userData.user.id)
-      if (!existingUser) {
-        const csvUserInfo =
-          await this.TelegramUserIdResolver.getUserInfoByTelegramUsername(
-            userData.user.username
-          )
-        if (csvUserInfo) {
-          existingUser = await this.UserService.createUser(
+  async findOrCreateUser(userData) {
+    let user = await this.UserService.getUser(userData.user.id)
+    if (user && user.isBanned) {
+      throw new Error('User is banned')
+    }
+    if (!user) {
+      const csvUserInfo =
+        await this.TelegramUserIdResolver.getUserInfoByTelegramUsername(
+          userData.user.username
+        )
+      user = csvUserInfo
+        ? await this.UserService.createUser(
             csvUserInfo.UID,
             userData.user.username,
             userData.user.first_name,
@@ -45,18 +35,40 @@ export class AuthController {
             csvUserInfo.Email,
             csvUserInfo.mobile
           )
-        } else {
-          existingUser = await this.UserService.createUser(
+        : await this.UserService.createUser(
             userData.user.id,
             userData.user.username,
             userData.user.first_name,
             userData.user.last_name
           )
+    }
+    return user
+  }
+  verifyUser = async (req, res) => {
+    try {
+      const userData = req.body
+      // console.log('userData :', userData)
+      if (!userData) {
+        return this.ResponseService.badRequest(res, 'No data provided')
+      }
+      // const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
+      // if (!isValidUser) {
+      //   return ResponseService.unauthorized(res, 'Invalid user data')
+      // }
+      const isMember = await this.ChannelService.isMember(userData.user.id)
+      if (!isMember) {
+        return this.ResponseService.unauthorized(res, 'User is not a member') /// сделать условие наличия пользователя в базе данных и проверку isbanned
+      }
+      let user
+      try {
+        user = await this.findOrCreateUser(userData)
+      } catch (error) {
+        if (error.message === 'User is banned') {
+          console.log(`User ${userData.user.id} is banned`)
+          return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
-      const token = this.JwtService.generateToken({
-        user: existingUser
-      })
+      const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)
     } catch (error) {
       console.log('verify user membership error', error)

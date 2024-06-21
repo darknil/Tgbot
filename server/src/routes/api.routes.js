@@ -14,7 +14,7 @@ export class ApiRouter {
     this.router.get('/', (req, res) => {
       res.send('Hello from API')
     })
-    this.router.get('/reports', this.ReportController.getAll)
+    this.router.get('/reports', this.ReportController.getAll) // убрать токен авторизации
     this.router.get('/reports/:day', this.ReportController.getReportsbyDay)
 
     this.router.get('/days', this.DaysController.getDaysQuantity)

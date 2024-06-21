@@ -31,7 +31,6 @@ export class MessageHandler {
         )
         const Admin = isAdmin(chatId)
         if (Admin) {
-          console.log('admin')
           await this.KickUserFromChannel.kickUser()
         }
       } else {

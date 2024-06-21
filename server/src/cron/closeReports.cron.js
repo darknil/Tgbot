@@ -1,8 +1,10 @@
 import { ReportService } from '../services/report.service'
+import { UserService } from '../services/user.service'
 import { TgBot } from '../../../bot/bot'
 export class CloseReports {
   constructor() {
     this.ReportService = new ReportService()
+    this.UserService = new UserService()
     const botInstance = TgBot.getBotInstance()
   }
   async closeReports() {

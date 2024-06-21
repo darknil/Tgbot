@@ -15,7 +15,6 @@ export class ChannelHandler {
           msg.chat.id,
           `Welcome to the channel ${newMember.first_name} ${newMember.last_name}`
         )
-        // this.UserService.createUser(newMember.id,)
       }
     } catch (error) {
       console.log('handle user start error', error)

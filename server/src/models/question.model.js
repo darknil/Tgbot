@@ -4,9 +4,6 @@ const questionSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  ownerChatId: {
-    type: Number
-  },
   body: {
     type: String,
     required: true

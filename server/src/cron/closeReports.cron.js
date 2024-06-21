@@ -1,6 +1,6 @@
-import { ReportService } from '../services/report.service'
-import { UserService } from '../services/user.service'
-import { TgBot } from '../../../bot/bot'
+import { ReportService } from '../services/report.service.js'
+import { UserService } from '../services/user.service.js'
+import { TgBot } from '../../../bot/bot.js'
 export class CloseReports {
   constructor() {
     this.ReportService = new ReportService()

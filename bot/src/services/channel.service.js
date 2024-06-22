@@ -20,7 +20,7 @@ export class ChannelService {
       throw error // You may handle errors differently based on your application's needs
     }
   }
-  async sendUsersReport(usernames) {
+  async sendUsersReport() {
     try {
       const channelId = process.env.TG_CHANNEL
       const caption = `Пользователи, которые не заполнили ежедневный отчёт:`
@@ -28,6 +28,20 @@ export class ChannelService {
       console.log('Сообщение успешно отправлено:', response)
     } catch (error) {
       console.log('send user reports')
+    }
+  }
+  async sendMessageToChannelChat(message) {
+    try {
+      const chatId = -1002216802473
+      this.bot.sendMessage(chatId, message)
+    } catch (error) {
+      console.log('send message to channel chat error :', error)
+    }
+  }
+  async getChannelUsersCount() {
+    try {
+    } catch (error) {
+      console.log('get channel users count error :', error)
     }
   }
 }

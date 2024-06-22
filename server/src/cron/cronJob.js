@@ -1,6 +1,6 @@
 import cron from 'node-cron'
 import { CloseReports } from './closeReports.cron.js'
-const closeReportsInstance = new CloseReports()
+
 export function scheduleCloseReports() {
   cron.schedule('0 3 * * *', async () => {
     try {

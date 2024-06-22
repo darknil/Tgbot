@@ -14,6 +14,7 @@ export class MessageHandler {
   async handleUserMessage(msg) {
     try {
       const chatId = msg.chat.id || msg.from.id
+      console.log(chatId)
       const valide = this.validateMessage(msg)
       if (!valide) {
         return
@@ -22,7 +23,7 @@ export class MessageHandler {
         return
       }
       const isParticipant = await this.ChannelService.isMember(chatId)
-
+      console.log(isParticipant)
       if (isParticipant) {
         this.bot.sendMessage(
           chatId,
@@ -31,7 +32,11 @@ export class MessageHandler {
         )
         const Admin = isAdmin(chatId)
         if (Admin) {
-          await this.KickUserFromChannel.kickUser()
+          // await this.KickUserFromChannel.kickUser(628175854)
+          // this.ChannelService.sendUsersReport()
+          // this.ChannelService.sendMessageToChannelChat(
+          //   'тестовое сообщение в чат канала'
+          // )
         }
       } else {
         this.bot.sendMessage(chatId, 'you are not a participant')

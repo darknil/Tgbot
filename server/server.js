@@ -32,6 +32,12 @@ export class ExpressServer {
       res.sendFile(path.join(publicPath, 'index.html'))
     })
     this.app.use('/api', this.api.getRouter())
+
+    // Serve notfound.html for all other routes (404 Not Found)
+    this.app.use((req, res) => {
+      const publicPath = path.resolve(__dirname, '../public')
+      res.status(404).sendFile(path.join(publicPath, 'notfound.html'))
+    })
   }
   setupMiddleware() {
     this.app.use(cors())

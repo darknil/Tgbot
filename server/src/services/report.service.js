@@ -15,6 +15,7 @@ export class ReportService {
       const newReport = new Report({
         id: newId,
         ownerChatId: user.chatId,
+        ownerUsername: user.username,
         ownerUuid: user._id.toHexString(),
         questions: questions,
         date: new Date(),

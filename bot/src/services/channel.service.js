@@ -23,9 +23,7 @@ export class ChannelService {
   async sendUsersReport(usernames) {
     try {
       const channelId = process.env.TG_CHANNEL
-      const caption = `Пользователи, которые не заполнили ежедневный отчёт:\n\n${usernames.join(
-        ','
-      )}`
+      const caption = `Пользователи, которые не заполнили ежедневный отчёт:`
       const response = await this.bot.sendMessage(channelId, caption)
       console.log('Сообщение успешно отправлено:', response)
     } catch (error) {

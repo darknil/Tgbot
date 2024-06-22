@@ -9,6 +9,10 @@ const reportSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  ownerUsername: {
+    type: String,
+    required: true
+  },
   ownerUuid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

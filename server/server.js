@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import bodyParser from 'body-parser'
 import morgan from 'morgan'
+import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { ApiRouter } from './src/routes/api.routes.js'
 import { scheduleCloseReports } from './src/cron/cronJob.js'
@@ -33,6 +34,8 @@ export class ExpressServer {
     this.app.use('/api', this.api.getRouter())
   }
   setupMiddleware() {
+    this.app.use(cors())
+
     this.app.use(morgan('dev'))
     this.app.use(bodyParser.json())
     this.app.use(express.static(path.join(__dirname, '../public')))

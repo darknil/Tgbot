@@ -89,7 +89,7 @@ export class ReportController {
       if (!report) {
         return this.ResponseService.badRequest(res, 'Error creating report')
       }
-      return this.ResponseService.success(res, report)
+      return this.ResponseService.success(res)
     } catch (error) {
       console.log('post user report error', error)
       return this.ResponseService.error(res, 'Error creating report')

@@ -2,6 +2,12 @@ export class ResponseService {
   constructor() {}
   success(res, data, message = 'Success', statusCode = 200) {
     try {
+      if (!data) {
+        return res.status(statusCode).json({
+          status: 'Success',
+          message: message
+        })
+      }
       return res.status(statusCode).json({
         status: 'Success',
         message: message,

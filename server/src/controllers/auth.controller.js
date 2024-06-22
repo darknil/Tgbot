@@ -47,7 +47,8 @@ export class AuthController {
   verifyUser = async (req, res) => {
     try {
       const userData = req.body
-      // console.log('userData :', userData)
+      console.log(userData)
+      console.log('chatID :', userData.user.id)
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }

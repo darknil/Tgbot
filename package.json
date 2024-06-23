@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "data-import": "cross-env IMPORT_DATA_FLAG=true node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "darknil",
@@ -24,6 +25,7 @@
     "node-telegram-bot-api": "^0.66.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.3"
   }
 }

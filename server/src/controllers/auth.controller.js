@@ -16,39 +16,59 @@ export class AuthController {
       '../config/users.csv'
     )
   }
-  async findOrCreateUser(userData) {
-    let user = await this.UserService.getUser(userData.user.id)
+  fillEmptyUser = async (user, chatId, firstName, lastName) => {
+    try {
+      await this.UserService.updateUserByUsername(
+        user.username,
+        'chatId',
+        chatId
+      )
+      await this.UserService.updateUserByUsername(
+        user.username,
+        'firstName',
+        firstName
+      )
+      const updatedLastname = await this.UserService.updateUserByUsername(
+        user.username,
+        'lastName',
+        lastName
+      )
+
+      return updatedLastname
+    } catch (error) {
+      console.log('fill empty user fields error :', error)
+    }
+  }
+  findOrCreateUser = async (userData) => {
+    const lowerUsername = userData.user.username.toLowerCase()
+    let user = await this.UserService.getUserByUserName(lowerUsername)
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
     if (!user) {
-      const csvUserInfo =
-        await this.TelegramUserIdResolver.getUserInfoByTelegramUsername(
-          userData.user.username
-        )
-      user = csvUserInfo
-        ? await this.UserService.createUser(
-            csvUserInfo.UID,
-            userData.user.username,
-            userData.user.firstName,
-            userData.user.lastName,
-            csvUserInfo.Email,
-            csvUserInfo.mobile
-          )
-        : await this.UserService.createUser(
-            userData.user.id,
-            userData.user.username,
-            userData.user.firstName,
-            userData.user.lastName
-          )
+      user = await this.UserService.createUser(
+        userData.user.username,
+        undefined,
+        undefined,
+        undefined,
+        userData.user.id,
+        userData.user.firstName,
+        userData.user.lastName
+      )
+    }
+    if (user.chatId === 0) {
+      user = await this.fillEmptyUser(
+        user,
+        userData.user.id,
+        userData.user.firstName,
+        userData.user.lastName
+      )
     }
     return user
   }
   verifyUser = async (req, res) => {
     try {
       const userData = req.body
-      console.log(userData)
-      console.log('chatID :', userData.user.id)
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }

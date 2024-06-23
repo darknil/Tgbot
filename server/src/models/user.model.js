@@ -4,8 +4,7 @@ const UserSchema = new mongoose.Schema({
     type: Number
   },
   chatId: {
-    type: Number,
-    required: true
+    type: Number
   },
   username: {
     type: String,

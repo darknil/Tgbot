@@ -44,4 +44,10 @@ export class ChannelService {
       console.log('get channel users count error :', error)
     }
   }
+  async createInviteLink() {
+    try {
+    } catch (error) {
+      console.log('')
+    }
+  }
 }

@@ -14,7 +14,6 @@ export class MessageHandler {
   async handleUserMessage(msg) {
     try {
       const chatId = msg.chat.id || msg.from.id
-      console.log(chatId)
       const valide = this.validateMessage(msg)
       if (!valide) {
         return
@@ -23,7 +22,6 @@ export class MessageHandler {
         return
       }
       const isParticipant = await this.ChannelService.isMember(chatId)
-      console.log(isParticipant)
       if (isParticipant) {
         this.bot.sendMessage(
           chatId,

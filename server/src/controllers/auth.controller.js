@@ -30,16 +30,16 @@ export class AuthController {
         ? await this.UserService.createUser(
             csvUserInfo.UID,
             userData.user.username,
-            userData.user.first_name,
-            userData.user.last_name,
+            userData.user.firstName,
+            userData.user.lastName,
             csvUserInfo.Email,
             csvUserInfo.mobile
           )
         : await this.UserService.createUser(
             userData.user.id,
             userData.user.username,
-            userData.user.first_name,
-            userData.user.last_name
+            userData.user.firstName,
+            userData.user.lastName
           )
     }
     return user

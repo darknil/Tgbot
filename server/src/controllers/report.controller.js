@@ -71,7 +71,6 @@ export class ReportController {
       if (!questions) {
         return this.ResponseService.badRequest(res, 'Missing questions fields')
       }
-      console.log(decoded)
       const user = await this.UserService.getUser(decoded.user.chatId)
       if (!user) {
         return this.ResponseService.unauthorized(
@@ -106,7 +105,6 @@ export class ReportController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      console.log('decoded chatId :', decoded.user.chatId)
       const report = await this.ReportService.getUserReport(decoded.user.chatId)
       if (!report) {
         return this.ResponseService.notFound(res, 'Report not found')

@@ -20,14 +20,40 @@ export class ChannelService {
       throw error // You may handle errors differently based on your application's needs
     }
   }
-  async sendUsersReport(usernames) {
+  async sendMessageToAdmin(usernames, userscount) {
     try {
+      const adminId = process.env.ADMINS
       const channelId = process.env.TG_CHANNEL
-      const caption = `Пользователи, которые не заполнили ежедневный отчёт:`
-      const response = await this.bot.sendMessage(channelId, caption)
+      const userMentions = usernames
+        .map((username) => `@${username}`)
+        .join(', ')
+      const subscribersCount = await this.bot.getChatMemberCount(channelId)
+      const caption = `Пользователи, которые не заполнили ежедневный отчёт:${userMentions}\nВсего пользователей в боте:${userscount}\nВсего пользователей в канале :${subscribersCount}`
+      const response = await this.bot.sendMessage(adminId, caption)
       console.log('Сообщение успешно отправлено:', response)
     } catch (error) {
-      console.log('send user reports')
+      console.log('send message to admin error :', error)
+    }
+  }
+  async sendMessageToChannelChat(message) {
+    try {
+      const chatId = -1002216802473
+      this.bot.sendMessage(chatId, message)
+    } catch (error) {
+      console.log('send message to channel chat error :', error)
+    }
+  }
+  async getChannelUsersCount() {
+    try {
+      const channelId = process.env.TG_CHANNEL
+    } catch (error) {
+      console.log('get channel users count error :', error)
+    }
+  }
+  async createInviteLink() {
+    try {
+    } catch (error) {
+      console.log('')
     }
   }
 }

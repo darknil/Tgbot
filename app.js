@@ -3,7 +3,6 @@ import { TgBot } from './bot/bot.js'
 import { ExpressServer } from './server/server.js'
 class App {
   constructor() {
-    this.port = process.env.PORT || 4000
     this.initTelegramBot()
     this.initExpressServer()
   }
@@ -17,7 +16,8 @@ class App {
     this.tgBot = new TgBot(token)
   }
   initExpressServer() {
-    this.expressServer = new ExpressServer(this.port)
+    const port = process.env.PORT || 3000
+    this.expressServer = new ExpressServer(port)
   }
 }
 const app = new App()

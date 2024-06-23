@@ -22,7 +22,6 @@ export class MessageHandler {
         return
       }
       const isParticipant = await this.ChannelService.isMember(chatId)
-
       if (isParticipant) {
         this.bot.sendMessage(
           chatId,
@@ -31,7 +30,6 @@ export class MessageHandler {
         )
         const Admin = isAdmin(chatId)
         if (Admin) {
-          await this.KickUserFromChannel.kickUser()
         }
       } else {
         this.bot.sendMessage(chatId, 'you are not a participant')

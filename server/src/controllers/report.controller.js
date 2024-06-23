@@ -71,7 +71,6 @@ export class ReportController {
       if (!questions) {
         return this.ResponseService.badRequest(res, 'Missing questions fields')
       }
-      console.log(decoded)
       const user = await this.UserService.getUser(decoded.user.chatId)
       if (!user) {
         return this.ResponseService.unauthorized(

@@ -1,4 +1,5 @@
 import { ReportService } from '../services/report.service.js'
+import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { UserService } from '../services/user.service.js'
 import { TgBot } from '../../../bot/bot.js'
 export class CloseReports {
@@ -6,6 +7,7 @@ export class CloseReports {
     this.ReportService = new ReportService()
     this.UserService = new UserService()
     const botInstance = TgBot.getBotInstance()
+    this.ChannelService = new ChannelService(botInstance)
   }
   async closeReports() {
     try {
@@ -19,6 +21,7 @@ export class CloseReports {
       // Отфильтровать пользователей у которых был отчёт от тех у кого не было
       // Вызвать метод кика пользователей для тех кто без отчёта
       // поменять статус пользователям isBanned = true
+      this.ChannelService.sendMessageToAdmin()
     } catch (error) {
       console.log('close reports error :', error)
     }

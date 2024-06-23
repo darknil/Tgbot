@@ -5,8 +5,11 @@ export function scheduleCloseReports() {
   cron.schedule('0 3 * * *', async () => {
     try {
       console.log('Starting daily close reports job...')
-      // await closeReportsInstance.closeReports()
+      const closeReportsInstance = new CloseReports()
+      await closeReportsInstance.closeReports()
       console.log('Daily close reports job completed successfully.')
-    } catch (error) {}
+    } catch (error) {
+      console.log('cron error :', error)
+    }
   })
 }

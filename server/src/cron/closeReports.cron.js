@@ -12,10 +12,24 @@ export class CloseReports {
   async closeReports() {
     try {
       /// вызвать метод для изменения статуса отчётов за прошлые сутки
-      const updated = await this.ReportService.closeReportsForPreviousDay() // получить измененёные отчёты
+      const updated = await this.ReportService.closeReportsForPreviousDay() // закрыть отчёты
       if (!updated) {
         throw new Error('reports was not updated')
       }
+      const closedReports = await this.ReportService.getClosedReports()
+      const ownerChatIds = closedReports.map((report) => report.ownerChatId)
+      const allUsers = await this.UserService.getUsers()
+      const usersWithoutReports = allUsers.filter(
+        (user) => !ownerChatIds.includes(user.ownerChatId)
+      )
+      const usernamesWithoutReports = usersWithoutReports.map(
+        (user) => user.username
+      )
+      console.log('usernamesWithoutReports', usernamesWithoutReports)
+      await this.ChannelService.sendMessageToAdmin(
+        usernamesWithoutReports,
+        allUsers.length
+      )
       // Отфильтровать всех пользователей по массиву с отчётами.
       // Получить пользователей у которых был отчёт за сутки
       // Отфильтровать пользователей у которых был отчёт от тех у кого не было

@@ -105,7 +105,6 @@ export class ReportController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      console.log('decoded chatId :', decoded.user.chatId)
       const report = await this.ReportService.getUserReport(decoded.user.chatId)
       if (!report) {
         return this.ResponseService.notFound(res, 'Report not found')

@@ -26,4 +26,12 @@ export class UserService {
       console.log('update user field error', error)
     }
   }
+  async getUsers() {
+    try {
+      const users = await User.find()
+      return users
+    } catch (error) {
+      console.log('get all users error :', error)
+    }
+  }
 }

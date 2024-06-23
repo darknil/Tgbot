@@ -23,15 +23,16 @@ export class ChannelService {
   async sendMessageToAdmin(usernames, userscount) {
     try {
       const adminId = process.env.ADMINS
+      const channelId = process.env.TG_CHANNEL
       const userMentions = usernames
         .map((username) => `@${username}`)
         .join(', ')
-      const subscribersCount = await bot.getChatMemberCount(channelId)
+      const subscribersCount = await this.bot.getChatMemberCount(channelId)
       const caption = `Пользователи, которые не заполнили ежедневный отчёт:${userMentions}\nВсего пользователей в боте:${userscount}\nВсего пользователей в канале :${subscribersCount}`
-      const response = await this.bot.sendMessage(channelId, caption)
+      const response = await this.bot.sendMessage(adminId, caption)
       console.log('Сообщение успешно отправлено:', response)
     } catch (error) {
-      console.log('send user reports')
+      console.log('send message to admin error :', error)
     }
   }
   async sendMessageToChannelChat(message) {

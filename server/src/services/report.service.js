@@ -22,7 +22,6 @@ export class ReportService {
         isClosed: false
       })
       const savedReport = await newReport.save()
-      console.log('Report saved successfully:', savedReport)
       return savedReport
     } catch (error) {
       console.log('create user report error', error)
@@ -86,6 +85,14 @@ export class ReportService {
     } catch (error) {
       console.error('Error closing reports for the previous day:', error)
       throw error
+    }
+  }
+  async getClosedReports() {
+    try {
+      const closedReports = await Report.find({ isClosed: true })
+      return closedReports
+    } catch (error) {
+      console.log('get closed reports error :', error)
     }
   }
   async getReports() {

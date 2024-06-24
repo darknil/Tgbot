@@ -35,7 +35,6 @@ export class CloseReports {
       // Отфильтровать пользователей у которых был отчёт от тех у кого не было
       // Вызвать метод кика пользователей для тех кто без отчёта
       // поменять статус пользователям isBanned = true
-      this.ChannelService.sendMessageToAdmin()
     } catch (error) {
       console.log('close reports error :', error)
     }

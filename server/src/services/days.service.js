@@ -14,9 +14,10 @@ export class DaysService {
       const today = new Date()
       console.log('start day :', startDay)
       console.log('today :', today)
-      const currentDay = Math.floor(
-        (today.getTime() - startDay.getTime()) / (1000 * 60 * 60 * 24)
-      )
+      const currentDay =
+        Math.floor(
+          (today.getTime() - startDay.getTime()) / (1000 * 60 * 60 * 24)
+        ) + 1
       console.log('curent day :', currentDay)
       return currentDay
     } catch (error) {

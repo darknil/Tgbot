@@ -4,6 +4,7 @@ import { ReportService } from '../services/report.service.js'
 import { ResponseService } from '../services/response.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { UserService } from '../services/user.service.js'
+import upload from '../config/multer.config.js'
 export class ReportController {
   constructor() {
     this.ReportService = new ReportService()
@@ -59,36 +60,63 @@ export class ReportController {
 
   postUserReport = async (req, res) => {
     try {
-      const token = req.headers.authorization
-      if (!token) {
-        return this.ResponseService.unauthorized(res, 'No token provided')
-      }
-      const decoded = this.JwtService.verifyToken(token)
-      if (!decoded) {
-        return this.ResponseService.unauthorized(res, 'Invalid token')
-      }
-      const { questions } = req.body
-      if (!questions) {
-        return this.ResponseService.badRequest(res, 'Missing questions fields')
-      }
-      const user = await this.UserService.getUser(decoded.user.chatId)
-      if (!user) {
-        return this.ResponseService.unauthorized(
-          res,
-          'User not found in database'
+      req.filename = `image-${Date.now()}`
+      upload.single('photo')(req, res, async (err) => {
+        if (err) {
+          if (err.code === 'LIMIT_FILE_SIZE') {
+            return this.ResponseService.badRequest(
+              res,
+              'The file size exceeds the maximum limit'
+            )
+          }
+          console.error('Ошибка загрузки файла:', err)
+          return this.ResponseService.error(res, 'error loading file')
+        }
+        const token = req.headers.authorization
+        if (!token) {
+          return this.ResponseService.unauthorized(res, 'No token provided')
+        }
+        const decoded = this.JwtService.verifyToken(token)
+        if (!decoded) {
+          return this.ResponseService.unauthorized(res, 'Invalid token')
+        }
+        const { question1, question2, question3 } = req.body
+        const questions = [question1, question2, question3]
+        console.log('questions :', questions)
+
+        if (!questions) {
+          return this.ResponseService.badRequest(
+            res,
+            'Missing questions fields'
+          )
+        }
+        const user = await this.UserService.getUser(decoded.user.chatId)
+        if (!user) {
+          return this.ResponseService.unauthorized(
+            res,
+            'User not found in database'
+          )
+        }
+        const existedReport = await this.ReportService.getUserReport(
+          decoded.user.chatId
         )
-      }
-      const existedReport = await this.ReportService.getUserReport(
-        decoded.user.chatId
-      )
-      if (existedReport) {
-        return this.ResponseService.badRequest(res, 'report already exists ')
-      }
-      const report = await this.ReportService.create(user, questions)
-      if (!report) {
-        return this.ResponseService.badRequest(res, 'Error creating report')
-      }
-      return this.ResponseService.success(res)
+        if (existedReport) {
+          return this.ResponseService.badRequest(res, 'report already exists ')
+        }
+        const filename = `${req.filename}.jpg`
+        const report = await this.ReportService.create(
+          user,
+          questions,
+          filename
+        )
+        if (!report) {
+          return this.ResponseService.badRequest(res, 'Error creating report')
+        }
+        return this.ResponseService.success(res)
+        // Логика обработки данных (например, сохранение в базе данных)
+
+        // Отправка ответа клиенту
+      })
     } catch (error) {
       console.log('post user report error', error)
       return this.ResponseService.error(res, 'Error creating report')

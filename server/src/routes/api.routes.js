@@ -2,11 +2,13 @@ import express from 'express'
 import { ReportController } from '../controllers/report.controller.js'
 import { DaysController } from '../controllers/days.controller.js'
 import { AuthController } from '../controllers/auth.controller.js'
+import { FileController } from '../controllers/file.controller.js'
 export class ApiRouter {
   constructor(app, controller) {
     this.ReportController = new ReportController()
     this.DaysController = new DaysController()
     this.AuthController = new AuthController()
+    this.FileController = new FileController()
     this.router = express.Router()
     this.setupRoutes()
   }
@@ -26,6 +28,8 @@ export class ApiRouter {
     this.router.get('/user/report', this.ReportController.getUserReportByDay)
     this.router.post('/user/report', this.ReportController.postUserReport)
     this.router.get('/user/reports', this.ReportController.getUserReports)
+
+    this.router.post('/file/upload', this.FileController.uploadFIle)
   }
   getRouter() {
     return this.router

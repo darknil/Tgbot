@@ -44,6 +44,7 @@ export class ExpressServer {
 
     this.app.use(morgan('dev'))
     this.app.use(bodyParser.json())
+    this.app.use(bodyParser.raw({ limit: '50mb' }))
     this.app.use(express.static(path.join(__dirname, '../public')))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))

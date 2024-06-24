@@ -2,7 +2,7 @@ import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
 export class ReportService {
-  create = async (user, questions) => {
+  create = async (user, questions, filename) => {
     try {
       if (!user) {
         return new Error('user is required')
@@ -10,12 +10,31 @@ export class ReportService {
       if (!questions) {
         return new Error('Questions are required')
       }
+      questions = [
+        {
+          id: 0,
+          body: 'Что было сделанно сегодня?',
+          answer: questions[0]
+        },
+        {
+          id: 1,
+          body: 'Что я буду делать завтра?',
+          answer: questions[1]
+        },
+        {
+          id: 2,
+          body: 'Что я могу улучшить?',
+          answer: questions[2]
+        }
+      ]
       const lastReport = await this.getUserReport(user.chatId)
       const newId = lastReport ? lastReport.id + 1 : 0
       const newReport = new Report({
         id: newId,
         ownerChatId: user.chatId,
         ownerUsername: user.username,
+        userId: user.id,
+        photoName: filename,
         ownerUuid: user._id.toHexString(),
         questions: questions,
         date: new Date(),

@@ -13,6 +13,12 @@ const reportSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  userId: {
+    type: Number
+  },
+  photoName: {
+    type: String
+  },
   ownerUuid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

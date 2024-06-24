@@ -58,7 +58,7 @@ export class ReportService {
       if (dayIndex === undefined || dayIndex === null) {
         return new Error('Day index is required')
       }
-      dayIndex = parseInt(dayIndex) - 1
+      dayIndex = parseInt(dayIndex)
 
       const startDateObject = startDay
       const targetDate = new Date(startDateObject)

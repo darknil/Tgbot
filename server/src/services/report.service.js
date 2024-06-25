@@ -27,7 +27,7 @@ export class ReportService {
           answer: questions[2]
         }
       ]
-      const lastReport = await this.getUserReport(user.chatId)
+      const lastReport = await Report.findOne().sort({ id: -1 }).exec()
       const newId = lastReport ? lastReport.id + 1 : 0
       const newReport = new Report({
         id: newId,

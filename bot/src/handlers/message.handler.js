@@ -26,7 +26,7 @@ export class MessageHandler {
       if (isParticipant) {
         this.bot.sendPhoto(
           chatId,
-          'https://3123703-of06570.twc1.net/images/Frame 19.png',
+          'https://3123703-of06570.twc1.net/images/Frame19.png',
           {
             caption: 'messages.startMessage',
             ...keyboards.startKeyboard

@@ -11,10 +11,13 @@ export class CommandHandler {
       const chatId = msg.chat.id || msg.from.id
       const isParticipant = await this.ChannelService.isMember(chatId)
       if (isParticipant) {
-        this.bot.sendMessage(
+        this.bot.sendPhoto(
           chatId,
-          'Welcome to our bot',
-          keyboards.startKeyboard
+          'https://3123703-of06570.twc1.net/images/Frame19.png',
+          {
+            caption: 'Путь к твоей вершине начинается здесь',
+            ...keyboards.startKeyboard
+          }
         )
       } else {
         this.bot.sendMessage(chatId, 'Hello, welcome to the bot!', keyboards)

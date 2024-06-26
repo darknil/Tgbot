@@ -4,7 +4,7 @@ export const keyboards = {
       inline_keyboard: [
         [
           {
-            text: 'мини приложение',
+            text: 'Запустить',
             web_app: { url: process.env.DOMAIN }
           }
         ]

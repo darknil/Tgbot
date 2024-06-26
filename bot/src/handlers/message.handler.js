@@ -2,6 +2,7 @@ import { keyboards } from '../config/keyboards.config.js'
 import { ChannelService } from '../services/channel.service.js'
 import isAdmin from '../services/isAdmin.js'
 import { KickUserFromChannel } from '../services/kickUserFromChannel.js'
+import fs from 'fs'
 export class MessageHandler {
   constructor(bot) {
     this.bot = bot
@@ -23,10 +24,13 @@ export class MessageHandler {
       }
       const isParticipant = await this.ChannelService.isMember(chatId)
       if (isParticipant) {
-        this.bot.sendMessage(
+        this.bot.sendPhoto(
           chatId,
-          'Welcome to our bot',
-          keyboards.startKeyboard
+          'https://3123703-of06570.twc1.net/images/Frame 19.png',
+          {
+            caption: 'messages.startMessage',
+            ...keyboards.startKeyboard
+          }
         )
         const Admin = isAdmin(chatId)
         if (Admin) {

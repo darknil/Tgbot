@@ -28,7 +28,7 @@ export class MessageHandler {
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
           {
-            caption: 'messages.startMessage',
+            caption: 'Путь к твоей вершине начинается здесь',
             ...keyboards.startKeyboard
           }
         )

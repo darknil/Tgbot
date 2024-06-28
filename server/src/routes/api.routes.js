@@ -4,7 +4,7 @@ import { DaysController } from '../controllers/days.controller.js'
 import { AuthController } from '../controllers/auth.controller.js'
 import { FileController } from '../controllers/file.controller.js'
 export class ApiRouter {
-  constructor(app, controller) {
+  constructor() {
     this.ReportController = new ReportController()
     this.DaysController = new DaysController()
     this.AuthController = new AuthController()

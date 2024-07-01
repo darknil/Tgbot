@@ -20,10 +20,14 @@ const generateSecretKey = (botToken) => {
 }
 
 const calculateHash = (dataCheckString, secretKey) => {
-  return crypto
+  const hash = crypto
     .createHmac('sha256', secretKey)
     .update(dataCheckString)
     .digest('hex')
+
+  console.log('Generated hash:', hash) // Output the generated hash to the console
+
+  return hash
 }
 
 const verifyData = async (data, botToken) => {

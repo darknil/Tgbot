@@ -58,7 +58,7 @@ export class ReportController {
     }
   }
 
-  postUserReport = async (req, res) => {
+  postUserReport = async (req, res) => { //// Добавить проверку на существование отчета и обновлять его если существует. Перенести добавление фотографии отчёта в другой контроллер.
     try {
       req.filename = `image-${Date.now()}`
       upload.single('photo')(req, res, async (err) => {

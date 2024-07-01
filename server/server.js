@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { ApiRouter } from './src/routes/api.routes.js'
+import { TestRoute } from './src/routes/test.routes.js'
 import { scheduleCloseReports } from './src/cron/cronJob.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -13,6 +14,7 @@ export class ExpressServer {
   constructor(port) {
     this.app = express()
     this.api = new ApiRouter(this.app)
+    this.test = new TestRoute(this.app)
     this.setupMiddleware()
     this.setupRoutes()
     this.startServer(port)
@@ -32,7 +34,7 @@ export class ExpressServer {
       res.sendFile(path.join(publicPath, 'index.html'))
     })
     this.app.use('/api', this.api.getRouter())
-
+    this.app.use('/test', this.test.getRouter())
     // Serve notfound.html for all other routes (404 Not Found)
     this.app.use((req, res) => {
       const publicPath = path.resolve(__dirname, '../public')
@@ -44,7 +46,6 @@ export class ExpressServer {
 
     this.app.use(morgan('dev'))
     this.app.use(bodyParser.json())
-    this.app.use(bodyParser.raw({ limit: '50mb' }))
     this.app.use(express.static(path.join(__dirname, '../public')))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))

@@ -5,6 +5,12 @@ const TransactionSchema = new mongoose.Schema({
   },
   email: {
     type: String
+  },
+  userChatId: {
+    type: String
+  },
+  paid: {
+    type: Boolean
   }
 })
 const Transaction = mongoose.model('Transaction', TransactionSchema)

@@ -72,10 +72,10 @@ export class AuthController {
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      // const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
-      // if (!isValidUser) {
-      //   return ResponseService.unauthorized(res, 'Invalid user data')
-      // }
+      const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
+      if (!isValidUser) {
+        return ResponseService.unauthorized(res, 'Invalid user data')
+      }
       const isMember = await this.ChannelService.isMember(userData.user.id)
       if (!isMember) {
         return this.ResponseService.unauthorized(res, 'User is not a member') /// сделать условие наличия пользователя в базе данных и проверку isbanned

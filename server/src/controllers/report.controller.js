@@ -69,6 +69,9 @@ export class ReportController {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
       const { question1, question2, question3 } = req.body
+      console.log('question1 :', question1)
+      console.log('question2 :', question2)
+      console.log('question3 :', question3)
       const questions = [question1, question2, question3]
       if (questions.includes(undefined)) {
         return this.ResponseService.badRequest(res, 'Missing questions fields')

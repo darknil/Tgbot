@@ -9,7 +9,7 @@ const TransactionSchema = new mongoose.Schema({
   userChatId: {
     type: String
   },
-  paid: {
+  isPaid: {
     type: Boolean
   }
 })

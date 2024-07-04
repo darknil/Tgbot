@@ -2,7 +2,7 @@ import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
 export class ReportService {
-  create = async (user, questions, filename) => {
+  create = async (user, questions) => {
     try {
       if (!user) {
         return new Error('user is required')
@@ -34,7 +34,6 @@ export class ReportService {
         ownerChatId: user.chatId,
         ownerUsername: user.username,
         userId: user.id,
-        photoName: filename,
         ownerUuid: user._id.toHexString(),
         questions: questions,
         date: new Date(),

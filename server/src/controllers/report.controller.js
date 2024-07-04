@@ -70,7 +70,7 @@ export class ReportController {
       }
       const { question1, question2, question3 } = req.body
       const questions = [question1, question2, question3]
-      if (!questions) {
+      if (questions.includes(undefined)) {
         return this.ResponseService.badRequest(res, 'Missing questions fields')
       }
       const user = await this.UserService.getUser(decoded.user.chatId)
@@ -84,12 +84,13 @@ export class ReportController {
         decoded.user.chatId
       )
       if (existedReport) {
-        return this.ResponseService.badRequest(res, 'report already exists')
+        await this.ReportService.deleteReport(existedReport.id)
       }
       const report = await this.ReportService.create(user, questions)
       if (!report) {
         return this.ResponseService.badRequest(res, 'Error creating report')
       }
+      console.log('created report', report)
       return this.ResponseService.success(res, report.id)
     } catch (error) {
       console.log('post user report error', error)

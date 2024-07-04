@@ -5,52 +5,48 @@ export class ReportService {
   create = async (user, questions) => {
     try {
       if (!user) {
-        return new Error('user is required')
+        throw new Error('User is required')
       }
-      if (!questions) {
-        return new Error('Questions are required')
+      if (!questions || questions.length < 3) {
+        throw new Error('Three questions are required')
       }
-      questions = [
-        {
-          id: 0,
-          body: 'Что было сделанно сегодня?',
-          answer: questions[0]
-        },
-        {
-          id: 1,
-          body: 'Что я буду делать завтра?',
-          answer: questions[1]
-        },
-        {
-          id: 2,
-          body: 'Что я могу улучшить?',
-          answer: questions[2]
+
+      const formattedQuestions = questions.map((answer, index) => {
+        const bodies = [
+          'Что было сделано сегодня?',
+          'Что я буду делать завтра?',
+          'Что я могу улучшить?'
+        ]
+        return {
+          id: index,
+          body: bodies[index],
+          answer: answer
         }
-      ]
+      })
+
       const lastReport = await Report.findOne().sort({ id: -1 }).exec()
       const newId = lastReport ? lastReport.id + 1 : 0
+
       const newReport = new Report({
         id: newId,
         ownerChatId: user.chatId,
         ownerUsername: user.username,
         userId: user.id,
         ownerUuid: user._id.toHexString(),
-        questions: questions,
+        questions: formattedQuestions,
         date: new Date(),
         isClosed: false
       })
+
       const savedReport = await newReport.save()
       return savedReport
     } catch (error) {
-      console.log('create user report error', error)
+      console.error('Create user report error:', error)
       return false
     }
   }
   async updateReportField(id, field, value) {
     try {
-      if (!id || !field || !value) {
-        return new Error('id, field and value are required')
-      }
       const result = await Report.updateOne(
         {
           id: id
@@ -188,6 +184,17 @@ export class ReportService {
       return report
     } catch (error) {
       console.log('get report by id error', error)
+    }
+  }
+  async deleteReport(id) {
+    try {
+      const result = await Report.deleteOne({ id: id })
+      if (!result) {
+        return false
+      }
+      return result
+    } catch (error) {
+      console.log('delete report error', error)
     }
   }
 }

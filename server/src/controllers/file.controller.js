@@ -66,12 +66,7 @@ export class FileController {
           'photoUrl',
           publicUrl
         )
-        res
-          .status(200)
-          .send({
-            message: 'File uploaded and added to report successfully',
-            publicUrl
-          })
+        return this.ResponseService.success(res, publicUrl)
       } catch (error) {
         console.error('Error uploading file:', error)
         res.status(500).send('Error uploading file')

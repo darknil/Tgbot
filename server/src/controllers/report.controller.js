@@ -59,65 +59,38 @@ export class ReportController {
   }
 
   postUserReport = async (req, res) => {
-    //// Добавить проверку на существование отчета и обновлять его если существует. Перенести добавление фотографии отчёта в другой контроллер.
     try {
-      req.filename = `image-${Date.now()}`
-      upload.single('photo')(req, res, async (err) => {
-        if (err) {
-          if (err.code === 'LIMIT_FILE_SIZE') {
-            return this.ResponseService.badRequest(
-              res,
-              'The file size exceeds the maximum limit'
-            )
-          }
-          console.error('Ошибка загрузки файла:', err)
-          return this.ResponseService.error(res, 'error loading file')
-        }
-        const token = req.headers.authorization
-        if (!token) {
-          return this.ResponseService.unauthorized(res, 'No token provided')
-        }
-        const decoded = this.JwtService.verifyToken(token)
-        if (!decoded) {
-          return this.ResponseService.unauthorized(res, 'Invalid token')
-        }
-        const { question1, question2, question3 } = req.body
-        const questions = [question1, question2, question3]
-        console.log('questions :', questions)
-
-        if (!questions) {
-          return this.ResponseService.badRequest(
-            res,
-            'Missing questions fields'
-          )
-        }
-        const user = await this.UserService.getUser(decoded.user.chatId)
-        if (!user) {
-          return this.ResponseService.unauthorized(
-            res,
-            'User not found in database'
-          )
-        }
-        const existedReport = await this.ReportService.getUserReport(
-          decoded.user.chatId
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
+      }
+      const decoded = this.JwtService.verifyToken(token)
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const { question1, question2, question3 } = req.body
+      const questions = [question1, question2, question3]
+      if (!questions) {
+        return this.ResponseService.badRequest(res, 'Missing questions fields')
+      }
+      const user = await this.UserService.getUser(decoded.user.chatId)
+      if (!user) {
+        return this.ResponseService.unauthorized(
+          res,
+          'User not found in database'
         )
-        if (existedReport) {
-          return this.ResponseService.badRequest(res, 'report already exists ')
-        }
-        const filename = `${req.filename}.jpg`
-        const report = await this.ReportService.create(
-          user,
-          questions,
-          filename
-        )
-        if (!report) {
-          return this.ResponseService.badRequest(res, 'Error creating report')
-        }
-        return this.ResponseService.success(res, report.id)
-        // Логика обработки данных (например, сохранение в базе данных)
-
-        // Отправка ответа клиенту
-      })
+      }
+      const existedReport = await this.ReportService.getUserReport(
+        decoded.user.chatId
+      )
+      if (existedReport) {
+        return this.ResponseService.badRequest(res, 'report already exists')
+      }
+      const report = await this.ReportService.create(user, questions)
+      if (!report) {
+        return this.ResponseService.badRequest(res, 'Error creating report')
+      }
+      return this.ResponseService.success(res, report.id)
     } catch (error) {
       console.log('post user report error', error)
       return this.ResponseService.error(res, 'Error creating report')

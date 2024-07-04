@@ -19,6 +19,9 @@ const reportSchema = new mongoose.Schema({
   photoName: {
     type: String
   },
+  photoUrl: {
+    type: String
+  },
   ownerUuid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

@@ -29,7 +29,10 @@ export class ApiRouter {
     this.router.post('/user/report', this.ReportController.postUserReport)
     this.router.get('/user/reports', this.ReportController.getUserReports)
 
-    this.router.post('/file/upload', this.FileController.uploadFIle)
+    this.router.post(
+      '/file/:reportId/image',
+      this.FileController.uploadReportImage
+    )
   }
   getRouter() {
     return this.router

@@ -10,13 +10,14 @@ import 'dotenv/config'
 
 import { ReportService } from '../services/report.service.js'
 import { ResponseService } from '../services/response.service.js'
-
+import { JwtService } from '../services/jwt.service.js'
 const bucketName = process.env.AWS_BUCKET_NAME
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export class FileController {
   constructor() {
+    this.JwtService = new JwtService()
     this.ReportService = new ReportService()
     this.ResponseService = new ResponseService()
   }

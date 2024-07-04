@@ -46,7 +46,7 @@ export class FileController {
       if (!report) {
         return this.ResponseService.notFound(res, 'Report not found')
       }
-      const originalFilename = `report_${reportId}_fullsize.jpg`
+      const originalFilename = `${Date.now()}_report_${reportId}_fullsize.jpg`
 
       try {
         const uploaded = await this.uploadOriginalToStorage(

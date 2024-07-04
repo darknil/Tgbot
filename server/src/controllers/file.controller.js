@@ -33,7 +33,7 @@ export class FileController {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
 
-      const uploadSingle = promisify(upload.single('image'))
+      const uploadSingle = promisify(upload.single('photo'))
       await uploadSingle(req, res)
 
       if (!req.file) {

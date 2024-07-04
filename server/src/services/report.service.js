@@ -49,6 +49,20 @@ export class ReportService {
   }
   async updateReportField(id, field, value) {
     try {
+      if (!id || !field || !value) {
+        return new Error('id, field and value are required')
+      }
+      const result = await Report.updateOne(
+        {
+          id: id
+        },
+        {
+          $set: {
+            [field]: value
+          }
+        }
+      )
+      return result
     } catch (error) {
       console.log('update user field error', error)
     }
@@ -164,6 +178,17 @@ export class ReportService {
     } catch (error) {
       console.log('get last day reports error', error)
       return false
+    }
+  }
+  async getReportById(id) {
+    try {
+      const report = await Report.find({ id: id })
+      if (!report) {
+        return false
+      }
+      return report
+    } catch (error) {
+      console.log('get report by id error', error)
     }
   }
 }

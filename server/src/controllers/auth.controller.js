@@ -74,7 +74,7 @@ export class AuthController {
       }
       // const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
       // if (!isValidUser) {
-      //   return this.ResponseService.unauthorized(res, 'Invalid user data')
+      //     return this.ResponseService.unauthorized(res, 'Invalid user data')
       // }
       const isMember = await this.ChannelService.isMember(userData.user.id)
       if (!isMember) {

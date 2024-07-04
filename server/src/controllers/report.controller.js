@@ -58,7 +58,8 @@ export class ReportController {
     }
   }
 
-  postUserReport = async (req, res) => { //// Добавить проверку на существование отчета и обновлять его если существует. Перенести добавление фотографии отчёта в другой контроллер.
+  postUserReport = async (req, res) => {
+    //// Добавить проверку на существование отчета и обновлять его если существует. Перенести добавление фотографии отчёта в другой контроллер.
     try {
       req.filename = `image-${Date.now()}`
       upload.single('photo')(req, res, async (err) => {
@@ -112,7 +113,7 @@ export class ReportController {
         if (!report) {
           return this.ResponseService.badRequest(res, 'Error creating report')
         }
-        return this.ResponseService.success(res)
+        return this.ResponseService.success(res, report.id)
         // Логика обработки данных (например, сохранение в базе данных)
 
         // Отправка ответа клиенту

@@ -2,29 +2,23 @@ import { ReportService } from '../services/report.service.js'
 import { ResponseService } from '../services/response.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { UnbanUserFromChannel } from '../../../bot/src/services/unbanUserFromChannel.js'
+import { InvoiceDTO } from '../dtos/invoice.dto.js'
+import { ApiService } from '../services/api.service.js'
 export class TestController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
     this.UnbanUserFromChannel = new UnbanUserFromChannel(botInstance)
     this.ResponseService = new ResponseService()
     this.ReportService = new ReportService()
+    this.ApiService = new ApiService()
   }
   getTest = async (req, res) => {
     try {
-      // this.UnbanUserFromChannel.unbanUser(628175854)
-      // this.ResponseService.success(res, 'Unbanned user')
-      const report = await this.ReportService.getReportById(0)
-      if (!report) {
-        return this.ResponseService.notFound(res, 'Report not found')
-      }
-      console.log('report :', report)
-      const updated = await this.ReportService.updateReportField(
-        0,
-        'photoUrl',
-        'test'
-      )
-      console.log('updated :', updated)
-      this.ResponseService.success(res, updated)
+      const email = 'test@test.test'
+
+      const invoiceDTO = new InvoiceDTO(email)
+      const invoice = await this.ApiService.requestInvoice(requestedInvoice)
+      this.ResponseService.success(res, 'test')
     } catch (error) {
       console.log('get test error', error)
     }

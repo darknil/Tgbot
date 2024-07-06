@@ -20,6 +20,7 @@ export class ApiService {
       console.log('RequestInvoice response:', response.data)
       return response.data
     } catch (error) {
+      console.log('RequestInvoice error:', error)
       console.log('RequestInvoice error writed to logger')
       logger.error(error)
       return false

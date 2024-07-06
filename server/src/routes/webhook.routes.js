@@ -7,7 +7,7 @@ export class WebHookRouter {
     this.setupRoutes()
   }
   setupRoutes() {
-    this.router.get('/', this.WebHookController.handleWebHook)
+    this.router.post('/', this.WebHookController.handleWebHook)
   }
   getRouter() {
     return this.router

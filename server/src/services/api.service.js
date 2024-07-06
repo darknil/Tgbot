@@ -27,7 +27,7 @@ export class ApiService {
 
       return response.data
     } catch (error) {
-      console.error('RequestInvoice error:', error.data)
+      console.error('RequestInvoice error:', error.response)
       // Log the error using the errorLogger
       errorLogger.error(error.message, { stack: error.stack })
       dataLogger.error('RequestInvoice error:', {

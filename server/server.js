@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { ApiRouter } from './src/routes/api.routes.js'
+import { WebHookRouter } from './src/routes/webhook.routes.js'
 import { TestRoute } from './src/routes/test.routes.js'
 import { scheduleCloseReports } from './src/cron/cronJob.js'
 const __filename = fileURLToPath(import.meta.url)
@@ -14,6 +15,7 @@ export class ExpressServer {
   constructor(port) {
     this.app = express()
     this.api = new ApiRouter(this.app)
+    this.webhook = new WebHookRouter(this.app)
     this.test = new TestRoute(this.app)
     this.setupMiddleware()
     this.setupRoutes()
@@ -35,6 +37,7 @@ export class ExpressServer {
     })
     this.app.use('/api', this.api.getRouter())
     this.app.use('/test', this.test.getRouter())
+    this.app.use('/webhook', this.webhook.getRouter())
     // Serve notfound.html for all other routes (404 Not Found)
     this.app.use((req, res) => {
       const publicPath = path.resolve(__dirname, '../public')

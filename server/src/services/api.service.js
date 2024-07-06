@@ -1,25 +1,29 @@
-import { api, apiSchema } from '../models/apiKey.model.js'
-import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios'
+import 'dotenv/config'
 export class ApiService {
-  async generate() {
-    try {
-      const key = uuidv4()
-      const newApiKey = new api({ id: Date.now(), key })
-      await newApiKey.save()
-      return { key }
-    } catch (error) {
-      console.log('generate api key error :', error)
-    }
+  constructor() {
+    this.apiUrl = process.env.LAVA_TOP_URL
+    this.apiKey = process.env.LAVA_TOP_API_KEY
   }
-  async verify(key) {
+  async requestInvoice(transactionData) {
     try {
-      const apiKey = await api.findOne({ key })
-      if (!apiKey) {
-        return { valid: false, message: 'Invalid API key' }
+      const headers = {
+        Authorization: `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
       }
-      return { valid: true, message: 'Access granted' }
+      const response = await axios.post(
+        `${this.apiUrl}/api/v2/invoice`,
+        transactionData,
+        { headers }
+      )
+      console.log('RequestInvoice response:', response.data)
+      return response.data
     } catch (error) {
-      console.log('verify api key error :', error)
+      console.log(
+        'RequestInvoice error:',
+        error.response ? error.response.data : error.message
+      )
+      return false
     }
   }
 }

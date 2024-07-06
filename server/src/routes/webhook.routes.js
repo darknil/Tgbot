@@ -1,13 +1,13 @@
 import express from 'express'
+import { WebHookController } from '../controllers/webhook.controller'
 export class WebHookRouter {
-  constructor(app, controller) {
+  constructor() {
+    this.WebHookController = new WebHookController()
     this.router = express.Router()
     this.setupRoutes()
   }
   setupRoutes() {
-    this.router.get('/', (req, res) => {
-      res.send('Hello from WebHook')
-    })
+    this.router.get('/', this.WebHookController.handleWebHook)
   }
   getRouter() {
     return this.router

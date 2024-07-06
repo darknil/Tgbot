@@ -1,6 +1,6 @@
 import axios from 'axios'
 import 'dotenv/config'
-import { logger } from '../logger/logger.js'
+import logger from '../logger/logger.js'
 export class ApiService {
   constructor() {
     this.apiUrl = process.env.LAVA_TOP_URL

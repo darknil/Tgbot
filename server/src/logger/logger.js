@@ -34,11 +34,4 @@ const logger = createLogger({
   ]
 })
 
-// Пример использования логгера с ошибкой
-try {
-  throw new Error('Пример ошибки')
-} catch (error) {
-  logger.error(error.message, { stack: error.stack })
-}
-
 export default logger

@@ -1,9 +1,9 @@
 import 'dotenv/config'
-import { ResponseService } from '../services/response.service'
-import { TransactionService } from '../services/transaction.service'
-import { InvoiceDTO } from '../dtos/invoice.dto'
-import { ApiService } from '../services/api.service'
-import { JwtService } from '../services/jwt.service'
+import { ResponseService } from '../services/response.service.js'
+import { TransactionService } from '../services/transaction.service.js'
+import { InvoiceDTO } from '../dtos/invoice.dto.js'
+import { ApiService } from '../services/api.service.js'
+import { JwtService } from '../services/jwt.service.js'
 export class TransactionController {
   constructor() {
     this.JwtService = new JwtService()

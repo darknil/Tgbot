@@ -1,5 +1,5 @@
-import { ResponseService } from '../services/response.service'
-import { TransactionService } from '../services/transaction.service'
+import { ResponseService } from '../services/response.service.js'
+import { TransactionService } from '../services/transaction.service.js'
 export class WebHookController {
   constructor() {
     this.ResponseService = new ResponseService()

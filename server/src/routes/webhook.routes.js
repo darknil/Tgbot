@@ -1,5 +1,5 @@
 import express from 'express'
-import { WebHookController } from '../controllers/webhook.controller'
+import { WebHookController } from '../controllers/webhook.controller.js'
 export class WebHookRouter {
   constructor() {
     this.WebHookController = new WebHookController()

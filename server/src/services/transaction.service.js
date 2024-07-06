@@ -1,4 +1,4 @@
-import { Transaction } from '../models/transaction.model'
+import { Transaction } from '../models/transaction.model.js'
 export class TransactionService {
   async create(email, userChatId, currency = 'RUB', buyerLanguage = 'RU') {
     try {

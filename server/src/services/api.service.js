@@ -27,13 +27,16 @@ export class ApiService {
 
       return response.data
     } catch (error) {
-      console.error('RequestInvoice error:', error.response.data)
+      console.error('RequestInvoice error:', error)
       // Log the error using the errorLogger
       errorLogger.error(error.message, { stack: error.stack })
-      dataLogger.error('RequestInvoice error:', {
-        errorMessage: error.message,
-        stack: error.stack
-      })
+
+      // Check if the error has a response and log its data
+      if (error.response) {
+        dataLogger.error('RequestInvoice error response data:', {
+          responseData: error.response
+        })
+      }
       return this.Rs
     }
   }

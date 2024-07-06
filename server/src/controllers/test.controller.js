@@ -17,8 +17,8 @@ export class TestController {
       const email = 'test@test.test'
 
       const invoiceDTO = new InvoiceDTO(email)
-      const invoice = await this.ApiService.requestInvoice(requestedInvoice)
-      this.ResponseService.success(res, 'test')
+      const invoice = await this.ApiService.requestInvoice(invoiceDTO)
+      this.ResponseService.success(res, invoice)
     } catch (error) {
       console.log('get test error', error)
     }

@@ -28,6 +28,7 @@ export class TransactionController {
       )
       const requestedInvoice = new InvoiceDTO(email)
       const invoice = await this.ApiService.requestInvoice(requestedInvoice)
+      console.log('invoice :', invoice)
       await this.TransactionService.updateTransactionField(
         createdTransaction.id,
         'contractId',

@@ -14,10 +14,11 @@ export class TestController {
   }
   getTest = async (req, res) => {
     try {
-      const email = 'test@test.test'
+      const email = 'test@test.com'
 
       const invoiceDTO = new InvoiceDTO(email)
       const invoice = await this.ApiService.requestInvoice(invoiceDTO)
+      console.log('invoice', invoice)
       this.ResponseService.success(res, invoice)
     } catch (error) {
       console.log('get test error', error)

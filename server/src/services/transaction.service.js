@@ -27,6 +27,7 @@ export class TransactionService {
         { $set: { [field]: value } },
         { new: true }
       )
+      console.log(`updated filed: ${field} wit value: ${value}`)
       console.log(`Transaction updated: ${updatedTransaction}`)
       return updatedTransaction
     } catch (error) {

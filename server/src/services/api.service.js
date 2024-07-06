@@ -19,22 +19,20 @@ export class ApiService {
         transactionData,
         { headers }
       )
-
       // Log the response data using the dataLogger
       dataLogger.info('RequestInvoice response:', {
         responseData: response.data
       })
-
+      console.log('RequestInvoice response data:', response.data)
       return response.data
     } catch (error) {
-      console.error('RequestInvoice error:', error)
+      console.error('RequestInvoice error:')
       // Log the error using the errorLogger
       errorLogger.error(error.message, { stack: error.stack })
-
       // Check if the error has a response and log its data
       if (error.response) {
         dataLogger.error('RequestInvoice error response data:', {
-          responseData: error.response
+          responseData: error
         })
       }
       return this.Rs

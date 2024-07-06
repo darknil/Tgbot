@@ -1,7 +1,6 @@
 import axios from 'axios'
 import 'dotenv/config'
 import { errorLogger, dataLogger } from '../logger/logger.js'
-
 export class ApiService {
   constructor() {
     this.apiUrl = process.env.LAVA_TOP_URL
@@ -28,14 +27,14 @@ export class ApiService {
 
       return response.data
     } catch (error) {
-      console.error('RequestInvoice error:', error.message)
+      console.error('RequestInvoice error:', error.config)
       // Log the error using the errorLogger
       errorLogger.error(error.message, { stack: error.stack })
       dataLogger.error('RequestInvoice error:', {
         errorMessage: error.message,
         stack: error.stack
       })
-      return false
+      return this.Rs
     }
   }
 }

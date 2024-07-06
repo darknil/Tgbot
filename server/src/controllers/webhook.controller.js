@@ -9,31 +9,33 @@ export class WebHookController {
     try {
       const headers = req.headers
       const data = req.body
-      console.log('webhook headers :', headers)
+
       console.log('webhook data :', data)
-      const transaction = await this.TransactionService.getTransaction(data.id)
+      const transaction = await this.TransactionService.getTransaction(
+        data.contractId
+      )
       if (!transaction) {
         console.log('transaction not found with contractId :', data.contractId)
         return this.ResponseService.notFound(res, 'transaction not found')
       }
       await this.TransactionService.updateTransactionFieldByContracId(
-        data.id,
+        data.contractId,
         'amount',
         data.amount
       )
       await this.TransactionService.updateTransactionFieldByContracId(
-        data.id,
+        data.contractId,
         'status',
         data.status
       )
       await this.TransactionService.updateTransactionFieldByContracId(
-        data.id,
+        data.contractId,
         'timestamp',
         data.timestamp
       )
       const updated =
         await this.TransactionService.updateTransactionFieldByContracId(
-          data.id,
+          data.contractId,
           'isPaid',
           true
         )

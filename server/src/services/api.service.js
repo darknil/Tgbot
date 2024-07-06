@@ -11,7 +11,8 @@ export class ApiService {
     try {
       const headers = {
         Authorization: `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Api-Key': this.apiKey // Добавляем X-Api-Key с вашим ключом
       }
 
       const response = await axios.post(

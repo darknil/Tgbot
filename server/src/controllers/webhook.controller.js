@@ -15,6 +15,7 @@ export class WebHookController {
       )
       if (!transaction) {
         console.log('transaction not found with contractId :', data.contractId)
+        return this.ResponseService.notFound(res, 'transaction not found')
       }
       await this.TransactionService.updateTransactionFieldByContracId(
         data.contractId,

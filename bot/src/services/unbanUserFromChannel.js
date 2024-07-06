@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import logger from '../../../server/src/logger/logger.js'
+import { errorLogger } from '../../../server/src/logger/logger.js'
 export class UnbanUserFromChannel {
   constructor(bot) {
     this.bot = bot

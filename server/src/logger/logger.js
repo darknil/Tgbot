@@ -17,11 +17,14 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir)
 }
 
-// Путь к файлу логов
-const logFilePath = path.join(logDir, 'error.log')
+// Путь к файлу логов для ошибок
+const errorLogFilePath = path.join(logDir, 'error.log')
 
-// Создание логгера
-const logger = createLogger({
+// Путь к файлу логов для данных
+const dataLogFilePath = path.join(logDir, 'data.log')
+
+// Создание логгера для ошибок
+const errorLogger = createLogger({
   level: 'error', // Уровень логирования (error)
   format: combine(
     timestamp(), // Добавление временной метки
@@ -30,8 +33,21 @@ const logger = createLogger({
   ),
   transports: [
     // Транспорт для записи логов в файл
-    new transports.File({ filename: logFilePath, level: 'error' })
+    new transports.File({ filename: errorLogFilePath, level: 'error' })
   ]
 })
 
-export default logger
+// Создание логгера для данных
+const dataLogger = createLogger({
+  level: 'info', // Уровень логирования (info)
+  format: combine(
+    timestamp(), // Добавление временной метки
+    myFormat // Использование пользовательского формата
+  ),
+  transports: [
+    // Транспорт для записи логов в файл
+    new transports.File({ filename: dataLogFilePath, level: 'info' })
+  ]
+})
+
+export { errorLogger, dataLogger }

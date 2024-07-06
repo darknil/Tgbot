@@ -31,6 +31,10 @@ export class ApiService {
       console.error('RequestInvoice error:', error.message)
       // Log the error using the errorLogger
       errorLogger.error(error.message, { stack: error.stack })
+      dataLogger.error('RequestInvoice error:', {
+        errorMessage: error.message,
+        stack: error.stack
+      })
       return false
     }
   }

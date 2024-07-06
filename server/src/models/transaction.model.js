@@ -25,7 +25,7 @@ const TransactionSchema = new mongoose.Schema({
     type: String
   },
   userChatId: {
-    type: String
+    type: Number
   },
   isPaid: {
     type: Boolean,

@@ -22,17 +22,19 @@ export class TransactionController {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
       const { email, userChatId } = req.body
+      if (!email.endsWith('.com')) {
+        return this.ResponseService.badRequest(res, 'Invalid email format')
+      }
       const createdTransaction = await this.TransactionService.create(
         email,
         userChatId
       )
       const requestedInvoice = new InvoiceDTO(email)
       const invoice = await this.ApiService.requestInvoice(requestedInvoice)
-      console.log('invoice :', invoice)
       await this.TransactionService.updateTransactionField(
         createdTransaction.id,
         'contractId',
-        invoice.contractId
+        invoice.id
       )
       await this.TransactionService.updateTransactionField(
         createdTransaction.id,

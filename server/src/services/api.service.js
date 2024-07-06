@@ -23,7 +23,6 @@ export class ApiService {
       dataLogger.info('RequestInvoice response:', {
         responseData: response.data
       })
-      console.log('RequestInvoice response data:', response.data)
       return response.data
     } catch (error) {
       console.error('RequestInvoice error:')

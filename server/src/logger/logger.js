@@ -1,21 +1,31 @@
-import { createLogger, format, transports } from 'winston'
+import fs from 'fs'
 import path from 'path'
+import { createLogger, format, transports } from 'winston'
 
 const { combine, timestamp, printf } = format
 
 // Формат для вывода логов
-const myFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} [${level}]: ${message}`
+const myFormat = printf(({ level, message, timestamp, stack }) => {
+  return `${timestamp} [${level}]: ${message} ${
+    stack ? `\nStack: ${stack}` : ''
+  }`
 })
 
-// Путь к файлу логов
-const logFilePath = path.resolve('logs/error.log')
+// Убедитесь, что директория 'logs' существует
+const logDir = path.resolve('logs')
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir)
+}
 
-// Создание логера
+// Путь к файлу логов
+const logFilePath = path.join(logDir, 'error.log')
+
+// Создание логгера
 const logger = createLogger({
   level: 'error', // Уровень логирования (error)
   format: combine(
     timestamp(), // Добавление временной метки
+    format.errors({ stack: true }), // Включение стека ошибок
     myFormat // Использование пользовательского формата
   ),
   transports: [
@@ -23,5 +33,12 @@ const logger = createLogger({
     new transports.File({ filename: logFilePath, level: 'error' })
   ]
 })
+
+// Пример использования логгера с ошибкой
+try {
+  throw new Error('Пример ошибки')
+} catch (error) {
+  logger.error(error.message, { stack: error.stack })
+}
 
 export default logger

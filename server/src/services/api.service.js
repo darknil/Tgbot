@@ -10,7 +10,6 @@ export class ApiService {
   async requestInvoice(transactionData) {
     try {
       const headers = {
-        Authorization: `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
         'X-Api-Key': this.apiKey // Добавляем X-Api-Key с вашим ключом
       }

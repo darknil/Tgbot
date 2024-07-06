@@ -7,9 +7,10 @@ export class WebHookController {
   }
   handleWebHook = async (req, res) => {
     try {
+      const headers = req.headers
       const data = req.body
-      console.log('invoice webhook :', data)
-      console.log('ivoice buyer :', data.buyer)
+      console.log('webhook headers :', headers)
+      console.log('webhook data :', data)
       const transaction = await this.TransactionService.getTransaction(data.id)
       if (!transaction) {
         console.log('transaction not found with contractId :', data.contractId)

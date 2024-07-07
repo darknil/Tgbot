@@ -1,9 +1,19 @@
 import { ResponseService } from '../services/response.service.js'
 import { TransactionService } from '../services/transaction.service.js'
+import { ChannelService } from '../../../bot/src/services/channel.service.js'
+import { UnbanUserFromChannel } from '../../../bot/src/services/unbanUserFromChannel.js'
+import { MessageService } from '../../../bot/src/services/message.service.js'
+import { UserService } from '../services/user.service.js'
+import { TgBot } from '../../../bot/bot.js'
 export class WebHookController {
   constructor() {
+    const botInstance = TgBot.getBotInstance()
     this.ResponseService = new ResponseService()
     this.TransactionService = new TransactionService()
+    this.ChannelService = new ChannelService(botInstance)
+    this.UnbanUserFromChannel = new UnbanUserFromChannel(botInstance)
+    this.MessageService = new MessageService(botInstance)
+    this.UserService = new UserService()
   }
   handleWebHook = async (req, res) => {
     try {
@@ -39,7 +49,16 @@ export class WebHookController {
           'isPaid',
           true
         )
-      console.log('updated transaction :', updated)
+      const user = await this.UserService.getUser(updated.userChatId)
+      if (user.isBanned) {
+        await this.UserService.updateUserField(user.chatId, 'isBanned', false)
+        await this.UnbanUserFromChannel.unbanUser(user.chatId)
+      }
+      const link = await this.ChannelService.createInviteLink()
+      await this.MessageService.SendMessageToUser(
+        user.chatId,
+        `Your payment has been received successfully. You can now join the channel and start using the bot. ${link}`
+      )
       return this.ResponseService.success(res, 'webhook received')
     } catch (error) {
       console.log('handle webhook error :', error)

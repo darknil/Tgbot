@@ -52,6 +52,12 @@ export class ChannelService {
   }
   async createInviteLink() {
     try {
+      const chatId = process.env.TG_CHANNEL
+      const inviteLink = await this.bot.createChatInviteLink(chatId, {
+        expire_date: Math.floor(Date.now() / 1000) + 60 * 60,
+        member_limit: 1
+      })
+      return inviteLink
     } catch (error) {
       console.log('')
     }

@@ -1,10 +1,15 @@
-import validateUserData from '../utils/userValidator.js'
 import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { ResponseService } from '../services/response.service.js'
 import { UserService } from '../services/user.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
+import TelegramHashChecker from '../utils/TelegramHashChecker.js'
+
+const validateUserData = async (userData, botToken) => {
+  const checker = new TelegramHashChecker(botToken)
+  return checker.verifyHash(userData)
+}
 export class AuthController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -72,14 +77,14 @@ export class AuthController {
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      // const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
-      // if (!isValidUser) {
-      //     return this.ResponseService.unauthorized(res, 'Invalid user data')
-      // }
-      const isMember = await this.ChannelService.isMember(userData.user.id)
-      if (!isMember) {
-        return this.ResponseService.unauthorized(res, 'User is not a member') /// сделать условие наличия пользователя в базе данных и проверку isbanned
+      const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
+      if (!isValidUser) {
+        return this.ResponseService.unauthorized(res, 'Invalid user data')
       }
+      // const isMember = await this.ChannelService.isMember(userData.user.id)
+      // if (!isMember) {
+      //   return this.ResponseService.unauthorized(res, 'User is not a member') /// сделать условие наличия пользователя в базе данных и проверку isbanned
+      // }
       let user
       try {
         user = await this.findOrCreateUser(userData)

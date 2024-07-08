@@ -6,12 +6,18 @@ import crypto from 'crypto'
  * @returns {string} Строка проверки данных.
  */
 export function generateDataCheckString(data) {
-  // Получаем отсортированные ключи объекта данных
-  const keys = Object.keys(data).sort()
+  // Используем Object.entries(data), чтобы получить массив [key, value] для каждой пары в объекте data
+  const entries = Object.entries(data)
+
+  // Сортируем массив [key, value] по ключам (элемент [0] в массиве)
+  entries.sort((a, b) => a[0].localeCompare(b[0]))
 
   // Формируем строку проверки данных в формате key=value с разделителем \n
-  const dataCheckString = keys.map((key) => `${key}=${data[key]}`).join('\n')
+  const dataCheckString = entries
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n')
 
+  console.log('Data check string:', dataCheckString)
   return dataCheckString
 }
 

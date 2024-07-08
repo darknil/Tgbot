@@ -58,7 +58,7 @@ export class WebHookController {
       console.log('link :', link)
       await this.MessageService.SendMessageToUser(
         user.chatId,
-        `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link}`
+        `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
       )
       return this.ResponseService.success(res, 'webhook received')
     } catch (error) {

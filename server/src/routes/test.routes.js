@@ -16,7 +16,7 @@ export class TestRoute {
     this.router.get('/', (req, res) => {
       res.send('Hello from test route')
     })
-    this.router.get('/test', this.TransactionController.createTransaction)
+    this.router.get('/test', this.TestController.getTest)
   }
   getRouter() {
     return this.router

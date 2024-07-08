@@ -6,7 +6,8 @@ import { TgBot } from '../../../bot/bot.js'
 import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
 
 import { validateTelegramData } from '../utils/TelegramHashChecker.js'
-
+import 'dotenv/config'
+const botToken = process.env.TG_TOKEN
 export class AuthController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -74,7 +75,7 @@ export class AuthController {
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      const isValidData = validateTelegramData(initData, botToken)
+      const isValidData = validateTelegramData(userData, botToken)
       if (!isValidData) {
         return this.ResponseService.unauthorized(res, 'Invalid user data')
       }

@@ -4,6 +4,7 @@ import { DaysController } from '../controllers/days.controller.js'
 import { AuthController } from '../controllers/auth.controller.js'
 import { FileController } from '../controllers/file.controller.js'
 import { TransactionController } from '../controllers/transaction.controller.js'
+import { TestController } from '../controllers/test.controller.js'
 export class ApiRouter {
   constructor() {
     this.ReportController = new ReportController()
@@ -11,6 +12,7 @@ export class ApiRouter {
     this.AuthController = new AuthController()
     this.FileController = new FileController()
     this.TransactionController = new TransactionController()
+    this.TestController = new TestController()
     this.router = express.Router()
     this.setupRoutes()
   }
@@ -41,6 +43,8 @@ export class ApiRouter {
       '/transaction',
       this.TransactionController.createTransaction
     )
+
+    this.router.post('/test/test', this.TestController.getTest)
   }
   getRouter() {
     return this.router

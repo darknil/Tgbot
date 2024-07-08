@@ -8,9 +8,7 @@ export class TestRoute {
     this.TestController = new TestController()
     this.router = express.Router()
     this.mode = process.env.DEVMODE
-    // if (this.mode === 'dev') {
-    //   this.setupRoutes()
-    // }
+    this.setupRoutes()
   }
   setupRoutes() {
     this.router.get('/', (req, res) => {

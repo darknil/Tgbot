@@ -63,6 +63,7 @@ export function generateSignature(dataCheckString, secretKey) {
  */
 export function validateTelegramData(data, botToken) {
   const receivedHash = data.hash
+  console.log('received data :', data)
   console.log('receivedHash :', receivedHash)
   const dataCheckString = generateDataCheckString(data)
   const secretKey = generateSecretKey(botToken)

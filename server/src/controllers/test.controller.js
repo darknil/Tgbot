@@ -15,14 +15,9 @@ export class TestController {
   }
   getTest = async (req, res) => {
     try {
-      const chatId = 628175854
-      const link = await this.ChannelService.createInviteLink()
-      console.log('link', link.invite_link)
-      await this.MessageService.SendMessageToUser(
-        chatId,
-        `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
-      )
-      this.ResponseService.success(res, link.invite_link)
+      const data = req.headers.Authorization
+      console.log('initdata :', data)
+      this.ResponseService.success(res, 'success')
     } catch (error) {
       console.log('get test error', error)
     }

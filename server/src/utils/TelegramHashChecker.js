@@ -14,9 +14,14 @@ export function generateDataCheckString(data) {
 
   // Формируем строку проверки данных в формате key=value с разделителем \n
   const dataCheckString = entries
+    .filter(([key]) => key !== 'hash') // Исключаем ключ 'hash' из массива [key, value]
     .map(([key, value]) => {
-      if (typeof value === 'object' && value !== null) {
-        // Если значение является объектом, преобразуем его в строку
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
+        // Если значение является объектом и не массивом, преобразуем его в JSON-строку
         value = JSON.stringify(value)
       }
       return `${key}=${value}`

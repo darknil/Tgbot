@@ -6,8 +6,12 @@ import crypto from 'crypto'
  * @returns {string} Строка проверки данных.
  */
 export function generateDataCheckString(data) {
+  // Получаем отсортированные ключи объекта данных
   const keys = Object.keys(data).sort()
+
+  // Формируем строку проверки данных в формате key=value с разделителем \n
   const dataCheckString = keys.map((key) => `${key}=${data[key]}`).join('\n')
+
   return dataCheckString
 }
 

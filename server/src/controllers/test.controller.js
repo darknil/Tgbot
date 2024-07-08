@@ -19,7 +19,7 @@ export class TestController {
       const initdata = req.headers.authorization
       const secretToken = process.env.TG_TOKEN
       const validateData = validate(initdata, secretToken)
-      console.log('initdata :', data)
+      console.log('initdata :', initdata)
       console.log('validateData :', validateData)
       this.ResponseService.success(res, 'success')
     } catch (error) {

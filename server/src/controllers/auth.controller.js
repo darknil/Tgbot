@@ -114,4 +114,23 @@ export class AuthController {
       return this.ResponseService.error(res, 'Error verify token')
     }
   }
+  checkUser = async (req, res) => {
+    try {
+      const userData = req.body
+      if (!userData) {
+        return this.ResponseService.badRequest(res, 'No data provided')
+      }
+      const user = await this.UserService.getUserByUserName(username)
+      if (!user) {
+        return this.ResponseService.notFound(res, 'User not found')
+      }
+      if (user.isBanned) {
+        return this.ResponseService.unauthorized(res, 'User is banned')
+      }
+      return this.ResponseService.success(res, 'user subcribed to channel')
+    } catch (error) {
+      console.log('check user error', error)
+      return this.ResponseService.error(res, 'Error checking user')
+    }
+  }
 }

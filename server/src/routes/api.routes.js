@@ -25,6 +25,7 @@ export class ApiRouter {
     this.router.get('/days/current', this.DaysController.getCurrentDay)
 
     this.router.post('/auth', this.AuthController.verifyUser)
+    this.router.post('/auth/status', this.AuthController.checkUser)
     this.router.post('/auth/token', this.AuthController.verifyToken)
 
     this.router.get('/user/report', this.ReportController.getUserReportByDay)

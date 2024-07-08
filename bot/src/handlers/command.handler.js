@@ -9,19 +9,14 @@ export class CommandHandler {
   async handleUserStart(msg) {
     try {
       const chatId = msg.chat.id || msg.from.id
-      const isParticipant = await this.ChannelService.isMember(chatId)
-      if (isParticipant) {
-        this.bot.sendPhoto(
-          chatId,
-          'https://3123703-of06570.twc1.net/images/Frame19.png',
-          {
-            caption: 'Путь к твоей вершине начинается здесь',
-            ...keyboards.startKeyboard
-          }
-        )
-      } else {
-        this.bot.sendMessage(chatId, 'Hello, welcome to the bot!', keyboards)
-      }
+      this.bot.sendPhoto(
+        chatId,
+        'https://3123703-of06570.twc1.net/images/Frame19.png',
+        {
+          caption: 'Путь к твоей вершине начинается здесь',
+          ...keyboards.startKeyboard
+        }
+      )
     } catch (error) {
       console.log('handle user start error', error)
     }

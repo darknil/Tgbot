@@ -22,22 +22,14 @@ export class MessageHandler {
       if (msg.chat.type !== 'private') {
         return
       }
-      const isParticipant = await this.ChannelService.isMember(chatId)
-      if (isParticipant) {
-        this.bot.sendPhoto(
-          chatId,
-          'https://3123703-of06570.twc1.net/images/Frame19.png',
-          {
-            caption: 'Путь к твоей вершине начинается здесь',
-            ...keyboards.startKeyboard
-          }
-        )
-        const Admin = isAdmin(chatId)
-        if (Admin) {
+      this.bot.sendPhoto(
+        chatId,
+        'https://3123703-of06570.twc1.net/images/Frame19.png',
+        {
+          caption: 'Путь к твоей вершине начинается здесь',
+          ...keyboards.startKeyboard
         }
-      } else {
-        this.bot.sendMessage(chatId, 'you are not a participant')
-      }
+      )
     } catch (error) {
       console.log('Error handling user message:', error)
     }

@@ -55,9 +55,10 @@ export class WebHookController {
         await this.UnbanUserFromChannel.unbanUser(user.chatId)
       }
       const link = await this.ChannelService.createInviteLink()
+      console.log('link :', link)
       await this.MessageService.SendMessageToUser(
         user.chatId,
-        `Your payment has been received successfully. You can now join the channel and start using the bot. ${link}`
+        `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link}`
       )
       return this.ResponseService.success(res, 'webhook received')
     } catch (error) {

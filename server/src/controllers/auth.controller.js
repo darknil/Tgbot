@@ -118,16 +118,16 @@ export class AuthController {
     try {
       const userData = req.body
       if (!userData) {
-        return this.ResponseService.badRequest(res, 'No data provided')
+        return this.ResponseService.badRequest(res, 'Nodata')
       }
       const user = await this.UserService.getUserByUserName(username)
       if (!user) {
-        return this.ResponseService.notFound(res, 'User not found')
+        return this.ResponseService.notFound(res, 'notfound')
       }
       if (user.isBanned) {
-        return this.ResponseService.unauthorized(res, 'User is banned')
+        return this.ResponseService.unauthorized(res, 'banned')
       }
-      return this.ResponseService.success(res, 'user subcribed to channel')
+      return this.ResponseService.success(res, 'subcribed')
     } catch (error) {
       console.log('check user error', error)
       return this.ResponseService.error(res, 'Error checking user')

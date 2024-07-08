@@ -7,7 +7,7 @@ import crypto from 'crypto'
  */
 export function generateDataCheckString(data) {
   // Исключаем ключи 'chat_instance' и 'chat_type' из объекта данных
-  const { chat_instance, chat_type, ...cleanData } = data
+  const { chat_instance, chat_type, hash, ...cleanData } = data
 
   // Используем Object.entries(cleanData), чтобы получить массив [key, value] для каждой пары в объекте cleanData
   const entries = Object.entries(cleanData)

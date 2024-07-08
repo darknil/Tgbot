@@ -15,7 +15,8 @@ export class TestController {
   }
   getTest = async (req, res) => {
     try {
-      const data = req.headers.Authorization
+      const data = req.headers.authorization
+      console.log('headers :', req.headers)
       console.log('initdata :', data)
       this.ResponseService.success(res, 'success')
     } catch (error) {

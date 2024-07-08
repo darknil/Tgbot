@@ -14,7 +14,13 @@ export function generateDataCheckString(data) {
 
   // Формируем строку проверки данных в формате key=value с разделителем \n
   const dataCheckString = entries
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        // Если значение является объектом, преобразуем его в строку
+        value = JSON.stringify(value)
+      }
+      return `${key}=${value}`
+    })
     .join('\n')
 
   console.log('Data check string:', dataCheckString)

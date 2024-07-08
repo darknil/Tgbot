@@ -1,29 +1,51 @@
-import {
-  generateSecretKey,
-  generateDataCheckString,
-  generateSignature
-} from './helpers.js'
+import crypto from 'crypto'
 
-class TelegramHashChecker {
-  constructor(botToken) {
-    this.botToken = botToken
-    this.secretKey = generateSecretKey(botToken)
-  }
-
-  verifyHash(data) {
-    const receivedHash = data.hash
-    console.log('received hash :', receivedHash)
-    const dataCheckString = generateDataCheckString(data)
-    const signature = generateSignature(dataCheckString, this.secretKey)
-    console.log('signature :', signature)
-    return signature === receivedHash
-  }
-
-  checkAuthDate(data, maxAgeSeconds) {
-    const authDate = parseInt(data.auth_date, 10)
-    const currentTime = Math.floor(Date.now() / 1000)
-    return currentTime - authDate <= maxAgeSeconds
-  }
+/**
+ * Функция для генерации строки проверки данных.
+ * @param {Object} data - Данные для проверки в формате ключ-значение.
+ * @returns {string} Строка проверки данных.
+ */
+export function generateDataCheckString(data) {
+  const keys = Object.keys(data).sort()
+  const dataCheckString = keys.map((key) => `${key}=${data[key]}`).join('\n')
+  return dataCheckString
 }
 
-export default TelegramHashChecker
+/**
+ * Функция для генерации секретного ключа на основе токена бота.
+ * @param {string} botToken - Токен бота.
+ * @returns {string} Секретный ключ в формате HEX.
+ */
+export function generateSecretKey(botToken) {
+  const secret = 'WebAppData'
+  return crypto.createHmac('sha256', secret).update(botToken).digest('hex')
+}
+
+/**
+ * Функция для генерации подписи HMAC-SHA-256 строки проверки данных.
+ * @param {string} dataCheckString - Строка проверки данных.
+ * @param {string} secretKey - Секретный ключ.
+ * @returns {string} Подпись в формате HEX.
+ */
+export function generateSignature(dataCheckString, secretKey) {
+  return crypto
+    .createHmac('sha256', secretKey)
+    .update(dataCheckString)
+    .digest('hex')
+}
+
+/**
+ * Функция для проверки целостности данных на основе полученного хэша.
+ * @param {Object} data - Данные, полученные от Telegram Mini App.
+ * @param {string} botToken - Токен бота.
+ * @returns {boolean} Результат проверки (true - данные подлинные, false - данные могли быть изменены).
+ */
+export function validateTelegramData(data, botToken) {
+  const receivedHash = data.hash
+  console.log('receivedHash :', receivedHash)
+  const dataCheckString = generateDataCheckString(data)
+  const secretKey = generateSecretKey(botToken)
+  const calculatedHash = generateSignature(dataCheckString, secretKey)
+  console.log('calculatedHash :', calculatedHash)
+  return receivedHash === calculatedHash
+}

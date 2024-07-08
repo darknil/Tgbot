@@ -4,12 +4,9 @@ import { UserService } from '../services/user.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
-import TelegramHashChecker from '../utils/TelegramHashChecker.js'
 
-const validateUserData = async (userData, botToken) => {
-  const checker = new TelegramHashChecker(botToken)
-  return checker.verifyHash(userData)
-}
+import { validateTelegramData } from '../utils/TelegramHashChecker.js'
+
 export class AuthController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -77,8 +74,8 @@ export class AuthController {
       if (!userData) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      const isValidUser = await validateUserData(userData, process.env.TG_TOKEN)
-      if (!isValidUser) {
+      const isValidData = validateTelegramData(initData, botToken)
+      if (!isValidData) {
         return this.ResponseService.unauthorized(res, 'Invalid user data')
       }
       // const isMember = await this.ChannelService.isMember(userData.user.id)

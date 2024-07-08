@@ -12,7 +12,7 @@ class TelegramHashChecker {
 
   verifyHash(data) {
     const receivedHash = data.hash
-    console.log('received hash :', hash)
+    console.log('received hash :', receivedHash)
     const dataCheckString = generateDataCheckString(data)
     const signature = generateSignature(dataCheckString, this.secretKey)
     console.log('signature :', signature)

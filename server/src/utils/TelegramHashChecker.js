@@ -6,17 +6,15 @@ import crypto from 'crypto'
  * @returns {string} Строка проверки данных.
  */
 export function generateDataCheckString(data) {
-  // Исключаем ключи 'chat_instance' и 'chat_type' из объекта данных
-  const { chat_instance, chat_type, hash, ...cleanData } = data
-
-  // Используем Object.entries(cleanData), чтобы получить массив [key, value] для каждой пары в объекте cleanData
-  const entries = Object.entries(cleanData)
+  // Используем Object.entries(data), чтобы получить массив [key, value] для каждой пары в объекте data
+  const entries = Object.entries(data)
 
   // Сортируем массив [key, value] по ключам (элемент [0] в массиве)
   entries.sort((a, b) => a[0].localeCompare(b[0]))
 
   // Формируем строку проверки данных в формате key=value с разделителем \n
   const dataCheckString = entries
+    .filter(([key]) => key !== 'hash') // Исключаем ключ 'hash' из массива [key, value]
     .map(([key, value]) => {
       if (
         typeof value === 'object' &&

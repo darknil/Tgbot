@@ -21,7 +21,7 @@ export class TestController {
       const secretToken = process.env.TG_TOKEN
       validate(initdata, secretToken)
 
-      const parsedQuery = querystring.parse(initdata)
+      const parsedQuery = parse(initdata)
 
       // Получение значений параметров
       const queryId = parsedQuery.query_id

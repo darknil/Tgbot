@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { TgBot } from './bot/bot.js'
 import { ExpressServer } from './server/server.js'
 import { importUsersFromCSV } from './server/src/utils/importData.js'
+import { importUsersStatusFromCSV } from './server/src/utils/importUserStatus.js'
 class App {
   constructor() {
     this.initTelegramBot()
@@ -24,7 +25,15 @@ class App {
     this.expressServer = new ExpressServer(port)
   }
   initDataImport() {
-    importUsersFromCSV('users')
+    // importUsersFromCSV('users')
+    //   .then(() => {
+    //     process.exit(0)
+    //   })
+    //   .catch((err) => {
+    //     console.error('Error importing data:', err)
+    //     process.exit(1)
+    //   })
+    importUsersStatusFromCSV('status')
       .then(() => {
         process.exit(0)
       })

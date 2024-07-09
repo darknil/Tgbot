@@ -1,4 +1,5 @@
 import { User } from '../models/user.model.js'
+import { Status } from '../models/status.model.js'
 export class UserService {
   async createUser(
     username,
@@ -78,6 +79,28 @@ export class UserService {
       return users
     } catch (error) {
       console.log('get all users error :', error)
+    }
+  }
+  async updateUserStatus(chatId, statusValue) {
+    try {
+      const status = await Status.findOne({ value: statusValue })
+      if (!status) {
+        throw new Error('Status not found')
+      }
+
+      const user = await User.findByIdAndUpdate(
+        chatId,
+        { status: status._id },
+        { new: true }
+      )
+
+      if (!user) {
+        throw new Error('User not found')
+      }
+
+      return user
+    } catch (error) {
+      console.log('update user status error :', error)
     }
   }
 }

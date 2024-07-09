@@ -5,7 +5,8 @@ import { JwtService } from '../services/jwt.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
 
-import { validateTelegramData } from '../utils/TelegramHashChecker.js'
+import { validate } from '@telegram-apps/init-data-node'
+import { parse } from 'querystring'
 import 'dotenv/config'
 const botToken = process.env.TG_TOKEN
 export class AuthController {
@@ -44,19 +45,19 @@ export class AuthController {
   }
   findOrCreateUser = async (userData) => {
     const lowerUsername = userData.user.username.toLowerCase()
-    let user = await this.UserService.getUserByUserName(lowerUsername)
+    let user = await this.UserService.getUserByUserName(lowerUsername) /// Переписать под поиск по chatId
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
     if (!user) {
       user = await this.UserService.createUser(
-        userData.user.username,
+        userData.username,
         undefined,
         undefined,
         undefined,
-        userData.user.id,
-        userData.user.firstName,
-        userData.user.lastName
+        userData.id,
+        userData.firstName,
+        userData.lastName
       )
     }
     if (user.chatId === 0) {
@@ -71,24 +72,19 @@ export class AuthController {
   }
   verifyUser = async (req, res) => {
     try {
-      const userData = req.body
-      if (!userData) {
+      const initdata = req.headers.authorization
+      if (!initdata) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      // const isValidData = validateTelegramData(userData, botToken)
-      // if (!isValidData) {
-      //   return this.ResponseService.unauthorized(res, 'Invalid user data')
-      // }
-      const isMember = await this.ChannelService.isMember(userData.user.id)
-      if (!isMember) {
-        return this.ResponseService.unauthorized(res, 'User is not a member') /// сделать условие наличия пользователя в базе данных и проверку isbanned
-      }
+      validate(initdata, botToken)
+      const parsedQuery = parse(initdata)
+      const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
       let user
       try {
         user = await this.findOrCreateUser(userData)
       } catch (error) {
         if (error.message === 'User is banned') {
-          console.log(`User ${userData.user.id} is banned`)
+          console.log(`User ${userData.id} is banned`)
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
@@ -117,7 +113,7 @@ export class AuthController {
       return this.ResponseService.error(res, 'Error verify token')
     }
   }
-  checkUser = async (req, res) => {
+  checkUserStatus = async (req, res) => {
     try {
       const userData = req.body
       if (!userData) {
@@ -127,10 +123,11 @@ export class AuthController {
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }
-      if (user.isBanned) {
-        return this.ResponseService.unauthorized(res, 'banned')
+      const status = user.status.value
+      if (!status) {
+        return this.ResponseService.notFound(res, 'no status')
       }
-      return this.ResponseService.success(res, 'subcribed')
+      return this.ResponseService.success(res, status)
     } catch (error) {
       console.log('check user error', error)
       return this.ResponseService.error(res, 'Error checking user')

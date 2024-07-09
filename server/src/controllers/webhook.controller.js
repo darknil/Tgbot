@@ -50,10 +50,7 @@ export class WebHookController {
           true
         )
       const user = await this.UserService.getUser(updated.userChatId)
-      if (user.isBanned) {
-        await this.UserService.updateUserField(user.chatId, 'isBanned', false)
-        await this.UnbanUserFromChannel.unbanUser(user.chatId)
-      }
+      await this.UserService.updateUserStatus(updated.userChatId, 'member')
       const link = await this.ChannelService.createInviteLink()
       console.log('link :', link)
       await this.MessageService.SendMessageToUser(

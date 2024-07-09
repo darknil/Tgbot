@@ -7,7 +7,7 @@ export class JwtService {
 
   generateToken(payload) {
     return jwt.sign(payload, this.secret, {
-      expiresIn: '7d'
+      expiresIn: '3h'
     })
   }
 

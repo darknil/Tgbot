@@ -115,11 +115,17 @@ export class AuthController {
   }
   checkUserStatus = async (req, res) => {
     try {
-      const userData = req.body
-      if (!userData) {
-        return this.ResponseService.badRequest(res, 'Nodata')
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
       }
-      const user = await this.UserService.getUserByUserName(username)
+
+      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      // console.log('Decoded token payload:', decoded)
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const user = await this.UserService.getUser(decoded.user.id)
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }

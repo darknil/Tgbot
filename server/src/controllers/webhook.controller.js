@@ -49,14 +49,17 @@ export class WebHookController {
           'isPaid',
           true
         )
-      const user = await this.UserService.getUser(updated.userChatId)
-      await this.UserService.updateUserStatus(updated.userChatId, 'member')
-      const link = await this.ChannelService.createInviteLink()
-      console.log('link :', link)
-      await this.MessageService.SendMessageToUser(
-        user.chatId,
-        `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
-      )
+      if(updated.status === 'completed'){
+        const user = await this.UserService.getUser(updated.userChatId)
+        await this.UserService.updateUserStatus(updated.userChatId, 'member')
+        const link = await this.ChannelService.createInviteLink()
+        console.log('link :', link)
+        await this.MessageService.SendMessageToUser(
+          user.chatId,
+          `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
+        )
+      }  
+
       return this.ResponseService.success(res, 'webhook received')
     } catch (error) {
       console.log('handle webhook error :', error)

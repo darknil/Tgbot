@@ -44,7 +44,7 @@ export class AuthController {
     }
   }
   findOrCreateUser = async (userData) => {
-    const lowerUsername = userData.user.username.toLowerCase()
+    const lowerUsername = userData.username.toLowerCase()
     let user = await this.UserService.getUserByUserName(lowerUsername) /// Переписать под поиск по chatId
     if (user && user.isBanned) {
       throw new Error('User is banned')

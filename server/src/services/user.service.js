@@ -81,24 +81,24 @@ export class UserService {
       console.log('get all users error :', error)
     }
   }
-  async updateUserStatus(chatId, statusValue) {
+  async updateUserStatus(user, statusValue) {
     try {
       const status = await Status.findOne({ value: statusValue })
       if (!status) {
         throw new Error('Status not found')
       }
 
-      const user = await User.findByIdAndUpdate(
-        chatId,
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
         { status: status._id },
         { new: true }
       )
 
-      if (!user) {
+      if (!updatedUser) {
         throw new Error('User not found')
       }
 
-      return user
+      return updatedUser
     } catch (error) {
       console.log('update user status error :', error)
     }

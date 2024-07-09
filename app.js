@@ -3,6 +3,7 @@ import { TgBot } from './bot/bot.js'
 import { ExpressServer } from './server/server.js'
 import { importUsersFromCSV } from './server/src/utils/importData.js'
 import { importUsersStatusFromCSV } from './server/src/utils/importUserStatus.js'
+import { fillStatus } from './server/src/utils/fillStatus.js'
 class App {
   constructor() {
     this.initTelegramBot()
@@ -33,13 +34,20 @@ class App {
     //     console.error('Error importing data:', err)
     //     process.exit(1)
     //   })
-    importUsersStatusFromCSV('status')
+    // importUsersStatusFromCSV('status')
+    //   .then(() => {
+    //     process.exit(0)
+    //   })
+    //   .catch((err) => {
+    //     console.error('Error importing data:', err)
+    //     process.exit(1)
+    //   })
+    fillStatus()
       .then(() => {
-        process.exit(0)
+        console.log('All statuses filled successfully')
       })
-      .catch((err) => {
-        console.error('Error importing data:', err)
-        process.exit(1)
+      .catch((error) => {
+        console.error('Error filling statuses:', error)
       })
   }
 }

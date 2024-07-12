@@ -27,4 +27,15 @@ export class StatusService {
       console.log('get status error', error)
     }
   }
+  async getStatusByUuid(uuid) {
+    try {
+      const status = await Status.findOne({ _id: uuid })
+      if (!status) {
+        return false
+      }
+      return status
+    } catch (error) {
+      console.log('get status by uuid error', error)
+    }
+  }
 }

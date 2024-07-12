@@ -5,6 +5,8 @@ import { AuthController } from '../controllers/auth.controller.js'
 import { FileController } from '../controllers/file.controller.js'
 import { TransactionController } from '../controllers/transaction.controller.js'
 import { TestController } from '../controllers/test.controller.js'
+import { UserController } from '../controllers/user.controller.js'
+import { AdminController } from '../controllers/admin.controller.js'
 export class ApiRouter {
   constructor() {
     this.ReportController = new ReportController()
@@ -13,6 +15,8 @@ export class ApiRouter {
     this.FileController = new FileController()
     this.TransactionController = new TransactionController()
     this.TestController = new TestController()
+    this.UserController = new UserController()
+    this.AdminController = new AdminController()
     this.router = express.Router()
     this.setupRoutes()
   }
@@ -33,6 +37,11 @@ export class ApiRouter {
     this.router.get('/user/report', this.ReportController.getUserReportByDay)
     this.router.post('/user/report', this.ReportController.postUserReport)
     this.router.get('/user/reports', this.ReportController.getUserReports)
+
+    this.router.get('/users',this.UserController.getMembers)
+    this.router.post('/user/:chatId/ban',this.AdminController.banUser)
+    this.router.post('/user/:chatId/unban',this.AdminController.unbanUser)
+    this.router.post('/user/:chatId/freeze',this.AdminController.freezeUser)
 
     this.router.post(
       '/file/:reportId/image',

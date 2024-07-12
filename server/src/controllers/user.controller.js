@@ -1,6 +1,7 @@
 import { UserService } from "../services/user.service.js"
 import { ResponseService } from "../services/response.service.js"
 import { StatusService } from "../services/status.service.js"
+import isAdmin from "../../../bot/src/services/isAdmin.js"
 export class UserController {
   constructor() {
     this.UserService = new UserService()
@@ -9,6 +10,18 @@ export class UserController {
   }
   getMembers = async (req, res) => {
     try {
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
+      }
+      const decoded = this.JwtService.verifyToken(token)
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const admin = isAdmin(decoded.user.chatId)
+      if(!admin) {
+        return this.ResponseService.unauthorized(res, 'Unauthorized')
+      }
       const users = await this.UserService.getUsers()
       const membersPromises = users.map(async (user) => {
         if (user.status) {

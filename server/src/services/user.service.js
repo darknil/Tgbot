@@ -36,7 +36,7 @@ export class UserService {
     try {
       const user = await User.findOne({ chatId })
       if (!user) {
-        return false
+        return null
       }
       return user
     } catch (error) {

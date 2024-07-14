@@ -44,34 +44,31 @@ export class AuthController {
     }
   }
   findOrCreateUser = async (userData) => {
-    const lowerUsername = userData.username.toLowerCase()
-    console.log(' find or create user userData :', userData)
+    console.log(' find or create user id :', userData.id)
     let user = await this.UserService.getUser(userData.id) 
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
     if (!user) {
-      const createdUser = await this.UserService.createUser(
+      user = await this.UserService.createUser(
         userData.username,
         undefined,
         undefined,
         undefined,
-        userData.id,
+        userData.chatId,
         userData.firstName,
         userData.lastName
-      )
-      return createdUser
-    }
-    if (user.chatId === 0) {
+      );
+    } else if (user.chatId === 0) {
       user = await this.fillEmptyUser(
         user,
-        userData.user.id,
-        userData.user.firstName,
-        userData.user.lastName
-      )
-      return user
+        userData.chatId,
+        userData.firstName,
+        userData.lastName
+      );
     }
-    return user
+  
+    return user;
   }
   verifyUser = async (req, res) => {
     try {

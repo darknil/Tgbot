@@ -52,7 +52,7 @@ export class AuthController {
       try {
         user = await this.UserService.createUser(
           userData.username,
-          userData.chatId,
+          userData.id,
           userData.firstName,
           userData.lastName
         );
@@ -62,7 +62,7 @@ export class AuthController {
     } else if (user.chatId === 0) {
       user = await this.fillEmptyUser(
         user,
-        userData.chatId,
+        userData.id,
         userData.firstName,
         userData.lastName
       );

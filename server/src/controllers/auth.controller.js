@@ -134,7 +134,7 @@ export class AuthController {
       }
 
       const decoded = this.JwtService.verifyToken(token)
-      console.log('Decoded token payload:', decoded)
+      // console.log('Decoded token payload:', decoded)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
@@ -147,7 +147,7 @@ export class AuthController {
       if (!status) {
         return this.ResponseService.notFound(res, 'no status')
       }
-      return this.ResponseService.success(res, status)
+      return this.ResponseService.success(res, status.value)
     } catch (error) {
       console.log('check user error', error)
       return this.ResponseService.error(res, 'Error checking user')

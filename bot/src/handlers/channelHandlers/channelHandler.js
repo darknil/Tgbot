@@ -11,6 +11,7 @@ export class ChannelHandler {
         const newMember = msg.new_chat_members[0]; // Предполагаем, что новый участник - первый в списке
         if (newMember.is_bot) {
           // Проверяем, что добавленный участник - бот
+          console.log('msg :',msg)
           const channelId = msg.chat.id;
           const inline_keyboard = {
             inline_keyboard: [

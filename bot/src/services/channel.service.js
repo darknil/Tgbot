@@ -62,7 +62,7 @@ export class ChannelService {
     try {
       const ChannelId = process.env.TG_CHANNEL
       await this.bot.banChatMember(ChannelId, chatId)
-      console.log(`User with ID ${userId} has been kicked from the channel.`)
+      console.log(`User with ID ${chatId} has been kicked from the channel.`)
     } catch (error) {
       console.error(`Error kicking user: ${error.message}`)
     }

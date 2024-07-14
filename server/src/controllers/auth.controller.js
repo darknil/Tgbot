@@ -55,7 +55,6 @@ export class AuthController {
     let user = await this.UserService.getUser(userData.id)
     if(isMember === 'kicked') {
       this.UserService.updateUserStatus(user,'banned')
-      return null
     }
     if (user && user.isBanned) {
       throw new Error('User is banned')

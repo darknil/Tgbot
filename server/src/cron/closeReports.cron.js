@@ -34,9 +34,9 @@ export class CloseReports {
         }
 
       }
-      const usernamesWithoutReports = channelMembersWithoutReport.join(', ')
+
       await this.ChannelService.sendMessageToAdmin(
-        usernamesWithoutReports,
+        channelMembersWithoutReport,
         allUsers.length
       )
       // Отфильтровать всех пользователей по массиву с отчётами. = пользователи с отчётами

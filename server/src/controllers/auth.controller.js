@@ -125,6 +125,7 @@ export class AuthController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
+      console.log('decoded :', decoded)
       const user = await this.UserService.getUser(decoded.user.id)
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')

@@ -54,9 +54,6 @@ export class AuthController {
         console.log('if null')
         user = await this.UserService.createUser(
           userData.username,
-          undefined,
-          undefined,
-          undefined,
           userData.chatId,
           userData.firstName,
           userData.lastName

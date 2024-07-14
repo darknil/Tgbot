@@ -3,16 +3,16 @@ import { Status } from '../models/status.model.js'
 export class UserService {
   async createUser(
     username,
+    chatId = 0,
+    firstName = '',
+    lastName = '',
     id,
     email = '',
     mobile = '',
-    chatId = 0,
-    firstName = '',
-    lastName = ''
   ) {
     if (!id) {
       const lastUser = await User.findOne().sort({ id: -1 }).limit(1)
-      id = lastUser.id + 1
+      id = lastUser ? lastUser.id + 1 : 0;
     }
     try {
       console.log('user id :', id)
@@ -29,7 +29,7 @@ export class UserService {
       return savedUser
     } catch (error) {
       console.log('create user error', error)
-      return false
+      return null
     }
   }
   async getUser(chatId) {

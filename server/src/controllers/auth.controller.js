@@ -76,7 +76,7 @@ export class AuthController {
       if (!initdata) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      validate(initdata, botToken)
+      // validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
       let user

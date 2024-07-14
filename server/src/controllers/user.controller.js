@@ -20,8 +20,8 @@ export class UserController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const admin = isAdmin(decoded.user.chatId)
-      if(!admin) {
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const users = await this.UserService.getUsers()

@@ -142,7 +142,7 @@ export class AuthController {
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }
-      const status = await this.StatusService.getStatusByUuid(decoded.user.status.toHexString())
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
       console.log('status :', status)
       if (!status) {
         return this.ResponseService.notFound(res, 'no status')

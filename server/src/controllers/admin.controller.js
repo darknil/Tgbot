@@ -76,7 +76,8 @@ export class AdminController {
       this.UserService.updateUserField(user.chatId, 'isBanned', false)
       this.ChannelService.unbanUser(chatId)
       const link = await this.ChannelService.createInviteLink()
-      await this.MessageService.SendMessageToUser(user.chatId, `${messages.unbanned}\n ${link}`)
+      const message = messages.unbanned + link
+      await this.MessageService.SendMessageToUser(user.chatId, message)
       return this.ResponseService.success(res, 'User unbanned')
     } catch(error) {
       console.log('unban user error', error)

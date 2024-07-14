@@ -30,6 +30,7 @@ export class UserController {
           const userStatus = await this.StatusService.getStatusByUuid(user.status);
           console.log('username:', user.username, 'userStatus:', userStatus.value);
             user.status = userStatus.value;
+            console.log('user:', user);
             return user;
         } 
       });

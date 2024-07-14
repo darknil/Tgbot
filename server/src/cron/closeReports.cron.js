@@ -25,7 +25,9 @@ export class CloseReports {
         (user) => !ownerChatIds.includes(user.ownerChatId)
       )
       const usernamesWithoutReports = usersWithoutReports.map(
-        (user) => user.username
+        (user) => {
+          return user.username ? user.username : user.first_name;
+        }
       )
       console.log('usernamesWithoutReports', usernamesWithoutReports)
       await this.ChannelService.sendMessageToAdmin(
@@ -34,7 +36,6 @@ export class CloseReports {
       )
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
-        console.log('userStatus', userStatus)
         if(userStatus.value === 'member') {
           this.ChannelService.banUser(user.chatId)
           this.UserService.updateUserStatus(user,'banned')

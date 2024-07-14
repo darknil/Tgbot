@@ -28,6 +28,7 @@ export class CloseReports {
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
         if(userStatus.value === 'member') {
+          this.ChannelService.kickUser(user.chatId)
           this.ChannelService.banUser(user.chatId)
           this.UserService.updateUserStatus(user,'banned')
           if(!user.username){

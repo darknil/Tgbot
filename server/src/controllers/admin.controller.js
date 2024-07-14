@@ -41,7 +41,7 @@ export class AdminController {
         return this.ResponseService.notFound(res, 'User not found')
       }
       this.UserService.updateUserStatus(user,'banned')
-      this.UserService.updateUserByUsername(username, 'isBanned', true)
+      this.UserService.updateUserField(user.chatId, 'isBanned', true)
       this.ChannelService.banUser(chatId)
       return this.ResponseService.success(res, 'User banned')
     } catch (error) {

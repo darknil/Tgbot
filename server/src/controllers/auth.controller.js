@@ -72,13 +72,13 @@ export class AuthController {
     const isMember = await this.ChannelService.isMember(userData.id)
     console.log('isMember :', isMember)
     if (!isMember) {
-      await this.UserService.updateUserStatus(user, 'guest')
+      user = await this.UserService.updateUserStatus(user, 'guest')
     }
     if(isMember === 'creator' || isMember === 'administrator'){
-      await this.UserService.updateUserStatus(user, 'admin')
+      user = await this.UserService.updateUserStatus(user, 'admin')
     }
     if (isMember ==='member') {
-      await this.UserService.updateUserStatus(user, 'member')
+      user = await this.UserService.updateUserStatus(user, 'member')
     }
     return user;
   }

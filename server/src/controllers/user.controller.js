@@ -25,20 +25,26 @@ export class UserController {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const users = await this.UserService.getUsers()
-      const membersPromises = users.map(async (user) => {
+      const updatedUsers = [];
+      for (let user of users) {
         if (user.status) {
-          const userStatus = await this.StatusService.getStatusByUuid(user.status);
-          console.log('username:', user.username);
-          console.log('userStatus:', userStatus.value);
-          user.status = userStatus.value;
-          console.log('user:', user);
-            
-        } 
-        return user;
-      });
-      const membersResults = await Promise.all(membersPromises);
-      const filteredMembers = membersResults.filter(user => user !== undefined);
-      return this.ResponseService.success(res, filteredMembers);
+          try {
+            const userStatus = await this.StatusService.getStatusByUuid(user.status);
+            console.log('username:', user.username);
+            console.log('userStatus:', userStatus);
+      
+            user.status = userStatus.value;
+            console.log('Updated user:', user);
+      
+            updatedUsers.push(user);
+          } catch (error) {
+            console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
+          }
+        }
+      }
+      
+      
+      return this.ResponseService.success(res, updatedUsers);
     } catch (error) {
       console.log('get members error', error)
       return this.ResponseService.error(res, 'Error getting members')

@@ -28,8 +28,8 @@ export class AdminController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const admin = isAdmin(decoded.user.chatId)
-      if(!admin) {
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const { chatId } = req.params.chatId
@@ -59,8 +59,8 @@ export class AdminController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const admin = isAdmin(decoded.user.chatId)
-      if(!admin) {
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const { chatId } = req.params.chatId
@@ -92,8 +92,8 @@ export class AdminController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const admin = isAdmin(decoded.user.chatId)
-      if(!admin) {
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const { chatId } = req.params.chatId
@@ -109,6 +109,35 @@ export class AdminController {
     } catch (error) {
       console.log('freeze member error', error)
       return this.ResponseService.error(res, 'freeze member error')
+    }
+  }
+  unfreezeUser = async (req,res) =>{
+    try {
+      const token = req.headers.authorization
+      if (!token) {
+        return this.ResponseService.unauthorized(res, 'No token provided')
+      }
+      const decoded = this.JwtService.verifyToken(token)
+      if (!decoded) {
+        return this.ResponseService.unauthorized(res, 'Invalid token')
+      }
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      if(status.value!== 'admin') {
+        return this.ResponseService.unauthorized(res, 'Unauthorized')
+      }
+      const { chatId } = req.params.chatId
+      if(!chatId) {
+        return this.ResponseService.badRequest(res, 'Missing chatId')
+      }
+      const user = await this.UserService.getUser(chatId)
+      if (!user) {
+        return this.ResponseService.notFound(res, 'User not found')
+      }
+      this.UserService.updateUserStatus(user,'member')
+      return this.ResponseService.success(res, 'User unfreezed')
+    } catch (error) {
+      console.log('unfreeze member error', error)
+      return this.ResponseService.error
     }
   }
 }

@@ -42,6 +42,8 @@ export class ApiRouter {
     this.router.post('/user/:chatId/ban',this.AdminController.banUser)
     this.router.post('/user/:chatId/unban',this.AdminController.unbanUser)
     this.router.post('/user/:chatId/freeze',this.AdminController.freezeUser)
+    this.router.post('/user/:chatId/unfreeze',this.AdminController.unfreezeUser)
+
 
     this.router.post(
       '/file/:reportId/image',

@@ -57,6 +57,7 @@ export class AdminController {
       }
       const decoded = this.JwtService.verifyToken(token)
       if (!decoded) {
+        console.log('decoded', decoded)
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
       const status = await this.StatusService.getStatusByUuid(decoded.user.status)
@@ -94,6 +95,7 @@ export class AdminController {
       }
       const status = await this.StatusService.getStatusByUuid(decoded.user.status)
       if(status.value!== 'admin') {
+        console.log('decoded', decoded)
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const { chatId } = req.params.chatId
@@ -123,6 +125,7 @@ export class AdminController {
       }
       const status = await this.StatusService.getStatusByUuid(decoded.user.status)
       if(status.value!== 'admin') {
+        console.log('decoded', decoded)
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
       const { chatId } = req.params.chatId

@@ -79,6 +79,7 @@ export class AuthController {
       // validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
+      console.log('user data :', userData)
       let user
       try {
         user = await this.findOrCreateUser(userData)
@@ -102,7 +103,7 @@ export class AuthController {
         return this.ResponseService.unauthorized(res, 'No token provided')
       }
 
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      const decoded = this.JwtService.verifyToken(token)
       // console.log('Decoded token payload:', decoded)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
@@ -120,7 +121,7 @@ export class AuthController {
         return this.ResponseService.unauthorized(res, 'No token provided')
       }
 
-      const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      const decoded = this.JwtService.verifyToken(token)
       // console.log('Decoded token payload:', decoded)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')

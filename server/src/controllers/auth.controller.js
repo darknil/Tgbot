@@ -46,6 +46,7 @@ export class AuthController {
     }
   }
   findOrCreateUser = async (userData) => {
+    console.log('findOrCreateUser :', userData)
     let user = await this.UserService.getUser(userData.id) 
     if (user && user.isBanned) {
       throw new Error('User is banned')

@@ -2,6 +2,7 @@ import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { ResponseService } from '../services/response.service.js'
 import { UserService } from '../services/user.service.js'
 import { JwtService } from '../services/jwt.service.js'
+import { StatusService } from '../services/status.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
 
@@ -16,6 +17,7 @@ export class AuthController {
     this.UserService = new UserService()
     this.ResponseService = new ResponseService()
     this.JwtService = new JwtService()
+    this.StatusService = new StatusService()
     this.TelegramUserIdResolver = new TelegramUserIdResolver(
       '../config/users.csv'
     )
@@ -140,7 +142,8 @@ export class AuthController {
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }
-      const status = user.status.value
+      const status = await this.StatusService.getStatusByUuid(decoded.user.status.toHexString())
+      console.log('status :', status)
       if (!status) {
         return this.ResponseService.notFound(res, 'no status')
       }

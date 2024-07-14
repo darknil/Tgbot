@@ -103,4 +103,12 @@ export class UserService {
       console.log('update user status error :', error)
     }
   }
+  async getAdmins(){
+    try {
+      const users = await User.find({ 'status': new Object('669408eafd0f56d32fe9054f') })
+      return users;
+    } catch (error) {
+      console.log('get admins error :', error)
+    }
+  }
 }

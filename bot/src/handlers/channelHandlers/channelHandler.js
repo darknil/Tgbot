@@ -7,17 +7,36 @@ export class ChannelHandler {
   }
   async handleUserJoin(msg) {
     try {
-      console.log('msg chat:', msg.chat.id)
-      if (msg.new_chat_members != undefined) {
-        console.log('new member :', msg.new_chat_members)
-        const newMember = msg.new_chat_members[0]
-        this.bot.sendMessage(
-          msg.chat.id,
-          `Welcome to the channel ${newMember.first_name} ${newMember.last_name}`
-        )
+      if (msg.new_chat_members) {
+        const newMember = msg.new_chat_members[0]; // Предполагаем, что новый участник - первый в списке
+        if (newMember.is_bot) {
+          // Проверяем, что добавленный участник - бот
+          const channelId = msg.chat.id;
+          const inline_keyboard = {
+            inline_keyboard: [
+              [
+                {
+                  text: 'да',
+                  callback_data: `addChannel.${channelId}`,
+                },
+                {
+                  text: 'нет',
+                }
+              ],
+            ],
+          };
+          const admins = await this.UserService.getAdmins()
+          for (let admin of admins) {
+            console.log('admin', admin)
+            await this.bot.sendMessage(admin.chatId, 'Бот был добавлен в канал', {
+              reply_markup: inline_keyboard,
+            });
+          }
+          // Здесь можно добавить логику для обработки добавления бота в канал
+        }
       }
     } catch (error) {
-      console.log('handle user start error', error)
+      console.error('Ошибка обработки добавления бота:', error);
     }
   }
 }

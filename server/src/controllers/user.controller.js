@@ -31,8 +31,9 @@ export class UserController {
           console.log('username:', user.username, 'userStatus:', userStatus.value);
             user.status = userStatus.value;
             console.log('user:', user);
-            return user;
+            
         } 
+        return user;
       });
       const membersResults = await Promise.all(membersPromises);
       const filteredMembers = membersResults.filter(user => user !== undefined);

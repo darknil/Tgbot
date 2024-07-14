@@ -50,16 +50,20 @@ export class AuthController {
       throw new Error('User is banned')
     }
     if (!user) {
-      console.log('if null')
-      user = await this.UserService.createUser(
-        userData.username,
-        undefined,
-        undefined,
-        undefined,
-        userData.chatId,
-        userData.firstName,
-        userData.lastName
-      );
+      try {
+        console.log('if null')
+        user = await this.UserService.createUser(
+          userData.username,
+          undefined,
+          undefined,
+          undefined,
+          userData.chatId,
+          userData.firstName,
+          userData.lastName
+        );
+      } catch (error) {
+        console.log('create user error :', error)
+      }
       console.log('if null user :', user)
     } else if (user.chatId === 0) {
       user = await this.fillEmptyUser(

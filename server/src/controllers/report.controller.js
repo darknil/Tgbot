@@ -68,7 +68,7 @@ export class ReportController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      console.log('decoded :', decoded)
+      console.log('decoded post report token :', decoded)
       const { question1, question2, question3 } = req.body
       console.log('question1 :', question1)
       console.log('question2 :', question2)

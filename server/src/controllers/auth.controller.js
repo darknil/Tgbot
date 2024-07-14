@@ -50,7 +50,7 @@ export class AuthController {
       throw new Error('User is banned')
     }
     if (!user) {
-      user = await this.UserService.createUser(
+      const createdUser = await this.UserService.createUser(
         userData.username,
         undefined,
         undefined,
@@ -59,6 +59,7 @@ export class AuthController {
         userData.firstName,
         userData.lastName
       )
+      return createdUser
     }
     if (user.chatId === 0) {
       user = await this.fillEmptyUser(
@@ -83,15 +84,17 @@ export class AuthController {
       let user
       try {
         user = await this.findOrCreateUser(userData)
+        console.log('user :', user)
+        const token = this.JwtService.generateToken({ user })
+        return this.ResponseService.success(res, token)
       } catch (error) {
         if (error.message === 'User is banned') {
           console.log(`User ${userData.id} is banned`)
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
-      console.log('user :', user)
-      const token = this.JwtService.generateToken({ user })
-      return this.ResponseService.success(res, token)
+
+
     } catch (error) {
       console.log('verify user membership error', error)
       return this.ResponseService.error(res, 'Error verifying user membership')

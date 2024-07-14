@@ -2,7 +2,7 @@ import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
 export class UserService {
   async createUser(
-    username,
+    username = '',
     chatId = 0,
     firstName = '',
     lastName = '',

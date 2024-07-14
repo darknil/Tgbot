@@ -28,9 +28,10 @@ export class UserController {
       const membersPromises = users.map(async (user) => {
         if (user.status) {
           const userStatus = await this.StatusService.getStatusByUuid(user.status);
-          console.log('username:', user.username, 'userStatus:', userStatus.value);
-            user.status = userStatus.value;
-            console.log('user:', user);
+          console.log('username:', user.username);
+          console.log('userStatus:', userStatus);
+          user.status = userStatus.value;
+          console.log('user:', user);
             
         } 
         return user;

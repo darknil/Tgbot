@@ -3,7 +3,7 @@ export class ChannelHandler {
   constructor(bot) {
     this.bot = bot
     this.UserService = new UserService()
-    this.bot.on('new_chat_members', this.handleUserJoin.bind(this))
+    this.bot.on('new_chat_members', this.handleBotAddedToChannel.bind(this))
   }
   async handleBotAddedToChannel(msg) {
     try {

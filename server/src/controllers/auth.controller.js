@@ -44,14 +44,12 @@ export class AuthController {
     }
   }
   findOrCreateUser = async (userData) => {
-    console.log(' find or create user id :', userData.id)
     let user = await this.UserService.getUser(userData.id) 
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
     if (!user) {
       try {
-        console.log('if null')
         user = await this.UserService.createUser(
           userData.username,
           userData.chatId,
@@ -61,7 +59,6 @@ export class AuthController {
       } catch (error) {
         console.log('create user error :', error)
       }
-      console.log('if null user :', user)
     } else if (user.chatId === 0) {
       user = await this.fillEmptyUser(
         user,
@@ -70,7 +67,16 @@ export class AuthController {
         userData.lastName
       );
     }
-    console.log(' find or create user  :', user)
+    const isMember = await this.ChannelService.isMember(userData.id)
+    if (!isMember) {
+      await this.UserService.updateUserStatus(user, 'guest')
+    }
+    if(isMember === 'creator' || isMember === 'administrator'){
+      await this.UserService.updateUserStatus(user, 'admin')
+    }
+    if (isMember ==='member') {
+      await this.UserService.updateUserStatus(user, 'member')
+    }
     return user;
   }
   verifyUser = async (req, res) => {
@@ -82,7 +88,6 @@ export class AuthController {
       // validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
-      console.log('user data :', userData)
       let user
       try {
         user = await this.findOrCreateUser(userData)
@@ -92,7 +97,6 @@ export class AuthController {
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
-      console.log('user :', user)
       const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)
 
@@ -131,7 +135,6 @@ export class AuthController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      console.log('decoded :', decoded)
       const user = await this.UserService.getUser(decoded.user.id)
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')

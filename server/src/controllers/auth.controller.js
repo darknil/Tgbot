@@ -132,11 +132,11 @@ export class AuthController {
       }
 
       const decoded = this.JwtService.verifyToken(token)
-      // console.log('Decoded token payload:', decoded)
+      console.log('Decoded token payload:', decoded)
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      const user = await this.UserService.getUser(decoded.user.id)
+      const user = await this.UserService.getUser(decoded.user.chatId)
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }

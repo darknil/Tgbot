@@ -30,6 +30,10 @@ export class CloseReports {
         usernamesWithoutReports,
         allUsers.length
       )
+      for (const user of usersWithoutReports) {
+        this.ChannelService.banUser(user.chatId)
+        this.UserService.updateUserStatus(user,'banned')
+      }
       // Отфильтровать всех пользователей по массиву с отчётами. = пользователи с отчётами
       // Получить пользователей у которых был отчёт за сутки = все пользователи
       // все пользователи - пользователи с отчётами = пользователи без отчёта

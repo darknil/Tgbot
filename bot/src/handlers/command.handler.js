@@ -21,4 +21,11 @@ export class CommandHandler {
       console.log('handle user start error', error)
     }
   }
+  async handleNewChannelId(msg){
+    try {
+      
+    } catch (error) {
+      console.log('handle new channel id error', error)
+    }
+  }
 }

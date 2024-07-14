@@ -8,31 +8,18 @@ import { InvoiceDTO } from '../dtos/invoice.dto.js'
 import { ApiService } from '../services/api.service.js'
 import { validate } from '@telegram-apps/init-data-node'
 import { parse } from 'querystring'
+import { CloseReports } from '../cron/closeReports.cron.js'
 export class TestController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
     this.ResponseService = new ResponseService()
     this.ChannelService = new ChannelService(botInstance)
     this.MessageService = new MessageService(botInstance)
+    this.CloseReports = new CloseReports()
   }
   getTest = async (req, res) => {
     try {
-      const initdata = req.headers.authorization
-      const secretToken = process.env.TG_TOKEN
-      validate(initdata, secretToken)
-
-      const parsedQuery = parse(initdata)
-
-      // Получение значений параметров
-      const queryId = parsedQuery.query_id
-      const user = JSON.parse(decodeURIComponent(parsedQuery.user))
-      const authDate = parsedQuery.auth_date
-      const hash = parsedQuery.hash
-
-      console.log('Query ID:', queryId)
-      console.log('User:', user)
-      console.log('Auth Date:', authDate)
-      console.log('Hash:', hash)
+      await this.CloseReports.closeReports()
       this.ResponseService.success(res, 'success')
     } catch (error) {
       console.log('get test error', error)

@@ -67,7 +67,7 @@ export class AuthController {
         userData.lastName
       );
     }
-  
+    console.log(' find or create user  :', user)
     return user;
   }
   verifyUser = async (req, res) => {

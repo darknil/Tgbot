@@ -18,6 +18,7 @@ export class DaysController {
   getCurrentDay = async (req, res) => {
     try {
       const currentDay = await this.DaysService.CurrentDay()
+      console.log('get currentday day :', currentDay)
       this.ResponseService.success(res, currentDay)
     } catch (error) {
       console.log('get current day error :', error)

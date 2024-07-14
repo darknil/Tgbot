@@ -45,7 +45,8 @@ export class AuthController {
   }
   findOrCreateUser = async (userData) => {
     const lowerUsername = userData.username.toLowerCase()
-    let user = await this.UserService.getUser(userData.id) /// Переписать под поиск по chatId
+    console.log(' find or create user userData :', userData)
+    let user = await this.UserService.getUser(userData.id) 
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
@@ -91,6 +92,7 @@ export class AuthController {
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
+      console.log('user :', user)
       const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)
 

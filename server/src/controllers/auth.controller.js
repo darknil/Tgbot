@@ -89,6 +89,7 @@ export class AuthController {
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
+      console.log('user :', user)
       const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)
     } catch (error) {

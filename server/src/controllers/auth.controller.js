@@ -68,6 +68,7 @@ export class AuthController {
         userData.user.firstName,
         userData.user.lastName
       )
+      return user
     }
     return user
   }
@@ -84,16 +85,14 @@ export class AuthController {
       let user
       try {
         user = await this.findOrCreateUser(userData)
-        console.log('user :', user)
-        const token = this.JwtService.generateToken({ user })
-        return this.ResponseService.success(res, token)
       } catch (error) {
         if (error.message === 'User is banned') {
           console.log(`User ${userData.id} is banned`)
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
-
+      const token = this.JwtService.generateToken({ user })
+      return this.ResponseService.success(res, token)
 
     } catch (error) {
       console.log('verify user membership error', error)

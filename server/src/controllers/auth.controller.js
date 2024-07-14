@@ -48,11 +48,14 @@ export class AuthController {
   findOrCreateUser = async (userData) => {
     console.log('findOrCreateUser :', userData)
     const isMember = await this.ChannelService.isMember(userData.id)
-    if (isMember === 'left' || isMember === 'kicked') {
+    if (isMember === 'left') {
       return null
     }
     let user = await this.UserService.getUser(userData.id)
-
+    if(isMember === 'kicked') {
+      this.UserService.updateUserStatus(user,'banned')
+      return null
+    }
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }

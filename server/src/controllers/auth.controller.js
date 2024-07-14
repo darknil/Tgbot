@@ -48,7 +48,7 @@ export class AuthController {
   findOrCreateUser = async (userData) => {
     console.log('findOrCreateUser :', userData)
     const isMember = await this.ChannelService.isMember(userData.id)
-    if (isMember === 'left') {
+    if (isMember === 'left' || isMember === 'kicked') {
       return null
     }
     let user = await this.UserService.getUser(userData.id)

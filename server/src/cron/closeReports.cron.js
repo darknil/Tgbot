@@ -24,24 +24,21 @@ export class CloseReports {
       const usersWithoutReports = allUsers.filter(
         (user) => !ownerChatIds.includes(user.ownerChatId)
       )
-      const usernamesWithoutReports = usersWithoutReports.map(
-        (user) => {
-          return user.username ? user.username : user.first_name;
-        }
-      )
-      console.log('usernamesWithoutReports', usernamesWithoutReports)
-      await this.ChannelService.sendMessageToAdmin(
-        usernamesWithoutReports,
-        allUsers.length
-      )
+      let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
         if(userStatus.value === 'member') {
           this.ChannelService.banUser(user.chatId)
           this.UserService.updateUserStatus(user,'banned')
+          channelMembersWithoutReport.push(user.username)
         }
 
       }
+      const usernamesWithoutReports = channelMembersWithoutReport.join(', ')
+      await this.ChannelService.sendMessageToAdmin(
+        usernamesWithoutReports,
+        allUsers.length
+      )
       // Отфильтровать всех пользователей по массиву с отчётами. = пользователи с отчётами
       // Получить пользователей у которых был отчёт за сутки = все пользователи
       // все пользователи - пользователи с отчётами = пользователи без отчёта

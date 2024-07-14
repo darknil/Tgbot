@@ -32,8 +32,9 @@ export class UserController {
             const userStatus = await this.StatusService.getStatusByUuid(user.status);
             console.log('username:', user.username);
             console.log('userStatus:', userStatus);
-      
-            user.status = userStatus.value;
+            const value = userStatus.value
+            console.log('value:', value);
+            user.status = value;
             console.log('Updated user:', user);
       
             updatedUsers.push(user);

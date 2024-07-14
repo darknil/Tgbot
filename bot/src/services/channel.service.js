@@ -71,7 +71,7 @@ export class ChannelService {
     try {
       const ChannelId = process.env.TG_CHANNEL
       await this.bot.unbanChatMember(ChannelId, chatId)
-      console.log(`User with ID ${userId} has been unbanned from the channel.`)
+      console.log(`User with ID ${chatId} has been unbanned from the channel.`)
     } catch (error) {
       console.error(`Error unbanning user: ${error.message}`)
     }

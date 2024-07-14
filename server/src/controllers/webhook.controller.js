@@ -51,7 +51,7 @@ export class WebHookController {
         )
       if(updated.status === 'completed'){
         const user = await this.UserService.getUser(updated.userChatId)
-        this.UserService.updateUserStatus(updated.userChatId, 'member')
+        this.UserService.updateUserStatus(user, 'member')
         this.ChannelService.unbanUser(updated.userChatId)
         const link = await this.ChannelService.createInviteLink()
         console.log('link :', link)

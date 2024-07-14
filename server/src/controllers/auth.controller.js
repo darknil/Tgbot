@@ -53,8 +53,8 @@ export class AuthController {
         user = await this.UserService.createUser(
           userData.username,
           userData.id,
-          userData.firstName,
-          userData.lastName
+          userData.first_name,
+          userData.last_name
         );
       } catch (error) {
         console.log('create user error :', error)
@@ -63,11 +63,12 @@ export class AuthController {
       user = await this.fillEmptyUser(
         user,
         userData.id,
-        userData.firstName,
-        userData.lastName
+        userData.first_name,
+        userData.last_name
       );
     }
     const isMember = await this.ChannelService.isMember(userData.id)
+    console.log('isMember :', isMember)
     if (!isMember) {
       await this.UserService.updateUserStatus(user, 'guest')
     }

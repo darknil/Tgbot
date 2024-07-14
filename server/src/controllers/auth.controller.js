@@ -47,7 +47,12 @@ export class AuthController {
   }
   findOrCreateUser = async (userData) => {
     console.log('findOrCreateUser :', userData)
-    let user = await this.UserService.getUser(userData.id) 
+    const isMember = await this.ChannelService.isMember(userData.id)
+    if (!isMember) {
+      return null
+    }
+    let user = await this.UserService.getUser(userData.id)
+
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
@@ -70,11 +75,9 @@ export class AuthController {
         userData.last_name
       );
     }
-    const isMember = await this.ChannelService.isMember(userData.id)
+    
     console.log('isMember :', isMember)
-    if (!isMember) {
-      user = await this.UserService.updateUserStatus(user, 'guest')
-    }
+
     if(isMember === 'creator' || isMember === 'administrator'){
       user = await this.UserService.updateUserStatus(user, 'admin')
     }
@@ -100,6 +103,9 @@ export class AuthController {
           console.log(`User ${userData.id} is banned`)
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
+      }
+      if (!user) {
+        return this.ResponseService.unauthorized(res, 'User not found in channel')
       }
       const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)

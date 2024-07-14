@@ -32,7 +32,7 @@ export class AdminController {
       if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const { chatId } = req.params.chatId
+      const chatId  = req.params.chatId
       if(!chatId) {
         return this.ResponseService.badRequest(res, 'Missing chatId')
       }
@@ -64,7 +64,7 @@ export class AdminController {
       if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const { chatId } = req.params.chatId
+      const chatId  = req.params.chatId
       if(!chatId) {
         return this.ResponseService.badRequest(res, 'Missing chatId')
       }
@@ -98,7 +98,7 @@ export class AdminController {
         console.log('decoded', decoded)
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const { chatId } = req.params.chatId
+      const chatId  = req.params.chatId
       if(!chatId) {
         return this.ResponseService.badRequest(res, 'Missing chatId')
       }
@@ -128,7 +128,7 @@ export class AdminController {
         console.log('decoded', decoded)
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const { chatId } = req.params.chatId
+      const chatId = req.params.chatId
       if(!chatId) {
         return this.ResponseService.badRequest(res, 'Missing chatId')
       }

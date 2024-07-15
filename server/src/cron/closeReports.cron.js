@@ -22,7 +22,7 @@ export class CloseReports {
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
       const allUsers = await this.UserService.getMembers()
       const usersWithoutReports = allUsers.filter(
-        (user) => !ownerChatIds.includes(user.ChatId)
+        (user) => !ownerChatIds.includes(user.chatId)
       )
       let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {

@@ -48,11 +48,14 @@ export class AuthController {
   findOrCreateUser = async (userData) => {
     console.log('findOrCreateUser :', userData)
     const isMember = await this.ChannelService.isMember(userData.id)
+    console.log('isMember :', isMember)
     if (isMember === 'left') {
       return null
     }
     let user = await this.UserService.getUser(userData.id)
-
+    if(isMember === 'kicked') {
+      this.UserService.updateUserStatus(user,'banned')
+    }
     if (user && user.isBanned) {
       throw new Error('User is banned')
     }
@@ -92,7 +95,7 @@ export class AuthController {
       if (!initdata) {
         return this.ResponseService.badRequest(res, 'No data provided')
       }
-      // validate(initdata, botToken)
+      validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
       let user

@@ -2,12 +2,14 @@ import { ReportService } from '../services/report.service.js'
 import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { UserService } from '../services/user.service.js'
 import { TgBot } from '../../../bot/bot.js'
+import { StatusService } from '../services/status.service.js'
 export class CloseReports {
   constructor() {
     this.ReportService = new ReportService()
     this.UserService = new UserService()
     const botInstance = TgBot.getBotInstance()
     this.ChannelService = new ChannelService(botInstance)
+    this.StatusService = new StatusService()
   }
   async closeReports() {
     try {
@@ -22,18 +24,26 @@ export class CloseReports {
       const usersWithoutReports = allUsers.filter(
         (user) => !ownerChatIds.includes(user.ownerChatId)
       )
-      const usernamesWithoutReports = usersWithoutReports.map(
-        (user) => user.username
-      )
-      console.log('usernamesWithoutReports', usernamesWithoutReports)
+      let channelMembersWithoutReport = []
+      for (const user of usersWithoutReports) {
+        const userStatus = await this.StatusService.getStatusByUuid(user.status)
+        if(userStatus.value === 'member') {
+          this.ChannelService.kickUser(user.chatId)
+          this.ChannelService.banUser(user.chatId)
+          this.UserService.updateUserStatus(user,'banned')
+          if(!user.username){
+            channelMembersWithoutReport.push(user.firstName)
+            continue
+          }
+          channelMembersWithoutReport.push(user.username)
+        }
+
+      }
+
       await this.ChannelService.sendMessageToAdmin(
-        usernamesWithoutReports,
+        channelMembersWithoutReport,
         allUsers.length
       )
-      for (const user of usersWithoutReports) {
-        this.ChannelService.banUser(user.chatId)
-        this.UserService.updateUserStatus(user,'banned')
-      }
       // Отфильтровать всех пользователей по массиву с отчётами. = пользователи с отчётами
       // Получить пользователей у которых был отчёт за сутки = все пользователи
       // все пользователи - пользователи с отчётами = пользователи без отчёта

@@ -58,11 +58,29 @@ export class ChannelService {
       console.log('')
     }
   }
+  async kickUser(userId){
+    try {
+      const chatId = await this.bot.getChat(process.env.TG_CHANNEL)
+      await this.bot.banChatMember(chatId.linked_chat_id, userId)
+      console.log(`User with ID ${userId} has been kicked from the chat.`)
+    } catch (error) {
+      console.log('kick user from chat error :', error)
+    }
+  }
+  async unkickUser(userId){
+    try {
+      const chatId = await this.bot.getChat(process.env.TG_CHANNEL)
+      await this.bot.unbanChatMember(chatId.linked_chat_id, userId);
+      console.log(`User with ID ${userId} has been unkicked from the chat.`)
+    } catch (error) {
+      console.log('unkick user from chat error :', error)
+    }
+  }
   async banUser(chatId) {
     try {
       const ChannelId = process.env.TG_CHANNEL
       await this.bot.banChatMember(ChannelId, chatId)
-      console.log(`User with ID ${userId} has been kicked from the channel.`)
+      console.log(`User with ID ${chatId} has been banned from the channel.`)
     } catch (error) {
       console.error(`Error kicking user: ${error.message}`)
     }

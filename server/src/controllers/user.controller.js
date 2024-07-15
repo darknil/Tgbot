@@ -43,7 +43,6 @@ export class UserController {
               status: status.value,
               hasReport: hasUserReport
             }
-            console.log(newUser);
             updatedUsers.push(newUser);
           } catch (error) {
             console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);

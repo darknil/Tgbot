@@ -11,7 +11,6 @@ const reportSchema = new mongoose.Schema({
   },
   ownerUsername: {
     type: String,
-    required: true
   },
   userId: {
     type: Number

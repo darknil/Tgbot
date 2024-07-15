@@ -20,16 +20,16 @@ export class CloseReports {
       }
       const closedReports = await this.ReportService.getClosedReports()
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
-      const allUsers = await this.UserService.getUsers()
+      const allUsers = await this.UserService.getMembers()
       const usersWithoutReports = allUsers.filter(
-        (user) => !ownerChatIds.includes(user.ownerChatId)
+        (user) => !ownerChatIds.includes(user.ChatId)
       )
       let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
         if(userStatus.value === 'member') {
-          this.ChannelService.kickUser(user.chatId)
-          this.ChannelService.banUser(user.chatId)
+          // this.ChannelService.kickUser(user.chatId)
+          // this.ChannelService.banUser(user.chatId)
           this.UserService.updateUserStatus(user,'banned')
           if(!user.username){
             channelMembersWithoutReport.push(user.firstName)

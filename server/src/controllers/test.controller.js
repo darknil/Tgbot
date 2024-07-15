@@ -31,4 +31,13 @@ export class TestController {
       this.ResponseService.error(res, 'invalid token')
     }
   }
+  Test = async (req, res) => {
+    try {
+      this.CloseReports.closeReports()
+      this.ResponseService.success(res, 'success')
+    } catch (error) {
+      console.log('get test error', error)
+      this.ResponseService.error(res, 'invalid token')
+    }
+  }
 }

@@ -15,6 +15,7 @@ export class TestRoute {
       res.send('Hello from test route')
     })
     this.router.get('/test', this.TestController.getTest)
+    this.router.get('/close', this.TestController.Test)
   }
   getRouter() {
     return this.router

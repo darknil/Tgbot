@@ -7,36 +7,36 @@ export class ChannelHandler {
   }
   async handleBotAddedToChannel(msg) {
     try {
-      const chat = msg.chat;
-      const newChatMember = msg.new_chat_member;
-      const status = newChatMember.status;
+      // const chat = msg.chat;
+      // const newChatMember = msg.new_chat_member;
+      // const status = newChatMember.status;
 
-      // Проверяем, что бот был добавлен в канал
-      if (chat.type === 'channel' && status === 'member') {
-        const channelId = chat.id; // Получаем идентификатор канала
-        const inline_keyboard = {
-          inline_keyboard: [
-            [
-              {
-                text: 'Да',
-                callback_data: `addChannel.${channelId}`,
-              },
-              {
-                text: 'Нет',
-                callback_data: 'doNothing'
-              }
-            ],
-          ],
-        };
+      // // Проверяем, что бот был добавлен в канал
+      // if (chat.type === 'channel' && status === 'member') {
+      //   const channelId = chat.id; // Получаем идентификатор канала
+      //   const inline_keyboard = {
+      //     inline_keyboard: [
+      //       [
+      //         {
+      //           text: 'Да',
+      //           callback_data: `addChannel.${channelId}`,
+      //         },
+      //         {
+      //           text: 'Нет',
+      //           callback_data: 'doNothing'
+      //         }
+      //       ],
+      //     ],
+      //   };
 
-        const admins = await this.UserService.getAdmins();
-        for (let admin of admins) {
-          await this.bot.sendMessage(admin.chatId, 'Бот был добавлен в канал', {
-            reply_markup: inline_keyboard,
-          });
-        }
-        // Здесь можно добавить логику для обработки добавления бота в канал
-      }
+      //   const admins = await this.UserService.getAdmins();
+      //   for (let admin of admins) {
+      //     await this.bot.sendMessage(admin.chatId, 'Бот был добавлен в канал', {
+      //       reply_markup: inline_keyboard,
+      //     });
+      //   }
+      //   // Здесь можно добавить логику для обработки добавления бота в канал
+      // }
     } catch (error) {
       console.error('Ошибка обработки добавления бота в канал:', error);
     }

@@ -94,4 +94,12 @@ export class ChannelService {
       console.error(`Error unbanning user: ${error.message}`)
     }
   }
+  async sendMessageToUser(chatId,message){
+    try {
+      this.bot.sendMessage(chatId, message)
+      console.log('Сообщение успешно отправлено:', message)
+    } catch (error) {
+      console.log('send message to user error :', error)
+    }
+  }
 }

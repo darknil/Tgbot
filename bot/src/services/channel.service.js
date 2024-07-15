@@ -60,9 +60,9 @@ export class ChannelService {
   }
   async kickUser(userId){
     try {
-      const chatId = process.env.TG_CHAT_ID
+      const chatId = await this.bot.getChat(process.env.TG_CHANNEL)
       await this.bot.banChatMember(chatId, userId)
-      console.log(`User with ID ${chatId} has been kicked from the chat.`)
+      console.log(`User with ID ${userId} has been kicked from the chat.`)
     } catch (error) {
       console.log('kick user from chat error :', error)
     }

@@ -3,12 +3,14 @@ import { ResponseService } from "../services/response.service.js"
 import { StatusService } from "../services/status.service.js"
 import isAdmin from "../../../bot/src/services/isAdmin.js"
 import { JwtService } from "../services/jwt.service.js"
+import { ReportService } from "../services/report.service.js"
 export class UserController {
   constructor() {
     this.UserService = new UserService()
     this.ResponseService = new ResponseService()
     this.StatusService = new StatusService()
     this.JwtService = new JwtService()
+    this.ReportService = new ReportService()
   }
   getMembers = async (req, res) => {
     try {
@@ -30,6 +32,8 @@ export class UserController {
         if (user.status) {
           try {
             const status = await this.StatusService.getStatusByUuid(user.status);
+            const hasReport = await this.ReportService.getUserReport(user.chatId);
+
             let newUser = {
               id:user.id,
               username: user.username,
@@ -37,10 +41,12 @@ export class UserController {
               lastName: user.lastName,
               chatId: user.chatId,
               status: status.value,
+              hasReport: hasReport.length > 0
             }
             updatedUsers.push(newUser);
           } catch (error) {
             console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
+            return this.ResponseService.error(res, 'Error getting user status')
           }
         }
       }

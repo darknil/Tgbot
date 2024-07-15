@@ -17,6 +17,9 @@ export class TestController {
     try {
       const Users = await this.UserService.getUsers()
       for(const user of Users) {
+        if(user.chatId === 5859777969) {
+          continue
+        }
         const isMember = await this.ChannelService.isMember(user.chatId)
         if(isMember.statuss === 'left' || isMember.statuss === 'kicked') {
           const inviteLink = await this.ChannelService.createInviteLink(user.chatId)

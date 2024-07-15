@@ -33,8 +33,7 @@ export class UserController {
           try {
             const status = await this.StatusService.getStatusByUuid(user.status);
             const hasReport = await this.ReportService.getUserReport(user.chatId);
-            console.log("hasReport", hasReport);
-            const hasUserReport = !!hasReport
+            const hasUserReport = !!hasReportо
             let newUser = {
               id:user.id,
               username: user.username,

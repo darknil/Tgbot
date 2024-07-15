@@ -75,6 +75,7 @@ export class AdminController {
       }
       this.UserService.updateUserStatus(user,'member')
       this.UserService.updateUserField(user.chatId, 'isBanned', false)
+      this.ChannelService.unkickUser(chatId)
       this.ChannelService.unbanUser(chatId)
       const link = await this.ChannelService.createInviteLink()
       const message = messages.unbanned +'\n' + link.invite_link

@@ -23,7 +23,7 @@ export class TestController {
         const isMember = await this.ChannelService.isMember(user.chatId)
         if(isMember === 'left' || isMember === 'kicked') {
           const inviteLink = await this.ChannelService.createInviteLink(user.chatId)
-          this.ChannelService.sendMessageToUser(user.chatId, inviteLink)
+          this.ChannelService.sendMessageToUser(user.chatId, inviteLink.invite_link)
           const username = user.username? user.username : 'no username'
           console.log('message sent to user',user.firstName, username)
         }

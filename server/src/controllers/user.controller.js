@@ -26,7 +26,7 @@ export class UserController {
       if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const users = await this.UserService.getMembers()
+      const users = await this.UserService.getUsers()
       const updatedUsers = [];
       for (let user of users) {
         if (user.status) {

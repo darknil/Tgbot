@@ -16,12 +16,14 @@ export class TestController {
   getTest = async (req, res) => {
     try {
       const Users = await this.UserService.getUsers()
-      const message = 'Если у вас не работает ссылка для входа в канал. Напишите в личные сообщения к @Sqnder\nhttps://t.me/Sqnder'
       for(const user of Users) {
-        if(user.chatId===5859777969){
-          continue
+        const isMember = await this.ChannelService.isMember(user.chatId)
+        if(isMember.statuss === 'left' || isMember.statuss === 'kicked') {
+          const inviteLink = await this.ChannelService.createInviteLink(user.chatId)
+          this.ChannelService.sendMessageToUser(user.chatId, inviteLink)
+          const username = user.username? user.username : 'no username'
+          console.log('message sent to user',user.firstName, username)
         }
-        this.ChannelService.sendMessageToUser(user.chatId,message)
       }
       this.ResponseService.success(res, 'success')
     } catch (error) {

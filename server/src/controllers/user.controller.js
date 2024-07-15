@@ -33,7 +33,7 @@ export class UserController {
           try {
             const status = await this.StatusService.getStatusByUuid(user.status);
             const hasReport = await this.ReportService.getUserReport(user.chatId);
-
+            const hasUserReport = hasReport && hasReport.length > 0;
             let newUser = {
               id:user.id,
               username: user.username,
@@ -41,7 +41,7 @@ export class UserController {
               lastName: user.lastName,
               chatId: user.chatId,
               status: status.value,
-              hasReport: hasReport.length > 0
+              hasReport: hasUserReport
             }
             updatedUsers.push(newUser);
           } catch (error) {

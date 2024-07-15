@@ -46,7 +46,6 @@ export class UserController {
             updatedUsers.push(newUser);
           } catch (error) {
             console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
-            return this.ResponseService.error(res, 'Error getting user status')
           }
         }
       }

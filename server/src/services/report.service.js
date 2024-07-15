@@ -139,7 +139,7 @@ export class ReportService {
         date: { $gte: startOfDay, $lt: endOfDay }
       })
       if (!userReport) {
-        return false
+        return null
       }
       return userReport
     } catch (error) {

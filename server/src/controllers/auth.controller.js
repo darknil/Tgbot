@@ -50,7 +50,7 @@ export class AuthController {
     const isMember = await this.ChannelService.isMember(userData.id)
     console.log('isMember :', isMember)
     if (isMember === 'left') {
-      return null
+      this.UserService.updateUserStatus(user,'guest')
     }
     let user = await this.UserService.getUser(userData.id)
     if(isMember === 'kicked') {

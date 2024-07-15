@@ -24,7 +24,7 @@ export class UserController {
       if(status.value!== 'admin') {
         return this.ResponseService.unauthorized(res, 'Unauthorized')
       }
-      const users = await this.UserService.getUsers()
+      const users = await this.UserService.getMembers()
       const updatedUsers = [];
       for (let user of users) {
         if (user.status) {
@@ -33,6 +33,8 @@ export class UserController {
             let newUser = {
               id:user.id,
               username: user.username,
+              firstName: user.firstName,
+              lastName: user.lastName,
               chatId: user.chatId,
               status: status.value,
             }

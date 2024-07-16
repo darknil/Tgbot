@@ -36,7 +36,7 @@ export class TestController {
   }
   Test = async (req, res) => {
     try {
-      this.CloseReports.closeReports()
+      this.CloseReports.closeReports(1)
       this.ResponseService.success(res, 'success')
     } catch (error) {
       console.log('get test error', error)

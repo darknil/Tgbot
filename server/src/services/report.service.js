@@ -120,7 +120,7 @@ export class ReportService {
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
       const closedReports = await Report.find({
         isClosed: true,
-        closedAt: {
+        date: {
           $gte: startOfDay,
           $lte: endOfDay
         }

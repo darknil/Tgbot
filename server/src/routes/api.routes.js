@@ -55,7 +55,6 @@ export class ApiRouter {
       this.TransactionController.createTransaction
     )
 
-    this.router.post('/test/test', this.TestController.getTest)
   }
   getRouter() {
     return this.router

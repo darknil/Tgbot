@@ -18,15 +18,20 @@ export class ChannelService {
   }
   async sendMessageToAdmin(usernames, userscount) {
     try {
-      const adminId = process.env.ADMINS
+      const adminIds = process.env.ADMINS.split(',');
       const channelId = process.env.TG_CHANNEL
       const userMentions = usernames
         .map((username) => `@${username}`)
         .join(', ')
       const subscribersCount = await this.bot.getChatMemberCount(channelId)
       const caption = `Пользователи, которые не заполнили ежедневный отчёт:${userMentions}\nВсего пользователей в боте:${userscount}\nВсего пользователей в канале :${subscribersCount}`
-      const response = await this.bot.sendMessage(adminId, caption)
-      console.log('Сообщение успешно отправлено:', response)
+      const sendMessagePromises = adminIds.map(async (adminId) => {
+        const response = await this.bot.sendMessage(adminId.trim(), caption);
+        console.log('Сообщение успешно отправлено:', response);
+        return response;
+      });
+      const responses = await Promise.all(sendMessagePromises);
+      console.log('Сообщение успешно отправлено:', responses)
     } catch (error) {
       console.log('send message to admin error :', error)
     }
@@ -50,7 +55,7 @@ export class ChannelService {
     try {
       const chatId = process.env.TG_CHANNEL
       const inviteLink = await this.bot.createChatInviteLink(chatId, {
-        expire_date: Math.floor(Date.now() / 1000) + 60 * 60,
+        expire_date: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
         member_limit: 1
       })
       return inviteLink
@@ -92,6 +97,14 @@ export class ChannelService {
       console.log(`User with ID ${chatId} has been unbanned from the channel.`)
     } catch (error) {
       console.error(`Error unbanning user: ${error.message}`)
+    }
+  }
+  async sendMessageToUser(chatId,message){
+    try {
+      this.bot.sendMessage(chatId, message)
+      console.log('Сообщение успешно отправлено:', message)
+    } catch (error) {
+      console.log('send message to user error :', error)
     }
   }
 }

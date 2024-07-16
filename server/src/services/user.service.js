@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
 export class UserService {
@@ -113,8 +114,8 @@ export class UserService {
   }
   async getMembers() {
     try {
-      const statusId = new Status('669408eafd0f56d32fe90549');
-      const users = await User.find({ status: statusId });
+      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
+      const users = await User.find({ status: statusId }).populate('status');
       return users;
     } catch (error) {
       console.log('get members error:', error);

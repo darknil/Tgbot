@@ -11,14 +11,14 @@ export class CloseReports {
     this.ChannelService = new ChannelService(botInstance)
     this.StatusService = new StatusService()
   }
-  async closeReports() {
+  async closeReports(daysBack) {
     try {
       /// вызвать метод для изменения статуса отчётов за прошлые сутки
-      const updated = await this.ReportService.closeReportsForPreviousDay() // закрыть отчёты
+      const updated = await this.ReportService.closeReportsForPreviousDay(daysBack) // закрыть отчёты
       if (!updated) {
         throw new Error('reports was not updated')
       }
-      const closedReports = await this.ReportService.getClosedReports()
+      const closedReports = await this.ReportService.getClosedReports(daysBack)
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
       const allUsers = await this.UserService.getMembers()
       const usersWithoutReports = allUsers.filter(

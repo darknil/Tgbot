@@ -92,9 +92,9 @@ export class ReportService {
     }
   }
 
-  async closeReportsForPreviousDay() {
+  async closeReportsForPreviousDay(daysBack) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
 
       const result = await Report.updateMany(
         {
@@ -115,9 +115,16 @@ export class ReportService {
       throw error
     }
   }
-  async getClosedReports() {
+  async getClosedReports(daysBack) {
     try {
-      const closedReports = await Report.find({ isClosed: true })
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
+      const closedReports = await Report.find({
+        isClosed: true,
+        closedAt: {
+          $gte: startOfDay,
+          $lte: endOfDay
+        }
+      });
       return closedReports
     } catch (error) {
       console.log('get closed reports error :', error)
@@ -148,7 +155,6 @@ export class ReportService {
   }
   async getUserReports(chatId) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
       const userReports = await Report.find({
         ownerChatId: chatId
       })
@@ -164,7 +170,7 @@ export class ReportService {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange()
       const reports = await Report.find({
-        date: { $gte: startOfPreviousDay, $lt: endOfPreviousDay }
+        date: { $gte: startOfDay, $lt: endOfDay }
       })
       if (!reports) {
         return false

@@ -21,6 +21,7 @@ export class TestController {
     try {
       const users = await this.UserService.getUsers()
       const updatedUsers = [];
+      console.log('this',this)
       for (let user of users) {
         if (user.status) {
           try {

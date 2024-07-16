@@ -98,7 +98,7 @@ export class UserService {
       if (!updatedUser) {
         throw new Error('User not found')
       }
-
+      console.log('updated user', updatedUser)
       return updatedUser
     } catch (error) {
       console.log('update user status error :', error)

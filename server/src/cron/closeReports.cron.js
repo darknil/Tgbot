@@ -23,14 +23,13 @@ export class CloseReports {
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
       console.log('owner chat ids', ownerChatIds)
       const allUsers = await this.UserService.getMembers()
-      console.log('all users', allUsers)
       console.log('all users lenght', allUsers.length)
       const usersWithoutReports = allUsers.filter(
         (user) => !ownerChatIds.includes(user.chatId)
       )
       console.log('users without reports', usersWithoutReports)
       let channelMembersWithoutReport = []
-      for (const user of usersWithoutReports) {
+      for (const user of allUsers) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
         if(userStatus.value === 'banned') {
           // this.ChannelService.kickUser(user.chatId)

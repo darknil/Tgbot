@@ -27,11 +27,9 @@ export class ChannelService {
       const caption = `Пользователи, которые не заполнили ежедневный отчёт:${userMentions}\nВсего пользователей в боте:${userscount}\nВсего пользователей в канале :${subscribersCount}`
       const sendMessagePromises = adminIds.map(async (adminId) => {
         const response = await this.bot.sendMessage(adminId.trim(), caption);
-        console.log('Сообщение успешно отправлено:', response);
         return response;
       });
       const responses = await Promise.all(sendMessagePromises);
-      console.log('Сообщение успешно отправлено:', responses)
     } catch (error) {
       console.log('send message to admin error :', error)
     }

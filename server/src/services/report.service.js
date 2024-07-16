@@ -1,6 +1,7 @@
 import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
+import { now } from 'mongoose'
 export class ReportService {
   create = async (user, questions) => {
     try {
@@ -92,9 +93,9 @@ export class ReportService {
     }
   }
 
-  async closeReportsForPreviousDay() {
+  async closeReportsForPreviousDay(daysBack) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
 
       const result = await Report.updateMany(
         {
@@ -115,9 +116,16 @@ export class ReportService {
       throw error
     }
   }
-  async getClosedReports() {
+  async getClosedReports(daysBack) {
     try {
-      const closedReports = await Report.find({ isClosed: true })
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
+      const closedReports = await Report.find({
+        isClosed: true,
+        date: {
+          $gte: startOfDay,
+          $lte: endOfDay
+        }
+      });
       return closedReports
     } catch (error) {
       console.log('get closed reports error :', error)
@@ -133,7 +141,12 @@ export class ReportService {
   }
   async getUserReport(chatId) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const nowDate = new Date()
+      let daysBack = 0
+      if(nowDate.getHours() > 0 && nowDate.getHours() < 10){
+        daysBack = 1
+      }
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
       const userReport = await Report.findOne({
         ownerChatId: chatId,
         date: { $gte: startOfDay, $lt: endOfDay }
@@ -148,7 +161,6 @@ export class ReportService {
   }
   async getUserReports(chatId) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
       const userReports = await Report.find({
         ownerChatId: chatId
       })
@@ -164,7 +176,7 @@ export class ReportService {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange()
       const reports = await Report.find({
-        date: { $gte: startOfPreviousDay, $lt: endOfPreviousDay }
+        date: { $gte: startOfDay, $lt: endOfDay }
       })
       if (!reports) {
         return false

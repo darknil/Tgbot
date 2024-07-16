@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
 export class UserService {
@@ -97,7 +98,7 @@ export class UserService {
       if (!updatedUser) {
         throw new Error('User not found')
       }
-
+      console.log('updated user', updatedUser)
       return updatedUser
     } catch (error) {
       console.log('update user status error :', error)
@@ -111,12 +112,13 @@ export class UserService {
       console.log('get admins error :', error)
     }
   }
-  async getMembers(){
+  async getMembers() {
     try {
-      const users = await User.find({ 'status': new Object('669408eafd0f56d32fe90549') })
+      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
+      const users = await User.find({ status: statusId })
       return users;
     } catch (error) {
-      console.log('get members error :', error)
+      console.log('get members error:', error);
     }
   }
 }

@@ -4,6 +4,8 @@ import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { MessageService } from '../../../bot/src/services/message.service.js'
 import { UserService } from '../services/user.service.js'
 import { CloseReports } from '../cron/closeReports.cron.js'
+import { StatusService } from '../services/status.service.js'
+import { ReportService } from '../services/report.service.js'
 export class TestController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -11,6 +13,8 @@ export class TestController {
     this.ChannelService = new ChannelService(botInstance)
     this.MessageService = new MessageService(botInstance)
     this.UserService = new UserService()
+    this.StatusService = new StatusService()
+    this.ReportService = new ReportService()
     this.CloseReports = new CloseReports()
   }
   getTest = async (req, res) => {

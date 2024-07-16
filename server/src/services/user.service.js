@@ -115,7 +115,7 @@ export class UserService {
   async getMembers() {
     try {
       const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
-      const users = await User.find({ status: statusId }).populate('status');
+      const users = await User.find({ status: statusId })
       return users;
     } catch (error) {
       console.log('get members error:', error);

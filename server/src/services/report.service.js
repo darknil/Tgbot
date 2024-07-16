@@ -1,6 +1,7 @@
 import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
+import { now } from 'mongoose'
 export class ReportService {
   create = async (user, questions) => {
     try {
@@ -140,7 +141,12 @@ export class ReportService {
   }
   async getUserReport(chatId) {
     try {
-      const { startOfDay, endOfDay } = getPreviousDayRange()
+      const nowDate = new Date()
+      let daysBack = 0
+      if(nowDate.getHours() > 0 && nowDate.getHours() < 10){
+        daysBack = 1
+      }
+      const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
       const userReport = await Report.findOne({
         ownerChatId: chatId,
         date: { $gte: startOfDay, $lt: endOfDay }

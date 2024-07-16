@@ -15,20 +15,30 @@ export class TestController {
   }
   getTest = async (req, res) => {
     try {
-      // const Users = await this.UserService.getUsers()
-      // for(const user of Users) {
-      //   if(user.chatId === 5859777969) {
-      //     continue
-      //   }
-      //   const isMember = await this.ChannelService.isMember(user.chatId)
-      //   if(isMember === 'left' || isMember === 'kicked') {
-      //     const inviteLink = await this.ChannelService.createInviteLink(user.chatId)
-      //     this.ChannelService.sendMessageToUser(user.chatId, inviteLink.invite_link)
-      //     const username = user.username? user.username : 'no username'
-      //     console.log('message sent to user',user.firstName, username)
-      //   }
-      // }
-      this.ResponseService.success(res, 'success')
+      const users = await this.UserService.getUsers()
+      const updatedUsers = [];
+      for (let user of users) {
+        if (user.status) {
+          try {
+            const status = await this.StatusService.getStatusByUuid(user.status);
+            const hasReport = await this.ReportService.getUserReport(user.chatId);
+            const hasUserReport = !!hasReport
+            let newUser = {
+              id:user.id,
+              username: user.username,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              chatId: user.chatId,
+              status: status.value,
+              hasReport: hasUserReport
+            }
+            updatedUsers.push(newUser);
+          } catch (error) {
+            console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
+          }
+        }
+      }
+      return this.ResponseService.success(res, updatedUsers);
     } catch (error) {
       console.log('get test error', error)
       this.ResponseService.error(res, 'invalid token')

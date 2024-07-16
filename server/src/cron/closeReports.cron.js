@@ -44,10 +44,10 @@ export class CloseReports {
 
       }
 
-      await this.ChannelService.sendMessageToAdmin(
-        channelMembersWithoutReport,
-        allUsers.length
-      )
+      // await this.ChannelService.sendMessageToAdmin(
+      //   channelMembersWithoutReport,
+      //   allUsers.length
+      // )
       // Отфильтровать всех пользователей по массиву с отчётами. = пользователи с отчётами
       // Получить пользователей у которых был отчёт за сутки = все пользователи
       // все пользователи - пользователи с отчётами = пользователи без отчёта

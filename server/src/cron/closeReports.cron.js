@@ -32,10 +32,10 @@ export class CloseReports {
       let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
-        if(userStatus.value === 'member') {
+        if(userStatus.value === 'banned') {
           // this.ChannelService.kickUser(user.chatId)
           // this.ChannelService.banUser(user.chatId)
-          this.UserService.updateUserStatus(user,'banned')
+          // this.UserService.updateUserStatus(user,'member')
           if(!user.username){
             channelMembersWithoutReport.push(user.firstName)
             continue

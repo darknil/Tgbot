@@ -111,12 +111,13 @@ export class UserService {
       console.log('get admins error :', error)
     }
   }
-  async getMembers(){
+  async getMembers() {
     try {
-      const users = await User.find({ 'status': new Object('669408eafd0f56d32fe90549') })
+      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
+      const users = await User.find({ status: statusId });
       return users;
     } catch (error) {
-      console.log('get members error :', error)
+      console.log('get members error:', error);
     }
   }
 }

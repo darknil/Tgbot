@@ -8,6 +8,7 @@ import { JwtService } from "../services/jwt.service.js"
 
 import { messages } from "../config/messages.config.js"
 import isAdmin from "../../../bot/src/services/isAdmin.js"
+import { errorLogger,dataLogger } from "../logger/logger.js"
 export class AdminController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -46,6 +47,7 @@ export class AdminController {
       this.ChannelService.banUser(chatId)
       return this.ResponseService.success(res, 'User banned')
     } catch (error) {
+      errorLogger.error('ban user error', error)
       console.log('ban user error', error)
       return this.ResponseService.error(res, 'Error banning user')
     }
@@ -82,6 +84,7 @@ export class AdminController {
       await this.MessageService.SendMessageToUser(user.chatId, message)
       return this.ResponseService.success(res, 'User unbanned')
     } catch(error) {
+      errorLogger.error('unban user error', error)
       console.log('unban user error', error)
       return this.ResponseService.error(res, 'Error unbanning user')
     }
@@ -112,6 +115,7 @@ export class AdminController {
       this.UserService.updateUserStatus(user,'freezed')
       return this.ResponseService.success(res, 'User freezed')
     } catch (error) {
+      errorLogger.error('freeze member error', error)
       console.log('freeze member error', error)
       return this.ResponseService.error(res, 'freeze member error')
     }
@@ -142,6 +146,7 @@ export class AdminController {
       this.UserService.updateUserStatus(user,'member')
       return this.ResponseService.success(res, 'User unfreezed')
     } catch (error) {
+      errorLogger.error('unfreeze member error', error)
       console.log('unfreeze member error', error)
       return this.ResponseService.error
     }

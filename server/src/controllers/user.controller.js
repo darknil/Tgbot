@@ -4,6 +4,7 @@ import { StatusService } from "../services/status.service.js"
 import isAdmin from "../../../bot/src/services/isAdmin.js"
 import { JwtService } from "../services/jwt.service.js"
 import { ReportService } from "../services/report.service.js"
+import { errorLogger,dataLogger } from "../logger/logger.js"
 export class UserController {
   constructor() {
     this.UserService = new UserService()
@@ -45,13 +46,15 @@ export class UserController {
             }
             updatedUsers.push(newUser);
           } catch (error) {
-            console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
+            console.error(`error updating user status ${user.username}:`, error);
+            errorLogger.error(`error updating user status ${user.username}:`, error);
           }
         }
       }
       return this.ResponseService.success(res, updatedUsers);
     } catch (error) {
       console.log('get members error', error)
+      errorLogger.error('get members error', error)
       return this.ResponseService.error(res, 'Error getting members')
     }
   }

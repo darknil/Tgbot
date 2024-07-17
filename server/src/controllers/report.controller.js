@@ -5,6 +5,7 @@ import { ResponseService } from '../services/response.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { UserService } from '../services/user.service.js'
 import upload from '../config/multer.config.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class ReportController {
   constructor() {
     this.ReportService = new ReportService()
@@ -30,6 +31,7 @@ export class ReportController {
       return this.ResponseService.success(res, reports)
     } catch (error) {
       console.log('get all reports error', error)
+      errorLogger.error('get all reports error', error)
       return this.ResponseService.error(res, 'Error getting reports')
     }
   }
@@ -54,6 +56,7 @@ export class ReportController {
       }
       return this.ResponseService.success(res, reports)
     } catch (error) {
+      errorLogger.error('get reports by day error', error)
       console.log('get reports by day error', error)
     }
   }
@@ -68,11 +71,8 @@ export class ReportController {
       if (!decoded) {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
-      console.log('decoded post report token :', decoded)
       const { question1, question2, question3 } = req.body
-      console.log('question1 :', question1)
-      console.log('question2 :', question2)
-      console.log('question3 :', question3)
+
 
       const questions = [question1, question2, question3]
       if (questions.includes(undefined)) {
@@ -95,9 +95,9 @@ export class ReportController {
       if (!report) {
         return this.ResponseService.badRequest(res, 'Error creating report')
       }
-      console.log('created report', report)
       return this.ResponseService.success(res, report.id)
     } catch (error) {
+      errorLogger.error('post user report error', error)
       console.log('post user report error', error)
       return this.ResponseService.error(res, 'Error creating report')
     }
@@ -119,6 +119,7 @@ export class ReportController {
       }
       return this.ResponseService.success(res, report)
     } catch (error) {
+      errorLogger.error('get user report by day error', error)
       console.log('get user report by day error', error)
       return this.ResponseService.error(res, 'Error getting report')
     }
@@ -142,6 +143,7 @@ export class ReportController {
       }
       return this.ResponseService.success(res, reports)
     } catch (error) {
+      errorLogger.error('get user reports error', error)
       console.log('get user reports error', error)
       return this.ResponseService.error(res, 'Error getting reports')
     }

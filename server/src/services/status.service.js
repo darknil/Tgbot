@@ -1,4 +1,5 @@
 import { Status } from '../models/status.model.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class StatusService {
   async createStatus(value) {
     try {
@@ -12,6 +13,7 @@ export class StatusService {
       const savedStatus = await newStatus.save()
       return savedStatus
     } catch (error) {
+      errorLogger.error('create status error', error)
       console.log('create status error', error)
       return false
     }
@@ -24,6 +26,7 @@ export class StatusService {
       }
       return status
     } catch (error) {
+      errorLogger.error('get status error', error)
       console.log('get status error', error)
     }
   }
@@ -35,6 +38,7 @@ export class StatusService {
       }
       return status
     } catch (error) {
+      errorLogger.error('get status by uuid error', error)
       console.log('get status by uuid error', error)
     }
   }

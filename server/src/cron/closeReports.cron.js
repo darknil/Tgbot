@@ -3,6 +3,7 @@ import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { UserService } from '../services/user.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { StatusService } from '../services/status.service.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class CloseReports {
   constructor() {
     this.ReportService = new ReportService()
@@ -54,6 +55,7 @@ export class CloseReports {
       // Вызвать метод кика пользователей для тех кто без отчёта
       // поменять статус пользователям isBanned = true
     } catch (error) {
+      errorLogger.error('close reports error :', error)
       console.log('close reports error :', error)
     }
   }

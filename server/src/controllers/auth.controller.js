@@ -9,6 +9,7 @@ import { TelegramUserIdResolver } from '../utils/TelegramUserIdResolver.js'
 import { validate } from '@telegram-apps/init-data-node'
 import { parse } from 'querystring'
 import 'dotenv/config'
+import { errorLogger, dataLogger } from '../logger/logger.js'
 const botToken = process.env.TG_TOKEN
 export class AuthController {
   constructor() {
@@ -46,48 +47,51 @@ export class AuthController {
     }
   }
   findOrCreateUser = async (userData) => {
-    console.log('findOrCreateUser :', userData)
-    const isMember = await this.ChannelService.isMember(userData.id)
-    console.log('isMember :', isMember)
-    if (isMember === 'left') {
-      this.UserService.updateUserStatus(user,'guest')
-    }
-    let user = await this.UserService.getUser(userData.id)
-    if(isMember === 'kicked') {
-      this.UserService.updateUserStatus(user,'banned')
-    }
-    if (user && user.isBanned) {
-      throw new Error('User is banned')
-    }
-    if (!user) {
-      try {
-        user = await this.UserService.createUser(
-          userData.username,
+    try {
+      const isMember = await this.ChannelService.isMember(userData.id)
+      if (isMember === 'left') {
+        this.UserService.updateUserStatus(user,'guest')
+      }
+      let user = await this.UserService.getUser(userData.id)
+      if(isMember === 'kicked') {
+        this.UserService.updateUserStatus(user,'banned')
+      }
+      if (user && user.isBanned) {
+        throw new Error('User is banned')
+      }
+      if (!user) {
+        try {
+          user = await this.UserService.createUser(
+            userData.username,
+            userData.id,
+            userData.first_name,
+            userData.last_name
+          );
+        } catch (error) {
+          errorLogger.error('create user error :', error)
+          console.log('create user error :', error)
+        }
+      } else if (user.chatId === 0) {
+        user = await this.fillEmptyUser(
+          user,
           userData.id,
           userData.first_name,
           userData.last_name
         );
-      } catch (error) {
-        console.log('create user error :', error)
       }
-    } else if (user.chatId === 0) {
-      user = await this.fillEmptyUser(
-        user,
-        userData.id,
-        userData.first_name,
-        userData.last_name
-      );
+  
+      if(isMember === 'creator' || isMember === 'administrator'){
+        user = await this.UserService.updateUserStatus(user, 'admin')
+      }
+      if (isMember ==='member') {
+        user = await this.UserService.updateUserStatus(user, 'member')
+      }
+      return user;
+    } catch (error) {
+      errorLogger.error('find or create user error :', error)
+      console.log('find or create user error :', error)
     }
-    
-    console.log('isMember :', isMember)
 
-    if(isMember === 'creator' || isMember === 'administrator'){
-      user = await this.UserService.updateUserStatus(user, 'admin')
-    }
-    if (isMember ==='member') {
-      user = await this.UserService.updateUserStatus(user, 'member')
-    }
-    return user;
   }
   verifyUser = async (req, res) => {
     try {
@@ -103,7 +107,6 @@ export class AuthController {
         user = await this.findOrCreateUser(userData)
       } catch (error) {
         if (error.message === 'User is banned') {
-          console.log(`User ${userData.id} is banned`)
           return this.ResponseService.unauthorized(res, 'User is banned')
         }
       }
@@ -114,6 +117,7 @@ export class AuthController {
       return this.ResponseService.success(res, token)
 
     } catch (error) {
+      errorLogger.error('verify user membership error', error)
       console.log('verify user membership error', error)
       return this.ResponseService.error(res, 'Error verifying user membership')
     }
@@ -132,6 +136,7 @@ export class AuthController {
       }
       return this.ResponseService.success(res, { valid: true, decoded })
     } catch (error) {
+      errorLogger.error('verify token error', error)
       console.log('verify token error', error)
       return this.ResponseService.error(res, 'Error verify token')
     }
@@ -159,7 +164,8 @@ export class AuthController {
       }
       return this.ResponseService.success(res, status.value)
     } catch (error) {
-      console.log('check user error', error)
+      errorLogger.error('check user status error', error)
+      console.log('check user status error', error)
       return this.ResponseService.error(res, 'Error checking user')
     }
   }

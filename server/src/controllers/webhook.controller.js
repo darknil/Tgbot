@@ -5,6 +5,7 @@ import { UnbanUserFromChannel } from '../../../bot/src/services/unbanUserFromCha
 import { MessageService } from '../../../bot/src/services/message.service.js'
 import { UserService } from '../services/user.service.js'
 import { TgBot } from '../../../bot/bot.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class WebHookController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -63,6 +64,7 @@ export class WebHookController {
 
       return this.ResponseService.success(res, 'webhook received')
     } catch (error) {
+      errorLogger.error('handle webhook error :', error)
       console.log('handle webhook error :', error)
     }
   }

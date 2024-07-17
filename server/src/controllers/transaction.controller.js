@@ -4,6 +4,7 @@ import { TransactionService } from '../services/transaction.service.js'
 import { InvoiceDTO } from '../dtos/invoice.dto.js'
 import { ApiService } from '../services/api.service.js'
 import { JwtService } from '../services/jwt.service.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class TransactionController {
   constructor() {
     this.JwtService = new JwtService()
@@ -44,6 +45,7 @@ export class TransactionController {
       return this.ResponseService.success(res, invoice.paymentUrl)
     } catch (error) {
       console.log('create transaction error :', error)
+      errorLogger.error('create transaction error :', error)
     }
   }
 }

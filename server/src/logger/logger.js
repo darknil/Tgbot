@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { createLogger, format, transports } from 'winston'
+import DailyRotateFile from 'winston-daily-rotate-file'
 
 const { combine, timestamp, printf } = format
 
@@ -17,36 +18,42 @@ if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir)
 }
 
-// Путь к файлу логов для ошибок
-const errorLogFilePath = path.join(logDir, 'error.log')
-
-// Путь к файлу логов для данных
-const dataLogFilePath = path.join(logDir, 'data.log')
-
-// Создание логгера для ошибок
+// Настройка логгера для ошибок с ежедневной ротацией
 const errorLogger = createLogger({
-  level: 'error', // Уровень логирования (error)
+  level: 'error',
   format: combine(
-    timestamp(), // Добавление временной метки
-    format.errors({ stack: true }), // Включение стека ошибок
-    myFormat // Использование пользовательского формата
+    timestamp(),
+    format.errors({ stack: true }),
+    myFormat
   ),
   transports: [
-    // Транспорт для записи логов в файл
-    new transports.File({ filename: errorLogFilePath, level: 'error' })
+    new DailyRotateFile({
+      filename: path.join(logDir, 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
+      level: 'error'
+    })
   ]
 })
 
-// Создание логгера для данных
+// Настройка логгера для данных с ежедневной ротацией
 const dataLogger = createLogger({
-  level: 'info', // Уровень логирования (info)
+  level: 'info',
   format: combine(
-    timestamp(), // Добавление временной метки
-    myFormat // Использование пользовательского формата
+    timestamp(),
+    myFormat
   ),
   transports: [
-    // Транспорт для записи логов в файл
-    new transports.File({ filename: dataLogFilePath, level: 'info' })
+    new DailyRotateFile({
+      filename: path.join(logDir, 'data-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
+      level: 'info'
+    })
   ]
 })
 

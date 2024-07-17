@@ -1,5 +1,6 @@
 import { DaysService } from '../services/days.service.js'
 import { ResponseService } from '../services/response.service.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class DaysController {
   constructor() {
     this.DaysService = new DaysService()
@@ -8,9 +9,9 @@ export class DaysController {
   getDaysQuantity = async (req, res) => {
     try {
       const daysCount = await this.DaysService.DaysQuantity()
-      console.log('daysCount :', daysCount)
       this.ResponseService.success(res, daysCount)
     } catch (error) {
+      errorLogger.error('getDaysCount error', error)
       console.log('getDaysCount error', error)
       this.ResponseService.error(res)
     }
@@ -18,9 +19,9 @@ export class DaysController {
   getCurrentDay = async (req, res) => {
     try {
       const currentDay = await this.DaysService.CurrentDay()
-      console.log('get currentday day :', currentDay)
       this.ResponseService.success(res, currentDay)
     } catch (error) {
+      errorLogger.error('get current day error :', error)
       console.log('get current day error :', error)
       this.ResponseService.error(res)
     }

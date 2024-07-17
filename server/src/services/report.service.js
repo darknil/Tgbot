@@ -1,7 +1,7 @@
 import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
-import { now } from 'mongoose'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class ReportService {
   create = async (user, questions) => {
     try {
@@ -42,6 +42,7 @@ export class ReportService {
       const savedReport = await newReport.save()
       return savedReport
     } catch (error) {
+      errorLogger.error('Create user report error:', error)
       console.error('Create user report error:', error)
       return false
     }
@@ -60,6 +61,7 @@ export class ReportService {
       )
       return result
     } catch (error) {
+      errorLogger.error('update user field error', error)
       console.log('update user field error', error)
     }
   }
@@ -88,6 +90,7 @@ export class ReportService {
 
       return reports
     } catch (error) {
+      errorLogger.error('Error fetching reports by day:', error)
       console.error('Error fetching reports by day:', error)
       throw error
     }
@@ -109,9 +112,9 @@ export class ReportService {
           $set: { isClosed: true }
         }
       )
-      console.log(`Reports closed for the previous day: ${result.nModified}`)
       return true
     } catch (error) {
+      errorLogger.error('Error closing reports for the previous day:', error)
       console.error('Error closing reports for the previous day:', error)
       throw error
     }
@@ -128,6 +131,7 @@ export class ReportService {
       });
       return closedReports
     } catch (error) {
+      errorLogger.error('get closed reports error :', error)
       console.log('get closed reports error :', error)
     }
   }
@@ -136,6 +140,7 @@ export class ReportService {
       const reports = await Report.find()
       return reports
     } catch (error) {
+      errorLogger.error('get user error', error)
       console.log('get user error', error)
     }
   }
@@ -156,6 +161,7 @@ export class ReportService {
       }
       return userReport
     } catch (error) {
+      errorLogger.error('get user report  error', error)
       console.log('get user report  error', error)
     }
   }
@@ -169,6 +175,7 @@ export class ReportService {
       }
       return userReports
     } catch (error) {
+      errorLogger.error('get user reports error', error)
       console.log('get user reports error', error)
     }
   }
@@ -183,6 +190,7 @@ export class ReportService {
       }
       return reports
     } catch (error) {
+      errorLogger.error('get last day reports error', error)
       console.log('get last day reports error', error)
       return false
     }
@@ -195,6 +203,7 @@ export class ReportService {
       }
       return report
     } catch (error) {
+      errorLogger.error('get report by id error', error)
       console.log('get report by id error', error)
     }
   }
@@ -206,6 +215,7 @@ export class ReportService {
       }
       return result
     } catch (error) {
+      errorLogger.error('delete report error', error)
       console.log('delete report error', error)
     }
   }

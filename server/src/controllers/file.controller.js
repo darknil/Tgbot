@@ -11,6 +11,7 @@ import 'dotenv/config'
 import { ReportService } from '../services/report.service.js'
 import { ResponseService } from '../services/response.service.js'
 import { JwtService } from '../services/jwt.service.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 const bucketName = process.env.AWS_BUCKET_NAME
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -61,6 +62,7 @@ export class FileController {
 
         // Get public URL for viewing the uploaded file
         const publicUrl = `https://s3.timeweb.cloud/${bucketName}/profilePics/${originalFilename}`
+        dataLogger.info('File uploaded to:', [publicUrl])
         console.log('File uploaded to:', [publicUrl])
         await this.ReportService.updateReportField(
           reportId,
@@ -69,6 +71,7 @@ export class FileController {
         )
         return this.ResponseService.success(res, publicUrl)
       } catch (error) {
+        errorLogger.error('Error uploading file:', error)
         console.error('Error uploading file:', error)
         res.status(500).send('Error uploading file')
       }
@@ -92,6 +95,7 @@ export class FileController {
       console.log(`${filePath} uploaded to ${bucketName}`)
       return data
     } catch (error) {
+      errorLogger.error('Error uploading to S3:', error)
       console.error('Error uploading to S3:', error)
       throw error // Пробрасываем ошибку дальше для обработки
     }
@@ -101,7 +105,9 @@ export class FileController {
     try {
       await fs.unlink(filePath)
       console.log(`File ${filePath} successfully deleted`)
+      dataLogger.info(`File ${filePath} successfully deleted`)
     } catch (error) {
+      errorLogger.error(`Error deleting file ${filePath}:`, error)
       console.error(`Error deleting file ${filePath}:`, error)
     }
   }

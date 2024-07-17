@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service.js'
 import { CloseReports } from '../cron/closeReports.cron.js'
 import { StatusService } from '../services/status.service.js'
 import { ReportService } from '../services/report.service.js'
+import { errorLogger,dataLogger } from '../logger/logger.js'
 export class TestController {
   constructor() {
     const botInstance = TgBot.getBotInstance()
@@ -38,14 +39,16 @@ export class TestController {
             }
             updatedUsers.push(newUser);
           } catch (error) {
+            errorLogger.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
             console.error(`Ошибка при обновлении статуса для пользователя ${user.username}:`, error);
           }
         }
       }
       return this.ResponseService.success(res, updatedUsers);
     } catch (error) {
-      console.log('get test error', error)
-      this.ResponseService.error(res, 'invalid token')
+      console.log('get test error :', error)
+      errorLogger.error('get test error:', error);
+      return this.ResponseService.error(res, )
     }
   }
   Test = async (req, res) => {
@@ -54,7 +57,8 @@ export class TestController {
       this.ResponseService.success(res, 'success')
     } catch (error) {
       console.log('get test error', error)
-      this.ResponseService.error(res, 'invalid token')
+      errorLogger.error('get test error:', error);
+      return this.ResponseService.error(res, 'invalid token')
     }
   }
 }

@@ -1,4 +1,5 @@
 import { Transaction } from '../models/transaction.model.js'
+import { errorLogger, dataLogger } from '../logger/logger.js'
 export class TransactionService {
   async create(email, userChatId, currency = 'RUB', buyerLanguage = 'RU') {
     try {
@@ -16,6 +17,7 @@ export class TransactionService {
       const savedTransaction = await newTransaction.save()
       return savedTransaction
     } catch (error) {
+      errorLogger.error('creating transaction error', error)
       console.log('creating transaction error :', error)
       return false
     }
@@ -27,7 +29,9 @@ export class TransactionService {
         { $set: { [field]: value } },
         { new: true }
       )
+      dataLogger.info(`updated filed: ${field} wit value: ${value}`)
       console.log(`updated filed: ${field} wit value: ${value}`)
+      dataLogger.info(`Transaction updated: ${updatedTransaction}`)
       console.log(`Transaction updated: ${updatedTransaction}`)
       return updatedTransaction
     } catch (error) {
@@ -43,6 +47,7 @@ export class TransactionService {
       }
       return transaction
     } catch (error) {
+      errorLogger.error('get transaction error', error) 
       console.log('get transaction error :', error)
     }
   }
@@ -54,8 +59,10 @@ export class TransactionService {
         { new: true }
       )
       console.log(`Transaction updated: ${updatedTransaction}`)
+      dataLogger.info(`Transaction updated: ${updatedTransaction}`)
       return updatedTransaction
     } catch (error) {
+      errorLogger.error('update transaction error', error)
       console.log('update transaction error :', error)
     }
   }

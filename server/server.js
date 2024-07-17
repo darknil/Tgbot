@@ -39,10 +39,13 @@ export class ExpressServer {
     this.app.use('/test', this.test.getRouter())
     this.app.use('/webhook', this.webhook.getRouter())
     // Serve notfound.html for all other routes (404 Not Found)
-    this.app.use((req, res) => {
-      const publicPath = path.resolve(__dirname, '../public')
-      res.status(404).sendFile(path.join(publicPath, 'notfound.html'))
-    })
+    this.app.get('/*', function(req, res) {
+      res.sendFile(path.join(__dirname, '../public/index.html'), function(err) {
+        if (err) {
+          res.status(500).send(err);
+        }
+      });
+    });
   }
   setupMiddleware() {
     this.app.use(cors())

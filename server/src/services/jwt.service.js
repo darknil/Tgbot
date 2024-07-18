@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 export class JwtService {
   constructor() {
     this.secret = process.env.TG_TOKEN
-    this.expiresIn = '3h';
+    this.expiresIn = '7d';
   }
 
   generateToken(payload) {

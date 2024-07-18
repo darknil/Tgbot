@@ -46,6 +46,7 @@ export class TransactionController {
     } catch (error) {
       console.log('create transaction error :', error)
       errorLogger.error('create transaction error :', error)
+      return this.ResponseService.error(res, 'Error creating transaction')
     }
   }
 }

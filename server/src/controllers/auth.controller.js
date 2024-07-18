@@ -53,6 +53,7 @@ export class AuthController {
         this.UserService.updateUserStatus(user,'guest')
       }
       let user = await this.UserService.getUser(userData.id)
+      
       if(isMember === 'kicked') {
         this.UserService.updateUserStatus(user,'banned')
       }
@@ -79,11 +80,12 @@ export class AuthController {
           userData.last_name
         );
       }
-  
+      const UserStatus = await this.StatusService.getStatusByUuid(user.status)
+
       if(isMember === 'creator' || isMember === 'administrator'){
         user = await this.UserService.updateUserStatus(user, 'admin')
       }
-      if (isMember ==='member') {
+      if (isMember ==='member' && UserStatus.value !== 'freezed') {
         user = await this.UserService.updateUserStatus(user, 'member')
       }
       return user;

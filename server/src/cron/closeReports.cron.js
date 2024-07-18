@@ -35,7 +35,7 @@ export class CloseReports {
         if(userStatus.value === 'member') {
           this.ChannelService.kickUser(user.chatId)
           this.ChannelService.banUser(user.chatId)
-          this.UserService.updateUserStatus(user,'member')
+          this.UserService.updateUserStatus(user,'banned')
           if(!user.username){
             channelMembersWithoutReport.push(user.firstName)
             continue

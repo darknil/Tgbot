@@ -57,9 +57,6 @@ export class AuthController {
       if(isMember === 'kicked') {
         this.UserService.updateUserStatus(user,'banned')
       }
-      if (user && user.isBanned) {
-        throw new Error('User is banned')
-      }
       if (!user) {
         try {
           user = await this.UserService.createUser(

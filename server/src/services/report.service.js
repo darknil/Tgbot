@@ -99,7 +99,7 @@ export class ReportService {
   async closeReportsForPreviousDay(daysBack) {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
-
+      dataLogger.info(` close reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`)
       const result = await Report.updateMany(
         {
           date: {
@@ -122,6 +122,7 @@ export class ReportService {
   async getClosedReports(daysBack) {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
+      dataLogger.info(`get clsoed reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`)
       const closedReports = await Report.find({
         isClosed: true,
         date: {

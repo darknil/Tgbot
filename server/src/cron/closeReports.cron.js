@@ -20,14 +20,18 @@ export class CloseReports {
         throw new Error('reports was not updated')
       }
       const closedReports = await this.ReportService.getClosedReports(daysBack)
+      dataLogger.info('closed reports lenght', closedReports.length)
       console.log('closed reports lenght', closedReports.length)
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
+      dataLogger.info('owner chat ids', ownerChatIds)
       console.log('owner chat ids', ownerChatIds)
       const allUsers = await this.UserService.getMembers()
+      dataLogger.info('all users lenght', allUsers.length)
       console.log('all users lenght', allUsers.length)
       const usersWithoutReports = allUsers.filter(
         (user) => !ownerChatIds.includes(user.chatId)
       )
+      dataLogger.info('users without reports', usersWithoutReports)
       console.log('users without reports', usersWithoutReports)
       let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {

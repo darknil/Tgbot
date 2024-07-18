@@ -114,7 +114,7 @@ export class AuthController {
       }
       const token = this.JwtService.generateToken({ user })
       const expiresOn = this.JwtService.getExpirationTime();
-      return this.ResponseService.success(res, { token:token, expires_on: expiresOn });
+      return this.ResponseService.success(res, token);
     } catch (error) {
       errorLogger.error('verify user membership error', error)
       console.log('verify user membership error', error)

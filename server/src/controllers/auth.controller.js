@@ -113,7 +113,7 @@ export class AuthController {
         return this.ResponseService.unauthorized(res, 'User not found in channel')
       }
       const token = this.JwtService.generateToken({ user })
-      const expiresOn = jwtService.getExpirationTime();
+      const expiresOn = this.JwtService.getExpirationTime();
       return this.ResponseService.success(res, { token, expires_on: expiresOn });
     } catch (error) {
       errorLogger.error('verify user membership error', error)

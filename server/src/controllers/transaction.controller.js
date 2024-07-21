@@ -23,8 +23,8 @@ export class TransactionController {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
       const { email, userChatId } = req.body
-      if (!email.endsWith('.com')) {
-        return this.ResponseService.badRequest(res, 'Invalid email format')
+      if (!email.endsWith('.com') && !email.endsWith('.ru')) {
+        return this.ResponseService.badRequest(res, 'Invalid email format');
       }
       const createdTransaction = await this.TransactionService.create(
         email,

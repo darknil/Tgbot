@@ -19,7 +19,7 @@ export class ReportController {
       // if (!token) {
       //   return this.ResponseService.unauthorized(res, 'No token provided')
       // }
-      // const decoded = this.JwtService.verifyToken(token.replace('Bearer ', ''))
+      // const decoded = this.JwtService.verifyToken(token)
 
       // if (!decoded) {
       //   return this.ResponseService.unauthorized(res, 'Invalid token')

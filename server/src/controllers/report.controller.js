@@ -5,7 +5,7 @@ import { ResponseService } from '../services/response.service.js'
 import { JwtService } from '../services/jwt.service.js'
 import { UserService } from '../services/user.service.js'
 import upload from '../config/multer.config.js'
-import { errorLogger,dataLogger } from '../logger/logger.js'
+import { errorLogger, dataLogger } from '../logger/logger.js'
 export class ReportController {
   constructor() {
     this.ReportService = new ReportService()
@@ -13,7 +13,7 @@ export class ReportController {
     this.JwtService = new JwtService()
     this.UserService = new UserService()
   }
-  getAll = async (req, res) => {
+  fetchReports = async (req, res) => {
     try {
       // const token = req.headers.authorization
       // if (!token) {
@@ -24,11 +24,17 @@ export class ReportController {
       // if (!decoded) {
       //   return this.ResponseService.unauthorized(res, 'Invalid token')
       // }
-      const reports = await this.ReportService.getReports()
+      const page = parseInt(req.query.page) || 0
+      const limit = 20
+      const reports = await this.ReportService.getReports(page, limit)
       if (!reports) {
         return this.ResponseService.notFound(res, 'Reports not found')
       }
-      return this.ResponseService.success(res, reports)
+      const hasMore = await this.ReportService.hasMoreReports(page, limit)
+      return this.ResponseService.success(res, {
+        hasMoreReports: hasMore,
+        reports
+      })
     } catch (error) {
       console.log('get all reports error', error)
       errorLogger.error('get all reports error', error)
@@ -72,7 +78,6 @@ export class ReportController {
         return this.ResponseService.unauthorized(res, 'Invalid token')
       }
       const { question1, question2, question3 } = req.body
-
 
       const questions = [question1, question2, question3]
       if (questions.includes(undefined)) {

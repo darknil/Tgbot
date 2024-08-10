@@ -10,7 +10,10 @@ export class WebHookRouter {
   }
   setupRoutes() {
     this.router.post('/', this.WebHookController.handleWebHook)
-    this.router.get('/getcourse', this.GetcourseWebhookController.handleWebHook)
+    this.router.post(
+      '/getcourse',
+      this.GetcourseWebhookController.handleWebHook
+    )
   }
   getRouter() {
     return this.router

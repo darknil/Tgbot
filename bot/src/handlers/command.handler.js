@@ -15,6 +15,7 @@ export class CommandHandler {
       const isMember = await this.ChannelService.isMember(chatId)
 
       if (!existedUser && isMember === 'member') {
+        console.log('test 1')
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
         const lastName = msg.chat.last_name || ''
@@ -30,6 +31,7 @@ export class CommandHandler {
         return
       }
       if (!existedUser.email) {
+        console.log('test 2')
         this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
@@ -42,6 +44,7 @@ export class CommandHandler {
       }
 
       if (!existedUser) {
+        console.log('test 3')
         this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
@@ -51,6 +54,7 @@ export class CommandHandler {
         )
         return
       }
+      console.log('test 4')
       this.bot.sendPhoto(
         chatId,
         'https://3123703-of06570.twc1.net/images/Frame19.png',

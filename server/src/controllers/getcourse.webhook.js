@@ -30,8 +30,8 @@ export class GetcourseWebhookController {
     }
 
     await this.UserService.updateUserStatus(existedUser, 'member')
-    this.ChannelService.unkickUser(updated.userChatId)
-    this.ChannelService.unbanUser(updated.userChatId)
+    this.ChannelService.unkickUser(existedUser.userChatId)
+    this.ChannelService.unbanUser(existedUser.userChatId)
     const link = await this.ChannelService.createInviteLink()
     await this.MessageService.SendMessageToUser(
       user.chatId,

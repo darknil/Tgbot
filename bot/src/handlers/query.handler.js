@@ -6,7 +6,7 @@ export class QueryHandler {
   async handleQuery(query) {
     try {
       const data = query.data
-      const chatId = message.chat.id
+      const chatId = query.chat.id
       switch (data) {
         case 'email_connect':
           await this.handleEmailConnect(chatId)

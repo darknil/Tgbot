@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     type: Number
   },
   username: {
-    type: String,
+    type: String
   },
   firstName: {
     type: String
@@ -29,6 +29,9 @@ const UserSchema = new mongoose.Schema({
   status: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Status'
+  },
+  state: {
+    type: String
   }
 })
 const User = mongoose.model('User', UserSchema)

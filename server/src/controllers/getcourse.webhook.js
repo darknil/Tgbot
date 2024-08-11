@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { ResponseService } from '../services/response.service.js'
 import { UserService } from '../services/user.service.js'
+import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { MessageService } from '../../../bot/src/services/message.service.js'
 import { TgBot } from '../../../bot/bot.js'
 export class GetcourseWebhookController {
@@ -8,6 +9,7 @@ export class GetcourseWebhookController {
     const botInstance = TgBot.getBotInstance()
     this.ResponseService = new ResponseService()
     this.UserService = new UserService()
+    this.ChannelService = new ChannelService(botInstance)
     this.MessageService = new MessageService(botInstance)
   }
   handleWebHook = async (req, res) => {
@@ -29,6 +31,13 @@ export class GetcourseWebhookController {
     }
 
     await this.UserService.updateUserStatus(existedUser, 'member')
+    this.ChannelService.unkickUser(updated.userChatId)
+    this.ChannelService.unbanUser(updated.userChatId)
+    const link = await this.ChannelService.createInviteLink()
+    await this.MessageService.SendMessageToUser(
+      user.chatId,
+      `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
+    )
     return this.ResponseService.success(res, 'ok')
   }
 }

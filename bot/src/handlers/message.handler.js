@@ -29,7 +29,9 @@ export class MessageHandler {
       if (msg.chat.type !== 'private') {
         return
       }
+      console.log('test')
       const user = await this.UserService.getUser(chatId)
+      console.log('user :', user)
       switch (user.state) {
         case 'awaiting_email':
           this.AwaitingEmail.proccess(msg)

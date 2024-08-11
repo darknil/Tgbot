@@ -16,6 +16,7 @@ export class CommandHandler {
 
       if (!existedUser && isMember === 'member') {
         console.log('test 1')
+        console.log('msg', msg)
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
         const lastName = msg.chat.last_name || ''

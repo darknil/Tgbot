@@ -151,4 +151,30 @@ export class UserService {
       console.log('get user by email error :', error)
     }
   }
+  async deleteUser(chatId) {
+    try {
+      const user = await User.findOne({ chatId })
+      if (!user) {
+        return false
+      }
+      await user.deleteOne()
+      return true
+    } catch (error) {
+      errorLogger.error('delete user error', error)
+      console.log('delete user error :', error)
+    }
+  }
+  async deleteUserByEmail(email) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        return false
+      }
+      await user.deleteOne()
+      return true
+    } catch (error) {
+      errorLogger.error('delete user by email error', error)
+      console.log('delete user by email error :', error)
+    }
+  }
 }

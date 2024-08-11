@@ -34,7 +34,7 @@ export class GetcourseWebhookController {
     this.ChannelService.unbanUser(existedUser.chatId)
     const link = await this.ChannelService.createInviteLink()
     await this.MessageService.SendMessageToUser(
-      user.chatId,
+      existedUser.chatId,
       `Ваш платеж был успешно получен. Теперь вы можете присоединиться к каналу и начать использовать бота. ${link.invite_link}`
     )
     return this.ResponseService.success(res, 'ok')

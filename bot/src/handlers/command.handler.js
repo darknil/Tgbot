@@ -31,7 +31,7 @@ export class CommandHandler {
         )
         return
       }
-      if (!existedUser.email) {
+      if (!existedUser.email && isMember === 'member') {
         console.log('test 2')
         console.log('user', existedUser)
         this.bot.sendPhoto(

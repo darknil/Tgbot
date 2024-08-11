@@ -11,7 +11,7 @@ export class CommandHandler {
   async handleUserStart(msg) {
     try {
       const chatId = msg.chat.id || msg.from.id
-      const existedUser = this.UserService.getUser(chatId)
+      const existedUser = await this.UserService.getUser(chatId)
       const isMember = await this.ChannelService.isMember(chatId)
 
       if (!existedUser && isMember === 'member') {

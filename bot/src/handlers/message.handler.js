@@ -31,7 +31,7 @@ export class MessageHandler {
       }
       const user = await this.UserService.getUser(chatId)
       switch (user.state) {
-        case 'awaitingEmail':
+        case 'awaiting_email':
           this.AwaitingEmail.proccess(msg)
           break
       }

@@ -1,4 +1,5 @@
 import { UserService } from '../../../server/src/services/user.service.js'
+import { keyboards } from '../config/keyboards.config.js'
 export class AwaitingEmail {
   constructor(bot) {
     this.bot = bot

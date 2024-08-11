@@ -48,15 +48,15 @@ export class AuthController {
   }
   findOrCreateUser = async (userData) => {
     try {
+      console.log('userData :', userData)
       const isMember = await this.ChannelService.isMember(userData.id)
       if (isMember === 'left') {
-        this.UserService.updateUserStatus(user,'guest')
+        this.UserService.updateUserStatus(user, 'guest')
+      }
+      if (isMember === 'kicked') {
+        this.UserService.updateUserStatus(user, 'banned')
       }
       let user = await this.UserService.getUser(userData.id)
-      
-      if(isMember === 'kicked') {
-        this.UserService.updateUserStatus(user,'banned')
-      }
       if (!user) {
         try {
           user = await this.UserService.createUser(
@@ -64,7 +64,7 @@ export class AuthController {
             userData.id,
             userData.first_name,
             userData.last_name
-          );
+          )
         } catch (error) {
           errorLogger.error('create user error :', error)
           console.log('create user error :', error)
@@ -75,22 +75,21 @@ export class AuthController {
           userData.id,
           userData.first_name,
           userData.last_name
-        );
+        )
       }
       const UserStatus = await this.StatusService.getStatusByUuid(user.status)
 
-      if(isMember === 'creator' || isMember === 'administrator'){
+      if (isMember === 'creator' || isMember === 'administrator') {
         user = await this.UserService.updateUserStatus(user, 'admin')
       }
-      if (isMember ==='member' && UserStatus.value !== 'freezed') {
+      if (isMember === 'member' && UserStatus.value !== 'freezed') {
         user = await this.UserService.updateUserStatus(user, 'member')
       }
-      return user;
+      return user
     } catch (error) {
       errorLogger.error('find or create user error :', error)
       console.log('find or create user error :', error)
     }
-
   }
   verifyUser = async (req, res) => {
     try {
@@ -110,11 +109,14 @@ export class AuthController {
         }
       }
       if (!user) {
-        return this.ResponseService.unauthorized(res, 'User not found in channel')
+        return this.ResponseService.unauthorized(
+          res,
+          'User not found in channel'
+        )
       }
       const token = this.JwtService.generateToken({ user })
-      const expiresOn = this.JwtService.getExpirationTime();
-      return this.ResponseService.success(res, token);
+      const expiresOn = this.JwtService.getExpirationTime()
+      return this.ResponseService.success(res, token)
     } catch (error) {
       errorLogger.error('verify user membership error', error)
       console.log('verify user membership error', error)
@@ -156,7 +158,9 @@ export class AuthController {
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }
-      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      const status = await this.StatusService.getStatusByUuid(
+        decoded.user.status
+      )
       console.log('status :', status)
       if (!status) {
         return this.ResponseService.notFound(res, 'no status')

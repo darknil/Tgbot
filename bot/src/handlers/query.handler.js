@@ -5,6 +5,7 @@ export class QueryHandler {
   }
   async handleQuery(query) {
     try {
+      console.log('query', query)
       const data = query.data
       const chatId = query.chat.id
       switch (data) {

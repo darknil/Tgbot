@@ -36,6 +36,8 @@ export class MessageHandler {
         case 'awaiting_email':
           this.AwaitingEmail.proccess(msg)
           break
+        default:
+          break
       }
     } catch (error) {
       console.log('Error handling user message:', error)

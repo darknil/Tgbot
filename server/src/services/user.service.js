@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
-import { errorLogger,dataLogger } from '../logger/logger.js';
+import { errorLogger, dataLogger } from '../logger/logger.js'
 export class UserService {
   async createUser(
     username = '',
@@ -10,11 +10,11 @@ export class UserService {
     lastName = '',
     id,
     email = '',
-    mobile = '',
+    mobile = ''
   ) {
     if (!id) {
       const lastUser = await User.findOne().sort({ id: -1 }).limit(1)
-      id = lastUser ? lastUser.id + 1 : 0;
+      id = lastUser ? lastUser.id + 1 : 0
     }
     try {
       console.log('user id :', id)
@@ -118,10 +118,12 @@ export class UserService {
       console.log('update user status error :', error)
     }
   }
-  async getAdmins(){
+  async getAdmins() {
     try {
-      const users = await User.find({ 'status': new Object('669408eafd0f56d32fe9054f') })
-      return users;
+      const users = await User.find({
+        status: new Object('669408eafd0f56d32fe9054f')
+      })
+      return users
     } catch (error) {
       errorLogger.error('get admins error', error)
       console.log('get admins error :', error)
@@ -129,12 +131,24 @@ export class UserService {
   }
   async getMembers() {
     try {
-      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
+      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549')
       const users = await User.find({ status: statusId })
-      return users;
+      return users
     } catch (error) {
       errorLogger.error('get members error', error)
-      console.log('get members error:', error);
+      console.log('get members error:', error)
+    }
+  }
+  async getUserByEmail(email) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        return false
+      }
+      return user
+    } catch (error) {
+      errorLogger.error('get user by email error', error)
+      console.log('get user by email error :', error)
     }
   }
 }

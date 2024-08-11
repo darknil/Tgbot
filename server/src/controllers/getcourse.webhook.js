@@ -16,12 +16,11 @@ export class GetcourseWebhookController {
     console.log('getcourse webhook', req.query)
     console.log('getcourse webhook data :', req.body)
     const email = req.query.email
-    const status = req.query.status
     const key = req.query.key
     if (key !== process.env.secret_key) {
       return this.ResponseService.notFound(res, 'bad request')
     }
-    if (!email || !status) {
+    if (!email) {
       return this.ResponseService.badRequest(res, 'Bad request')
     }
     const existedUser = await this.UserService.getUserByEmail(email)

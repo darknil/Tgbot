@@ -6,6 +6,10 @@ export const keyboards = {
           {
             text: 'Запустить',
             web_app: { url: process.env.DOMAIN }
+          },
+          {
+            text: 'Поменять почту',
+            callback_data: 'email_connect'
           }
         ]
       ]

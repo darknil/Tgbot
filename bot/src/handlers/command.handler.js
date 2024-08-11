@@ -32,6 +32,7 @@ export class CommandHandler {
       }
       if (!existedUser.email) {
         console.log('test 2')
+        console.log('user', existedUser)
         this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',

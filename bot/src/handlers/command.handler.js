@@ -12,18 +12,8 @@ export class CommandHandler {
     try {
       const chatId = msg.chat.id || msg.from.id
       const existedUser = this.UserService.getUser(chatId)
-      if (!existedUser.email) {
-        this.bot.sendPhoto(
-          chatId,
-          'https://3123703-of06570.twc1.net/images/Frame19.png',
-          {
-            caption: 'Путь к твоей вершине начинается здесь',
-            ...keyboards.emailKeyboard
-          }
-        )
-        return
-      }
       const isMember = await this.ChannelService.isMember(chatId)
+
       if (!existedUser && isMember === 'member') {
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
@@ -39,7 +29,7 @@ export class CommandHandler {
         )
         return
       }
-      if (!existedUser) {
+      if (!existedUser.email) {
         this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
@@ -50,11 +40,23 @@ export class CommandHandler {
         )
         return
       }
+
+      if (!existedUser) {
+        this.bot.sendPhoto(
+          chatId,
+          'https://3123703-of06570.twc1.net/images/Frame19.png',
+          {
+            caption: 'Путь к твоей вершине начинается здесь'
+          }
+        )
+        return
+      }
       this.bot.sendPhoto(
         chatId,
         'https://3123703-of06570.twc1.net/images/Frame19.png',
         {
-          caption: 'Путь к твоей вершине начинается здесь'
+          caption: 'Путь к твоей вершине начинается здесь',
+          ...keyboards.startKeyboard
         }
       )
     } catch (error) {

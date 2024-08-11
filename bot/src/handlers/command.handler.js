@@ -20,7 +20,7 @@ export class CommandHandler {
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
         const lastName = msg.chat.last_name || ''
-        this.UserService.createUser(username, fistName, lastName, chatId)
+        this.UserService.createUser(username, chatId, fistName, lastName)
         this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',

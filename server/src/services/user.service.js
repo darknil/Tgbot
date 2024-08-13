@@ -2,7 +2,11 @@ import mongoose from 'mongoose'
 import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
 import { errorLogger, dataLogger } from '../logger/logger.js'
+import { StatusService } from './status.service.js'
 export class UserService {
+  constructor() {
+    this.StatusService = new StatusService()
+  }
   async createUser(
     username = '',
     chatId = 0,
@@ -120,9 +124,8 @@ export class UserService {
   }
   async getAdmins() {
     try {
-      const users = await User.find({
-        status: new Object('669408eafd0f56d32fe9054f')
-      })
+      const memberStatus = await this.StatusService.getStatus('admin')
+      const users = await User.find({ status: memberStatus._id })
       return users
     } catch (error) {
       errorLogger.error('get admins error', error)
@@ -131,12 +134,13 @@ export class UserService {
   }
   async getMembers() {
     try {
-      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549')
-      const users = await User.find({ status: statusId })
+      const memberStatus = await this.StatusService.getStatus('member')
+      const users = await User.find({ status: memberStatus._id })
       return users
     } catch (error) {
       errorLogger.error('get members error', error)
       console.log('get members error:', error)
+      return []
     }
   }
   async getUserByEmail(email) {

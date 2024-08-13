@@ -51,11 +51,14 @@ export class AuthController {
       console.log('userData :', userData)
       const isMember = await this.ChannelService.isMember(userData.id)
       let user = await this.UserService.getUser(userData.id)
-      if (isMember === 'left') {
-        this.UserService.updateUserStatus(user, 'guest')
-      }
-      if (isMember === 'kicked') {
-        this.UserService.updateUserStatus(user, 'banned')
+      switch (isMember) {
+        case 'left':
+          await this.UserService.updateUserStatus(user, 'guest')
+          break
+        case 'kicked':
+          await this.UserService.updateUserStatus(user, 'banned')
+          // Прокидываем ошибку, если пользователь был заблокирован
+          throw new Error('User is banned')
       }
 
       if (!user) {
@@ -70,21 +73,19 @@ export class AuthController {
           errorLogger.error('create user error :', error)
           console.log('create user error :', error)
         }
-      } else if (user.chatId === 0) {
-        user = await this.fillEmptyUser(
-          user,
-          userData.id,
-          userData.first_name,
-          userData.last_name
-        )
       }
       const UserStatus = await this.StatusService.getStatusByUuid(user.status)
 
-      if (isMember === 'creator' || isMember === 'administrator') {
-        user = await this.UserService.updateUserStatus(user, 'admin')
-      }
-      if (isMember === 'member' && UserStatus.value !== 'freezed') {
-        user = await this.UserService.updateUserStatus(user, 'member')
+      switch (isMember) {
+        case 'creator':
+        case 'administrator':
+          user = await this.UserService.updateUserStatus(user, 'admin')
+          break
+        case 'member':
+          if (UserStatus.value !== 'freezed') {
+            user = await this.UserService.updateUserStatus(user, 'member')
+          }
+          break
       }
       return user
     } catch (error) {
@@ -101,13 +102,13 @@ export class AuthController {
       validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
-      let user
-      try {
-        user = await this.findOrCreateUser(userData)
-      } catch (error) {
-        if (error.message === 'User is banned') {
-          return this.ResponseService.unauthorized(res, 'User is banned')
-        }
+
+      const user = await this.findOrCreateUser(userData)
+      const activeSubcription = await this.UserService.checkUserSubscription(
+        user.chatId
+      )
+      if (!activeSubcription) {
+        return this.ResponseService.unauthorized(res, 'User is not subscribed')
       }
       if (!user) {
         return this.ResponseService.unauthorized(
@@ -116,9 +117,11 @@ export class AuthController {
         )
       }
       const token = this.JwtService.generateToken({ user })
-      const expiresOn = this.JwtService.getExpirationTime()
       return this.ResponseService.success(res, token)
     } catch (error) {
+      if (error.message === 'User is banned') {
+        return this.ResponseService.unauthorized(res, 'User is banned')
+      }
       errorLogger.error('verify user membership error', error)
       console.log('verify user membership error', error)
       return this.ResponseService.error(res, 'Error verifying user membership')

@@ -17,12 +17,14 @@ export class GetcourseWebhookController {
     console.log('getcourse webhook data :', req.body)
     const email = req.query.email
     const key = req.query.key
+    const type = req.query.type
     if (key !== process.env.secret_key) {
       return this.ResponseService.notFound(res, 'bad request')
     }
-    if (!email) {
+    if (!email || !type) {
       return this.ResponseService.badRequest(res, 'Bad request')
     }
+
     const existedUser = await this.UserService.getUserByEmail(email)
     if (!existedUser) {
       await this.UserService.createUser('', '', '', '', '', email)
@@ -30,6 +32,7 @@ export class GetcourseWebhookController {
     }
 
     await this.UserService.updateUserStatus(existedUser, 'member')
+    await this.UserService.updateUserSubscriptionDate(existedUser.chatId, type)
     this.ChannelService.unkickUser(existedUser.chatId)
     this.ChannelService.unbanUser(existedUser.chatId)
     const link = await this.ChannelService.createInviteLink()

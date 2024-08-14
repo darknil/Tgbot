@@ -13,15 +13,49 @@ export class CommandHandler {
       const chatId = msg.chat.id || msg.from.id
       const existedUser = await this.UserService.getUser(chatId)
       const isMember = await this.ChannelService.isMember(chatId)
-
+      if (
+        !existedUser &&
+        (isMember === 'administrator' || isMember === 'creator')
+      ) {
+        const username = msg.chat.username || ''
+        const fistName = msg.chat.first_name || ''
+        const lastName = msg.chat.last_name || ''
+        const endDate = new Date(
+          currentDate.getTime() + 3000 * 24 * 60 * 60 * 1000
+        )
+        await this.UserService.createUser(username, chatId, fistName, lastName)
+        await this.UserService.updateUserField(
+          chatId,
+          'subscriptionEndDate',
+          endDate
+        )
+        this.bot.sendPhoto(
+          chatId,
+          'https://3123703-of06570.twc1.net/images/Frame19.png',
+          {
+            caption: 'Путь к твоей вершине начинается здесь',
+            ...keyboards.adminKeyboard
+          }
+        )
+      }
+      if (isMember === 'administrator' || isMember === 'creator') {
+        this.bot.sendPhoto(
+          chatId,
+          'https://3123703-of06570.twc1.net/images/Frame19.png',
+          {
+            caption: 'Путь к твоей вершине начинается здесь',
+            ...keyboards.adminKeyboard
+          }
+        )
+      }
       if (!existedUser && isMember === 'member') {
         console.log('test 1')
         console.log('msg', msg)
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
         const lastName = msg.chat.last_name || ''
-        this.UserService.createUser(username, chatId, fistName, lastName)
-        this.bot.sendPhoto(
+        await this.UserService.createUser(username, chatId, fistName, lastName)
+        return this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
           {
@@ -29,7 +63,6 @@ export class CommandHandler {
             ...keyboards.emailKeyboard
           }
         )
-        return
       }
       if (!existedUser.email && isMember === 'member') {
         console.log('test 2')

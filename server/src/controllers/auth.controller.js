@@ -54,6 +54,7 @@ export class AuthController {
       switch (isMember) {
         case 'left':
           await this.UserService.updateUserStatus(user, 'guest')
+          throw new Error('User is banned')
           break
         case 'kicked':
           await this.UserService.updateUserStatus(user, 'banned')
@@ -110,12 +111,7 @@ export class AuthController {
       if (!activeSubcription) {
         return this.ResponseService.unauthorized(res, 'User is not subscribed')
       }
-      if (!user) {
-        return this.ResponseService.unauthorized(
-          res,
-          'User not found in channel'
-        )
-      }
+
       const token = this.JwtService.generateToken({ user })
       return this.ResponseService.success(res, token)
     } catch (error) {

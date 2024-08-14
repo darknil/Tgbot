@@ -9,8 +9,8 @@ export class AwaitingEmail {
     try {
       const chatId = msg.chat.id || msg.from.id
       const message = msg.text
-      const userById = this.UserService.getUser(chatId)
-      const userByEmail = this.UserService.getUserByEmail(message)
+      const userById = await this.UserService.getUser(chatId)
+      const userByEmail = await this.UserService.getUserByEmail(message)
       if (userByEmail.chatId) {
         return
       }

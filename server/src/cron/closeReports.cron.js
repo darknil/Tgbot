@@ -52,23 +52,27 @@ export class CloseReports {
 
       for (let user of allUsers) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
-        if (userStatus.value === 'member') {
+        if (userStatus.value === 'member' || userStatus.value === 'banned') {
+          if (user.wasNotified) {
+            continue
+          }
           const today = new Date()
-          if (user.subscriptionEndDate + 1 < today.getDate()) {
-            this.UserService.updateUserStatus(user, 'banned')
-            this.ChannelService.kickUser(user.chatId)
-            this.ChannelService.banUser(user.chatId)
-            this.ChannelService.sendMessageToUser(
+          const subscriptionEndDate = new Date(user.subscriptionEndDate)
+          subscriptionEndDate.setDate(subscriptionEndDate.getDate() + 1)
+          if (subscriptionEndDate < today) {
+            await this.UserService.updateUserStatus(user, 'banned')
+            await this.UserService.updateUserField(
+              user.chatId,
+              'wasNotified',
+              true
+            )
+            await this.ChannelService.kickUser(user.chatId)
+            await this.ChannelService.banUser(user.chatId)
+            await this.ChannelService.sendMessageToUser(
               user.chatId,
               `Ваша подписка истекла. Вы были исключены из канала.`
             )
           }
-        }
-        if (userStatus.value === 'banned') {
-          this.ChannelService.sendMessageToUser(
-            user.chatId,
-            `Ваша подписка истекла. Вы были исключены из канала.`
-          )
         }
       }
 

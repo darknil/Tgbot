@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema({
   },
   subscriptionEndDate: {
     type: Date
+  },
+  wasNotified: {
+    type: Boolean,
+    default: false
   }
 })
 const User = mongoose.model('User', UserSchema)

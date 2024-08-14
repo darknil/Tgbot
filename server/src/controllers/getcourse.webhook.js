@@ -27,12 +27,25 @@ export class GetcourseWebhookController {
 
     const existedUser = await this.UserService.getUserByEmail(email)
     if (!existedUser) {
-      await this.UserService.createUser('', '', '', '', '', email)
+      const newUser = await this.UserService.createUser(
+        '',
+        '',
+        '',
+        '',
+        '',
+        email
+      )
+      await this.UserService.updateUserSubscriptionDate(newUser.chatId, type)
       return this.ResponseService.success(res, 'ok')
     }
 
     await this.UserService.updateUserStatus(existedUser, 'member')
     await this.UserService.updateUserSubscriptionDate(existedUser.chatId, type)
+    await this.UserService.updateUserField(
+      existedUser.chatId,
+      'wasNotified',
+      false
+    )
     this.ChannelService.unkickUser(existedUser.chatId)
     this.ChannelService.unbanUser(existedUser.chatId)
     const link = await this.ChannelService.createInviteLink()

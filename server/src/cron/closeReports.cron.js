@@ -64,6 +64,12 @@ export class CloseReports {
             )
           }
         }
+        if (userStatus.value === 'banned') {
+          this.ChannelService.sendMessageToUser(
+            user.chatId,
+            `Ваша подписка истекла. Вы были исключены из канала.`
+          )
+        }
       }
 
       await this.ChannelService.sendMessageToAdmin(

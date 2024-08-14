@@ -48,15 +48,20 @@ export class AuthController {
   }
   findOrCreateUser = async (userData) => {
     try {
+      console.log('userData :', userData)
       const isMember = await this.ChannelService.isMember(userData.id)
-      if (isMember === 'left') {
-        this.UserService.updateUserStatus(user,'guest')
-      }
       let user = await this.UserService.getUser(userData.id)
-      
-      if(isMember === 'kicked') {
-        this.UserService.updateUserStatus(user,'banned')
+      switch (isMember) {
+        case 'left':
+          await this.UserService.updateUserStatus(user, 'guest')
+          throw new Error('User is banned')
+          break
+        case 'kicked':
+          await this.UserService.updateUserStatus(user, 'banned')
+          // Прокидываем ошибку, если пользователь был заблокирован
+          throw new Error('User is banned')
       }
+
       if (!user) {
         try {
           user = await this.UserService.createUser(
@@ -64,33 +69,30 @@ export class AuthController {
             userData.id,
             userData.first_name,
             userData.last_name
-          );
+          )
         } catch (error) {
           errorLogger.error('create user error :', error)
           console.log('create user error :', error)
         }
-      } else if (user.chatId === 0) {
-        user = await this.fillEmptyUser(
-          user,
-          userData.id,
-          userData.first_name,
-          userData.last_name
-        );
       }
       const UserStatus = await this.StatusService.getStatusByUuid(user.status)
 
-      if(isMember === 'creator' || isMember === 'administrator'){
-        user = await this.UserService.updateUserStatus(user, 'admin')
+      switch (isMember) {
+        case 'creator':
+        case 'administrator':
+          user = await this.UserService.updateUserStatus(user, 'admin')
+          break
+        case 'member':
+          if (UserStatus.value !== 'freezed') {
+            user = await this.UserService.updateUserStatus(user, 'member')
+          }
+          break
       }
-      if (isMember ==='member' && UserStatus.value !== 'freezed') {
-        user = await this.UserService.updateUserStatus(user, 'member')
-      }
-      return user;
+      return user
     } catch (error) {
       errorLogger.error('find or create user error :', error)
       console.log('find or create user error :', error)
     }
-
   }
   verifyUser = async (req, res) => {
     try {
@@ -101,21 +103,21 @@ export class AuthController {
       validate(initdata, botToken)
       const parsedQuery = parse(initdata)
       const userData = JSON.parse(decodeURIComponent(parsedQuery.user))
-      let user
-      try {
-        user = await this.findOrCreateUser(userData)
-      } catch (error) {
-        if (error.message === 'User is banned') {
-          return this.ResponseService.unauthorized(res, 'User is banned')
-        }
+
+      const user = await this.findOrCreateUser(userData)
+      const activeSubcription = await this.UserService.checkUserSubscription(
+        user.chatId
+      )
+      if (!activeSubcription) {
+        return this.ResponseService.unauthorized(res, 'User is not subscribed')
       }
-      if (!user) {
-        return this.ResponseService.unauthorized(res, 'User not found in channel')
-      }
+
       const token = this.JwtService.generateToken({ user })
-      const expiresOn = this.JwtService.getExpirationTime();
-      return this.ResponseService.success(res, token);
+      return this.ResponseService.success(res, token)
     } catch (error) {
+      if (error.message === 'User is banned') {
+        return this.ResponseService.unauthorized(res, 'User is banned')
+      }
       errorLogger.error('verify user membership error', error)
       console.log('verify user membership error', error)
       return this.ResponseService.error(res, 'Error verifying user membership')
@@ -156,7 +158,9 @@ export class AuthController {
       if (!user) {
         return this.ResponseService.notFound(res, 'notfound')
       }
-      const status = await this.StatusService.getStatusByUuid(decoded.user.status)
+      const status = await this.StatusService.getStatusByUuid(
+        decoded.user.status
+      )
       console.log('status :', status)
       if (!status) {
         return this.ResponseService.notFound(res, 'no status')

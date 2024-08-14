@@ -40,6 +40,15 @@ export class CommandHandler {
         )
       }
       if (isMember === 'administrator' || isMember === 'creator') {
+        const currentDate = new Date()
+        const endDate = new Date(
+          currentDate.getTime() + 3000 * 24 * 60 * 60 * 1000
+        )
+        await this.UserService.updateUserField(
+          chatId,
+          'subscriptionEndDate',
+          endDate
+        )
         return this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',

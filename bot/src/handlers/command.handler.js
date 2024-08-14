@@ -20,6 +20,7 @@ export class CommandHandler {
         const username = msg.chat.username || ''
         const fistName = msg.chat.first_name || ''
         const lastName = msg.chat.last_name || ''
+        const currentDate = new Date()
         const endDate = new Date(
           currentDate.getTime() + 3000 * 24 * 60 * 60 * 1000
         )

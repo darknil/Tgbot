@@ -32,6 +32,13 @@ const UserSchema = new mongoose.Schema({
   },
   state: {
     type: String
+  },
+  subscriptionEndDate: {
+    type: Date
+  },
+  wasNotified: {
+    type: Boolean,
+    default: false
   }
 })
 const User = mongoose.model('User', UserSchema)

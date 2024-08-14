@@ -9,8 +9,8 @@ export class AwaitingEmail {
     try {
       const chatId = msg.chat.id || msg.from.id
       const message = msg.text
-      const userById = this.UserService.getUser(chatId)
-      const userByEmail = this.UserService.getUserByEmail(message)
+      const userById = await this.UserService.getUser(chatId)
+      const userByEmail = await this.UserService.getUserByEmail(message)
       if (userByEmail.chatId) {
         return
       }
@@ -18,7 +18,7 @@ export class AwaitingEmail {
         this.UserService.updateUserField(chatId, 'email', message)
         this.UserService.updateUserField(chatId, 'state', 'default')
         await this.bot.sendMessage(chatId, 'Почта Добавлена к вашему аккаунту')
-        this.bot.sendPhoto(
+        return this.bot.sendPhoto(
           chatId,
           'https://3123703-of06570.twc1.net/images/Frame19.png',
           {
@@ -28,8 +28,17 @@ export class AwaitingEmail {
         )
       }
       if (!userById.email) {
+        const date = userByEmail.subscriptionEndDate
+        console.log('userByEmail', userByEmail)
+        console.log('date :', date)
         await this.UserService.deleteUserByEmail(message)
-        this.UserService.updateUserField(chatId, 'email', message)
+        await this.UserService.updateUserField(chatId, 'email', message)
+        const updatedDate = await this.UserService.updateUserField(
+          chatId,
+          'subscriptionEndDate',
+          date
+        )
+        console.log('updated date :', updatedDate)
         this.UserService.updateUserField(chatId, 'state', 'default')
         await this.bot.sendMessage(chatId, 'Почта Добавлена к вашему аккаунту')
         this.bot.sendPhoto(

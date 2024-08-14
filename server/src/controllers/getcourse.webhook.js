@@ -16,7 +16,6 @@ export class GetcourseWebhookController {
   handleWebHook = async (req, res) => {
     try {
       console.log('getcourse webhook', req.query)
-      console.log('getcourse webhook data :', req.body)
       const email = req.query.email
       const key = req.query.key
       const type = req.query.type
@@ -37,7 +36,12 @@ export class GetcourseWebhookController {
           '',
           email
         )
-        await this.UserService.updateUserSubscriptionDate(newUser.chatId, type)
+        const updatedUser =
+          await this.UserService.updateUserSubscriptionDateByEmail(
+            newUser.email,
+            type
+          )
+        console.log('updated :', updatedUser)
         return this.ResponseService.success(res, 'ok')
       }
 

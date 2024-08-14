@@ -185,6 +185,7 @@ export class UserService {
     try {
       const user = await User.findOne({ chatId })
       if (!user) {
+        console.log(`No user found with chatId: ${chatId}`)
         return false
       }
 
@@ -197,6 +198,7 @@ export class UserService {
           durationInDays = 90
           break
         default:
+          console.log(`Invalid subscription type: ${type}`)
           throw new Error('bad subscription type')
       }
 
@@ -211,6 +213,41 @@ export class UserService {
     } catch (error) {
       errorLogger.error('update user subscription error', error)
       console.log('update user subscription error :', error)
+      return false
+    }
+  }
+  async updateUserSubscriptionDateByEmail(email, type) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        console.log(`No user found with email: ${email}`)
+        return false
+      }
+
+      let durationInDays
+      switch (type) {
+        case '1m':
+          durationInDays = 30
+          break
+        case '3m':
+          durationInDays = 90
+          break
+        default:
+          console.log(`Invalid subscription type: ${type}`)
+          throw new Error('bad subscription type')
+      }
+
+      const currentDate = new Date()
+      const endDate = new Date(
+        currentDate.getTime() + durationInDays * 24 * 60 * 60 * 1000
+      )
+
+      user.subscriptionEndDate = endDate
+      const updatedUser = await user.save()
+      return updatedUser
+    } catch (error) {
+      errorLogger.error('update user subscription by email error', error)
+      console.log('update user subscription by email error :', error)
     }
   }
   async checkUserSubscription(chatId) {

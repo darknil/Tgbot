@@ -3,7 +3,7 @@ import { ChannelService } from '../../../bot/src/services/channel.service.js'
 import { UserService } from '../services/user.service.js'
 import { TgBot } from '../../../bot/bot.js'
 import { StatusService } from '../services/status.service.js'
-import { errorLogger,dataLogger } from '../logger/logger.js'
+import { errorLogger, dataLogger } from '../logger/logger.js'
 export class CloseReports {
   constructor() {
     this.ReportService = new ReportService()
@@ -15,7 +15,9 @@ export class CloseReports {
   async closeReports(daysBack) {
     try {
       /// вызвать метод для изменения статуса отчётов за прошлые сутки
-      const updated = await this.ReportService.closeReportsForPreviousDay(daysBack) // закрыть отчёты
+      const updated = await this.ReportService.closeReportsForPreviousDay(
+        daysBack
+      ) // закрыть отчёты
       if (!updated) {
         throw new Error('reports was not updated')
       }
@@ -25,7 +27,7 @@ export class CloseReports {
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
       dataLogger.info('owner chat ids', ownerChatIds)
       console.log('owner chat ids', ownerChatIds)
-      const allUsers = await this.UserService.getMembers()
+      const allUsers = await this.UserService.getUsers()
       dataLogger.info('all users lenght', allUsers.length)
       console.log('all users lenght', allUsers.length)
       const usersWithoutReports = allUsers.filter(
@@ -36,17 +38,42 @@ export class CloseReports {
       let channelMembersWithoutReport = []
       for (const user of usersWithoutReports) {
         const userStatus = await this.StatusService.getStatusByUuid(user.status)
-        if(userStatus.value === 'member') {
+        if (userStatus.value === 'member') {
           this.ChannelService.kickUser(user.chatId)
           this.ChannelService.banUser(user.chatId)
-          this.UserService.updateUserStatus(user,'banned')
-          if(!user.username){
+          this.UserService.updateUserStatus(user, 'banned')
+          if (!user.username) {
             channelMembersWithoutReport.push(user.firstName)
             continue
           }
           channelMembersWithoutReport.push(user.username)
         }
+      }
 
+      for (let user of allUsers) {
+        const userStatus = await this.StatusService.getStatusByUuid(user.status)
+        if (userStatus.value === 'member' || userStatus.value === 'banned') {
+          if (user.wasNotified) {
+            continue
+          }
+          const today = new Date()
+          const subscriptionEndDate = new Date(user.subscriptionEndDate)
+          subscriptionEndDate.setDate(subscriptionEndDate.getDate() + 1)
+          if (subscriptionEndDate < today) {
+            await this.UserService.updateUserStatus(user, 'banned')
+            await this.UserService.updateUserField(
+              user.chatId,
+              'wasNotified',
+              true
+            )
+            await this.ChannelService.kickUser(user.chatId)
+            await this.ChannelService.banUser(user.chatId)
+            await this.ChannelService.sendMessageToUser(
+              user.chatId,
+              `Ваша подписка истекла. Вы были исключены из канала.`
+            )
+          }
+        }
       }
 
       await this.ChannelService.sendMessageToAdmin(

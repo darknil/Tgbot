@@ -1,8 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 import { User } from '../models/user.model.js'
 import { Status } from '../models/status.model.js'
-import { errorLogger,dataLogger } from '../logger/logger.js';
+import { errorLogger, dataLogger } from '../logger/logger.js'
+import { StatusService } from './status.service.js'
 export class UserService {
+  constructor() {
+    this.StatusService = new StatusService()
+  }
   async createUser(
     username = '',
     chatId = 0,
@@ -10,11 +14,11 @@ export class UserService {
     lastName = '',
     id,
     email = '',
-    mobile = '',
+    mobile = ''
   ) {
     if (!id) {
       const lastUser = await User.findOne().sort({ id: -1 }).limit(1)
-      id = lastUser ? lastUser.id + 1 : 0;
+      id = lastUser ? lastUser.id + 1 : 0
     }
     try {
       console.log('user id :', id)
@@ -118,10 +122,11 @@ export class UserService {
       console.log('update user status error :', error)
     }
   }
-  async getAdmins(){
+  async getAdmins() {
     try {
-      const users = await User.find({ 'status': new Object('669408eafd0f56d32fe9054f') })
-      return users;
+      const memberStatus = await this.StatusService.getStatus('admin')
+      const users = await User.find({ status: memberStatus._id })
+      return users
     } catch (error) {
       errorLogger.error('get admins error', error)
       console.log('get admins error :', error)
@@ -129,12 +134,147 @@ export class UserService {
   }
   async getMembers() {
     try {
-      const statusId = new mongoose.Types.ObjectId('669408eafd0f56d32fe90549');
-      const users = await User.find({ status: statusId })
-      return users;
+      const memberStatus = await this.StatusService.getStatus('member')
+      const users = await User.find({ status: memberStatus._id })
+      return users
     } catch (error) {
       errorLogger.error('get members error', error)
-      console.log('get members error:', error);
+      console.log('get members error:', error)
+      return []
+    }
+  }
+  async getUserByEmail(email) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        return false
+      }
+      return user
+    } catch (error) {
+      errorLogger.error('get user by email error', error)
+      console.log('get user by email error :', error)
+    }
+  }
+  async deleteUser(chatId) {
+    try {
+      const user = await User.findOne({ chatId })
+      if (!user) {
+        return false
+      }
+      await user.deleteOne()
+      return true
+    } catch (error) {
+      errorLogger.error('delete user error', error)
+      console.log('delete user error :', error)
+    }
+  }
+  async deleteUserByEmail(email) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        return false
+      }
+      await user.deleteOne()
+      return true
+    } catch (error) {
+      errorLogger.error('delete user by email error', error)
+      console.log('delete user by email error :', error)
+    }
+  }
+  async updateUserSubscriptionDate(chatId, type = '1m') {
+    try {
+      const user = await User.findOne({ chatId })
+      if (!user) {
+        console.log(`No user found with chatId: ${chatId}`)
+        return false
+      }
+
+      let durationInDays
+      switch (type) {
+        case '1m':
+          durationInDays = 30
+          break
+        case '3m':
+          durationInDays = 90
+          break
+        default:
+          console.log(`Invalid subscription type: ${type}`)
+          throw new Error('bad subscription type')
+      }
+
+      const currentDate = new Date()
+      const endDate = new Date(
+        currentDate.getTime() + durationInDays * 24 * 60 * 60 * 1000
+      )
+
+      user.subscriptionEndDate = endDate
+      const updatedUser = await user.save()
+      return updatedUser
+    } catch (error) {
+      errorLogger.error('update user subscription error', error)
+      console.log('update user subscription error :', error)
+      return false
+    }
+  }
+  async updateUserSubscriptionDateByEmail(email, type) {
+    try {
+      const user = await User.findOne({ email })
+      if (!user) {
+        console.log(`No user found with email: ${email}`)
+        return false
+      }
+
+      let durationInDays
+      switch (type) {
+        case '1m':
+          durationInDays = 30
+          break
+        case '3m':
+          durationInDays = 90
+          break
+        default:
+          console.log(`Invalid subscription type: ${type}`)
+          throw new Error('bad subscription type')
+      }
+
+      const currentDate = new Date()
+      const endDate = new Date(
+        currentDate.getTime() + durationInDays * 24 * 60 * 60 * 1000
+      )
+
+      user.subscriptionEndDate = endDate
+      const updatedUser = await user.save()
+      return updatedUser
+    } catch (error) {
+      errorLogger.error('update user subscription by email error', error)
+      console.log('update user subscription by email error :', error)
+    }
+  }
+  async checkUserSubscription(chatId) {
+    try {
+      const user = await User.findOne({ chatId })
+      if (!user) {
+        console.log('user not found')
+        z
+        return false
+      }
+
+      if (!user.subscriptionEndDate) {
+        console.log('subcription not found')
+        return false
+      }
+
+      const currentDate = new Date()
+      if (currentDate > user.subscriptionEndDate) {
+        console.log('subcription expired')
+        return false
+      }
+
+      console.log('subcription active')
+      return true
+    } catch (error) {
+      errorLogger.error('check user subscription error', error)
+      console.log('check user subscription error :', error)
     }
   }
 }

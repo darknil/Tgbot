@@ -34,14 +34,14 @@ class App {
     //     console.error('Error importing data:', err)
     //     process.exit(1)
     //   })
-    // importUsersStatusFromCSV('status')
-    //   .then(() => {
-    //     process.exit(0)
-    //   })
-    //   .catch((err) => {
-    //     console.error('Error importing data:', err)
-    //     process.exit(1)
-    //   })
+    importUsersStatusFromCSV('status')
+      .then(() => {
+        process.exit(0)
+      })
+      .catch((err) => {
+        console.error('Error importing data:', err)
+        process.exit(1)
+      })
     fillStatus()
       .then(() => {
         console.log('All statuses filled successfully')

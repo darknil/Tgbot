@@ -1,7 +1,7 @@
 import { Report } from '../models/report.model.js'
 import { getPreviousDayRange } from '../utils/dateUtils.js'
 import { startDay, endDay } from '../config/Days.config.js'
-import { errorLogger,dataLogger } from '../logger/logger.js'
+import { errorLogger, dataLogger } from '../logger/logger.js'
 export class ReportService {
   create = async (user, questions) => {
     try {
@@ -99,7 +99,9 @@ export class ReportService {
   async closeReportsForPreviousDay(daysBack) {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
-      dataLogger.info(` close reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`)
+      dataLogger.info(
+        ` close reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`
+      )
       const result = await Report.updateMany(
         {
           date: {
@@ -122,26 +124,45 @@ export class ReportService {
   async getClosedReports(daysBack) {
     try {
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)
-      dataLogger.info(`get clsoed reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`)
+      dataLogger.info(
+        `get clsoed reports startOfDay: ${startOfDay}, endOfDay: ${endOfDay}`
+      )
       const closedReports = await Report.find({
         isClosed: true,
         date: {
           $gte: startOfDay,
           $lte: endOfDay
         }
-      });
+      })
       return closedReports
     } catch (error) {
       errorLogger.error('get closed reports error :', error)
       console.log('get closed reports error :', error)
     }
   }
-  async getReports() {
+  async getReports(page = 0, limit = 10) {
     try {
+      const skip = page * limit
       const reports = await Report.find()
+        .sort({ id: -1 })
+        .skip(skip)
+        .limit(limit)
       return reports
     } catch (error) {
-      errorLogger.error('get user error', error)
+      errorLogger.error('get reports', error)
+      console.log('get user error', error)
+    }
+  }
+  async hasMoreReports(page = 0, limit = 10) {
+    try {
+      const skip = (page + 1) * limit
+      const reports = await Report.find()
+        .sort({ id: -1 })
+        .skip(skip)
+        .limit(limit)
+      return reports.length > 0
+    } catch (error) {
+      errorLogger.error('get reports', error)
       console.log('get user error', error)
     }
   }
@@ -149,7 +170,7 @@ export class ReportService {
     try {
       const nowDate = new Date()
       let daysBack = 0
-      if(nowDate.getHours() > 0 && nowDate.getHours() < 10){
+      if (nowDate.getHours() > 0 && nowDate.getHours() < 10) {
         daysBack = 1
       }
       const { startOfDay, endOfDay } = getPreviousDayRange(daysBack)

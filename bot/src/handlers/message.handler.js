@@ -3,14 +3,21 @@ import { ChannelService } from '../services/channel.service.js'
 import isAdmin from '../services/isAdmin.js'
 import { KickUserFromChannel } from '../services/kickUserFromChannel.js'
 import fs from 'fs'
+import { UserService } from '../../../server/src/services/user.service.js'
+
+import { AwaitingEmail } from '../states/awaitingEmail.js'
+
 export class MessageHandler {
   constructor(bot) {
     this.bot = bot
     this.ChannelService = new ChannelService(bot)
+    this.UserService = new UserService()
     this.KickUserFromChannel = new KickUserFromChannel(bot)
     this.bot.on('message', (msg) => {
       this.handleUserMessage(msg)
     })
+
+    this.AwaitingEmail = new AwaitingEmail(bot)
   }
   async handleUserMessage(msg) {
     try {
@@ -22,14 +29,16 @@ export class MessageHandler {
       if (msg.chat.type !== 'private') {
         return
       }
-      this.bot.sendPhoto(
-        chatId,
-        'https://3123703-of06570.twc1.net/images/Frame19.png',
-        {
-          caption: 'Путь к твоей вершине начинается здесь',
-          ...keyboards.startKeyboard
-        }
-      )
+      console.log('test')
+      const user = await this.UserService.getUser(chatId)
+      console.log('user :', user)
+      switch (user.state) {
+        case 'awaiting_email':
+          this.AwaitingEmail.proccess(msg)
+          break
+        default:
+          break
+      }
     } catch (error) {
       console.log('Error handling user message:', error)
     }

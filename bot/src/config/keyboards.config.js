@@ -15,6 +15,18 @@ export const keyboards = {
       ]
     }
   },
+  adminKeyboard: {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: 'Запустить',
+            web_app: { url: process.env.DOMAIN }
+          }
+        ]
+      ]
+    }
+  },
   emailKeyboard: {
     reply_markup: {
       inline_keyboard: [

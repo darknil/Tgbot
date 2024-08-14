@@ -29,6 +29,7 @@ export class AwaitingEmail {
       }
       if (!userById.email) {
         const date = userByEmail.subscriptionEndDate
+        console.log('userByEmail', userByEmail)
         console.log('date :', date)
         await this.UserService.deleteUserByEmail(message)
         await this.UserService.updateUserField(chatId, 'email', message)

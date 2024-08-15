@@ -55,7 +55,6 @@ export class AuthController {
         case 'left':
           await this.UserService.updateUserStatus(user, 'guest')
           throw new Error('User is banned')
-          break
         case 'kicked':
           await this.UserService.updateUserStatus(user, 'banned')
           // Прокидываем ошибку, если пользователь был заблокирован
@@ -76,16 +75,30 @@ export class AuthController {
         }
       }
       const UserStatus = await this.StatusService.getStatusByUuid(user.status)
+      const currentDate = new Date()
+      const endDate = new Date(
+        currentDate.getTime() + 3000 * 24 * 60 * 60 * 1000
+      )
 
       switch (isMember) {
         case 'creator':
         case 'administrator':
           user = await this.UserService.updateUserStatus(user, 'admin')
+          await this.UserService.updateUserField(
+            user.chatId,
+            'subscriptionEndDate',
+            endDate
+          )
           break
         case 'member':
           if (UserStatus.value !== 'freezed') {
             user = await this.UserService.updateUserStatus(user, 'member')
           }
+          await this.UserService.updateUserField(
+            user.chatId,
+            'subscriptionEndDate',
+            endDate
+          )
           break
       }
       return user

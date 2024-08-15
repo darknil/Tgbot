@@ -27,7 +27,7 @@ export class CloseReports {
       const ownerChatIds = closedReports.map((report) => report.ownerChatId)
       dataLogger.info('owner chat ids', ownerChatIds)
       console.log('owner chat ids', ownerChatIds)
-      const allUsers = await this.UserService.getUsers()
+      const allUsers = await this.UserService.getMembers()
       dataLogger.info('all users lenght', allUsers.length)
       console.log('all users lenght', allUsers.length)
       const usersWithoutReports = allUsers.filter(

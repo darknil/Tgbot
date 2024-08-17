@@ -82,6 +82,13 @@ export class AuthController {
 
       switch (isMember) {
         case 'creator':
+          user = await this.UserService.updateUserStatus(user, 'admin')
+          await this.UserService.updateUserField(
+            user.chatId,
+            'subscriptionEndDate',
+            endDate
+          )
+          break
         case 'administrator':
           user = await this.UserService.updateUserStatus(user, 'admin')
           await this.UserService.updateUserField(
@@ -91,15 +98,6 @@ export class AuthController {
           )
           break
         case 'member':
-          if (UserStatus.value !== 'freezed') {
-            user = await this.UserService.updateUserStatus(user, 'member')
-          }
-          await this.UserService.updateUserField(
-            user.chatId,
-            'subscriptionEndDate',
-            endDate
-          )
-          break
       }
       return user
     } catch (error) {

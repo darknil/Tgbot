@@ -79,16 +79,8 @@ export class AuthController {
       const endDate = new Date(
         currentDate.getTime() + 3000 * 24 * 60 * 60 * 1000
       )
-
       switch (isMember) {
         case 'creator':
-          user = await this.UserService.updateUserStatus(user, 'admin')
-          await this.UserService.updateUserField(
-            user.chatId,
-            'subscriptionEndDate',
-            endDate
-          )
-          break
         case 'administrator':
           user = await this.UserService.updateUserStatus(user, 'admin')
           await this.UserService.updateUserField(
@@ -98,6 +90,9 @@ export class AuthController {
           )
           break
         case 'member':
+          if (UserStatus.value !== 'freezed') {
+            user = await this.UserService.updateUserStatus(user, 'member')
+          }
       }
       return user
     } catch (error) {

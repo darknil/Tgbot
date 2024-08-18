@@ -23,7 +23,7 @@ export class QueryHandler {
     this.UserService.updateUserField(chatId, 'state', 'awaiting_email')
     await this.bot.sendMessage(
       chatId,
-      'Отправте вашу почту которую вы указывали в оплате'
+      'Отправьте вашу почту которую вы указывали в оплате'
     )
   }
 }

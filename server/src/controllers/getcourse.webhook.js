@@ -22,10 +22,9 @@ export class GetcourseWebhookController {
       if (key !== process.env.secret_key) {
         return this.ResponseService.notFound(res, 'bad request')
       }
-      if (!email || !type) {
+      if (!email) {
         return this.ResponseService.badRequest(res, 'Bad request')
       }
-
       const existedUser = await this.UserService.getUserByEmail(email)
       if (!existedUser) {
         const newUser = await this.UserService.createUser(
@@ -43,6 +42,20 @@ export class GetcourseWebhookController {
           )
         console.log('updated :', updatedUser)
         return this.ResponseService.success(res, 'ok')
+      }
+      const activeSubcription = await this.UserService.checkUserSubscription(
+        existedUser.chatId
+      )
+      if (!type && activeSubcription) {
+        await this.UserService.updateUserStatus(existedUser, 'member')
+        this.ChannelService.unkickUser(existedUser.chatId)
+        this.ChannelService.unbanUser(existedUser.chatId)
+        const link = await this.ChannelService.createInviteLink()
+        await this.MessageService.SendMessageToUser(
+          existedUser.chatId,
+          `Компас был успешно оплачен. Вы можете вернуться на вершину. ${link.invite_link}`
+        )
+        return
       }
 
       await this.UserService.updateUserStatus(existedUser, 'member')

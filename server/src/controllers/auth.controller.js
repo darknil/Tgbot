@@ -54,7 +54,7 @@ export class AuthController {
       switch (isMember) {
         case 'left':
           await this.UserService.updateUserStatus(user, 'guest')
-          throw new Error('User is banned')
+          break
         case 'kicked':
           await this.UserService.updateUserStatus(user, 'banned')
           // Прокидываем ошибку, если пользователь был заблокирован
